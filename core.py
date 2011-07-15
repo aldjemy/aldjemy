@@ -1,7 +1,9 @@
 from django.db import connection
-from sqlalchemy import MetaData, create_engine, types
+from sqlalchemy import MetaData, create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
+
+from .table import generate_tables
 
 
 __all__ = ['get_engine', 'get_meta', 'get_tables']
@@ -40,14 +42,14 @@ def get_engine():
 
 def get_meta():
     if not getattr(Cache, 'meta', None):
-        engine = get_engine()
-
         Cache.meta = MetaData()
-        Cache.meta.reflect(bind=engine)
     return Cache.meta
 
 
 def get_tables():
+    if not getattr(Cache, 'tables_loaded', False):
+        generate_tables(get_meta())
+        Cache.tables_loaded = True
     return get_meta().tables
 
 
@@ -90,34 +92,3 @@ class _ConnectionRecord(_ConnectionRecordBase):
 
     def get_connection(self):
         return self.connection
-
-def simple(typ):
-    return lambda field: typ()
-
-def varchar(field):
-    return types.String(lenght=field.max_lenght)
-
-DATA_TYPES = {
-    'AutoField':         simple(types.Integer),
-    'BooleanField':      simple(types.Boolean),
-    'CharField':         varchar,
-    'CommaSeparatedIntegerField': varchar,
-    'DateField':         simple(types.Date),
-    'DateTimeField':     simple(types.DateTime),
-    'DecimalField':      lambda x: types.Numeric(scale=x.decimal_places,
-                                                 precision=x.max_digits),
-    'FileField':         varchar,
-    'FilePathField':     varchar,
-    'FloatField':        simple(types.Float),
-    'IntegerField':      simple(types.Integer),
-    'BigIntegerField':   simple(types.BigInteger),
-    'IPAddressField':    lambda field: types.CHAR(lenght=15),
-    'NullBooleanField':  simple(types.Boolean),
-    'OneToOneField':     simple(types.Integer),
-    'PositiveIntegerField': simple(types.Integer),
-    'PositiveSmallIntegerField': simple(types.SmallInteger),
-    'SlugField':         varchar,
-    'SmallIntegerField': simple(types.SmallInteger),
-    'TextField':         simple(types.UnicodeText),
-    'TimeField':         simple(types.Time),
-}

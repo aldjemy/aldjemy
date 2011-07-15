@@ -1,8 +1,8 @@
 from sqlalchemy import orm
-from django.db.models.loading import AppCache
 from django.db.models.fields.related import ForeignKey, OneToOneField
 
-from core import get_tables, get_engine
+from .core import get_tables, get_engine
+from .table import get_django_models
 
 
 def get_session():
@@ -13,8 +13,7 @@ def get_session():
 
 def prepare_models():
     tables = get_tables()
-    ac=AppCache()
-    models = ac.get_models()
+    models = get_django_models()
     sa_models = {}
 
     for model in models:
@@ -25,24 +24,26 @@ def prepare_models():
 
     for model in models:
         name = model._meta.db_table
+        if 'id' in  sa_models[name].__dict__:
+            continue
         table = tables[name]
         fks = [t for t in model._meta.fields
                  if isinstance(t, (ForeignKey, OneToOneField))]
         attrs = {}
         for fk in fks:
             if not fk.column in table.c:
-                print fk.column, model, table.c.keys()
                 continue
             parent_model = fk.related.parent_model._meta
             p_table = tables[parent_model.db_table]
             attrs[fk.name] = orm.relationship(
                     sa_models[parent_model.db_table],
                     foreign_keys=[table.c[fk.column]],
-                    primaryjoin=(table.c[fk.column] == p_table.c['id']))
+                    primaryjoin=(table.c[fk.column] == p_table.c['id']),
+                    backref=fk.rel.related_name
+                    )
         name = model._meta.db_table
-        if not 'id' in  sa_models[name].__dict__:
-            orm.mapper(sa_models[name], table, attrs)
-            model.sa = sa_models[name]
+        orm.mapper(sa_models[name], table, attrs)
+        model.sa = sa_models[name]
 
 
 class class_property(property):
