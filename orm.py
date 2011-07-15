@@ -1,6 +1,6 @@
 from sqlalchemy import orm
 from django.db.models.loading import AppCache
-from django.db.models.fields.related import ForeignKey
+from django.db.models.fields.related import ForeignKey, OneToOneField
 
 from core import get_tables, get_engine
 
@@ -26,7 +26,8 @@ def prepare_models():
     for model in models:
         name = model._meta.db_table
         table = tables[name]
-        fks = [t for t in model._meta.fields if isinstance(t, ForeignKey)]
+        fks = [t for t in model._meta.fields
+                 if isinstance(t, (ForeignKey, OneToOneField))]
         attrs = {}
         for fk in fks:
             if not fk.column in table.c:
@@ -41,8 +42,7 @@ def prepare_models():
         name = model._meta.db_table
         if not 'id' in  sa_models[name].__dict__:
             orm.mapper(sa_models[name], table, attrs)
-            model.sqla = sa_models[name]
-        
+            model.sa = sa_models[name]
 
 
 class class_property(property):
@@ -55,10 +55,3 @@ class BaseSQLAModel(object):
     @classmethod
     def query(cls):
         return get_session().query(cls)
-
-
-def make_sa_model(model, table, attrs):
-    sa_model = type(model._meta.object_name, (BaseSQLAModel, ),
-                    {'table': table})
-    orm.mapper(sa_model, table, attrs)
-    return sa_model

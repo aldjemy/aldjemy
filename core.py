@@ -1,6 +1,5 @@
 from django.db import connection
-from sqlalchemy import MetaData
-from sqlalchemy import create_engine
+from sqlalchemy import MetaData, create_engine, types
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
@@ -24,7 +23,7 @@ SQLALCHEMY_ENGINES = {
 
 def get_connection_string():
     sett = connection.settings_dict
-    engine = sett['ENGINE'].rsplit('.')[-1]
+    engine = SQLALCHEMY_ENGINES[sett['ENGINE'].rsplit('.')[-1]]
     options = '?charset=utf8' if engine == 'mysql' else ''
     return engine + '://' + options
 
@@ -91,3 +90,34 @@ class _ConnectionRecord(_ConnectionRecordBase):
 
     def get_connection(self):
         return self.connection
+
+def simple(typ):
+    return lambda field: typ()
+
+def varchar(field):
+    return types.String(lenght=field.max_lenght)
+
+DATA_TYPES = {
+    'AutoField':         simple(types.Integer),
+    'BooleanField':      simple(types.Boolean),
+    'CharField':         varchar,
+    'CommaSeparatedIntegerField': varchar,
+    'DateField':         simple(types.Date),
+    'DateTimeField':     simple(types.DateTime),
+    'DecimalField':      lambda x: types.Numeric(scale=x.decimal_places,
+                                                 precision=x.max_digits),
+    'FileField':         varchar,
+    'FilePathField':     varchar,
+    'FloatField':        simple(types.Float),
+    'IntegerField':      simple(types.Integer),
+    'BigIntegerField':   simple(types.BigInteger),
+    'IPAddressField':    lambda field: types.CHAR(lenght=15),
+    'NullBooleanField':  simple(types.Boolean),
+    'OneToOneField':     simple(types.Integer),
+    'PositiveIntegerField': simple(types.Integer),
+    'PositiveSmallIntegerField': simple(types.SmallInteger),
+    'SlugField':         varchar,
+    'SmallIntegerField': simple(types.SmallInteger),
+    'TextField':         simple(types.UnicodeText),
+    'TimeField':         simple(types.Time),
+}
