@@ -1,20 +1,23 @@
 from sqlalchemy import orm
 from django.db.models.fields.related import ForeignKey, OneToOneField
+from django.db import connection
 
-from .core import get_tables, get_engine
+from .core import get_tables, get_engine, Cache
 from .table import get_django_models
 
 
 def get_session():
-    session = orm.create_session()
-    session.bind = get_engine()
-    return session
+    if not hasattr(connection.connection, 'sa_session'):
+        session = orm.create_session()
+        session.bind = get_engine()
+        connection.connection.sa_session = session
+    return connection.connection.sa_session
 
 
 def prepare_models():
     tables = get_tables()
     models = get_django_models()
-    sa_models = {}
+    sa_models = getattr(Cache, 'models', {})
 
     for model in models:
         name = model._meta.db_table
@@ -44,6 +47,7 @@ def prepare_models():
         name = model._meta.db_table
         orm.mapper(sa_models[name], table, attrs)
         model.sa = sa_models[name]
+    Cache.models = sa_models
 
 
 class class_property(property):

@@ -57,7 +57,9 @@ def generate_tables(metadata):
         if name in metadata.tables:
             continue
         columns = []
-        for field in model._meta.fields:
+        for field, parent_model in model._meta.get_fields_with_model():
+            if parent_model:
+                continue
             typ = DATA_TYPES[field.get_internal_type()](field)
             columns.append(Column(field.column,
                     typ, primary_key=field.primary_key))
