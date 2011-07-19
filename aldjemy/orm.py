@@ -42,7 +42,8 @@ def prepare_models():
                     sa_models[parent_model.db_table],
                     foreign_keys=[table.c[fk.column]],
                     primaryjoin=(table.c[fk.column] == p_table.c['id']),
-                    backref=fk.rel.related_name
+                    backref=(fk.rel.related_name.lower().strip('+')
+                             if fk.rel.related_name else None)
                     )
         name = model._meta.db_table
         orm.mapper(sa_models[name], table, attrs)
