@@ -1,14 +1,23 @@
 #! /usr/bin/env python
 
-from sqlalchemy import types, Column, Table
+from sqlalchemy import types, Column, Table, ForeignKey
 from django.db.models.loading import AppCache
 
 
 def simple(typ):
     return lambda field: typ()
 
+
 def varchar(field):
     return types.String(length=field.max_length)
+
+
+def foreign_key(field):
+    target = field.related.parent_model._meta
+    target_table = target.db_table
+    target_pk = target.pk.column
+    return types.Integer, ForeignKey('%s.%s' % (target_table, target_pk))
+
 
 DATA_TYPES = {
     'AutoField':         simple(types.Integer),
@@ -26,8 +35,8 @@ DATA_TYPES = {
     'BigIntegerField':   simple(types.BigInteger),
     'IPAddressField':    lambda field: types.CHAR(lenght=15),
     'NullBooleanField':  simple(types.Boolean),
-    'OneToOneField':     simple(types.Integer),
-    'ForeignKey':     simple(types.Integer),
+    'OneToOneField':     foreign_key,
+    'ForeignKey':        foreign_key,
     'PositiveIntegerField': simple(types.Integer),
     'PositiveSmallIntegerField': simple(types.SmallInteger),
     'SlugField':         varchar,
@@ -61,6 +70,8 @@ def generate_tables(metadata):
             if parent_model:
                 continue
             typ = DATA_TYPES[field.get_internal_type()](field)
+            if not isinstance(typ, (list, tuple)):
+                typ=[typ]
             columns.append(Column(field.column,
-                    typ, primary_key=field.primary_key))
+                    *typ, primary_key=field.primary_key))
         Table(name, metadata, *columns)

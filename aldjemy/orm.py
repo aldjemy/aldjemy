@@ -1,4 +1,3 @@
-from collections import defaultdict
 from sqlalchemy import orm
 from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.db import connection
@@ -15,6 +14,7 @@ def get_session():
         connection.sa_session = session
     return connection.sa_session
 
+
 def new_session(**kw):
     if hasattr(connection, 'sa_session'):
         delattr(connection, 'sa_session')
@@ -22,13 +22,10 @@ def new_session(**kw):
 signals.request_started.connect(new_session)
 
 
-
 def prepare_models():
     tables = get_tables()
     models = get_django_models()
     sa_models = getattr(Cache, 'models', {})
-
-    backrefs = defaultdict(list)
 
     for model in models:
         name = model._meta.db_table
@@ -50,44 +47,26 @@ def prepare_models():
             parent_model = fk.related.parent_model._meta
             p_table = tables[parent_model.db_table]
             p_name = parent_model.pk.column
-            attrs[fk.name] = orm.relationship(
-                    sa_models[parent_model.db_table],
-                    foreign_keys=[table.c[fk.column]],
-                    primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
-                    )
-            # Get backref name
+
             backref = (fk.rel.related_name.lower().strip('+')
                        if fk.rel.related_name else None)
             if not backref:
                 backref = model._meta.object_name.lower()
                 if not isinstance(fk, OneToOneField):
                     backref = backref  + '_set'
-            # Will generate relationship for other model
-            r_property = orm.relationship(
-                    sa_models[name],
+
+            attrs[fk.name] = orm.relationship(
+                    sa_models[parent_model.db_table],
                     foreign_keys=[table.c[fk.column]],
                     primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
-                )
-            r_property.key = backref
-            backrefs[parent_model.db_table].append(r_property)
-
+                    backref=backref,
+                    remote_side=p_table.c[p_name],
+                    )
         name = model._meta.db_table
         orm.mapper(sa_models[name], table, attrs)
         model.sa = sa_models[name]
 
     Cache.models = sa_models
-
-    for model_name, backref_list in backrefs.iteritems():
-        model = sa_models[model_name]
-        mapper = model._sa_class_manager.mapper
-        for backref in backref_list:
-            if hasattr(model, backref.key):
-                # Dont overwrite existing attrs
-                # So put backref name explicit on django field
-                continue
-            backref.instrument_class(model._sa_class_manager.mapper)
-            backref.parent = mapper
-            backref.init()
 
 
 class BaseSQLAModel(object):
