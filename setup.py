@@ -10,7 +10,8 @@ def read(fname):
 
 setupconf = dict(
     name = 'aldjemy',
-    version = (0, 1, 0),
+    #version = (0, 2, 1),
+    version = "0.2.1",
     license = 'BSD',
     url = 'https://github.com/Deepwalker/aldjemy/',
     author = 'Mihail Krivushin',
@@ -20,7 +21,7 @@ setupconf = dict(
 
     packages = find_packages(),
 
-    install_requires = ['sqlalchemy==0.7.1'],
+    install_requires = ['sqlalchemy>0.7.1'],
 
     classifiers = [
         'Intended Audience :: Developers',
