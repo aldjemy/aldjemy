@@ -2,17 +2,25 @@ from collections import defaultdict
 from sqlalchemy import orm
 from django.db.models.fields.related import ForeignKey, OneToOneField
 from django.db import connection
+from django.core import signals
 
 from .core import get_tables, get_engine, Cache
 from .table import get_django_models
 
 
 def get_session():
-    if not hasattr(connection.connection, 'sa_session'):
+    if not hasattr(connection, 'sa_session'):
         session = orm.create_session()
         session.bind = get_engine()
-        connection.connection.sa_session = session
-    return connection.connection.sa_session
+        connection.sa_session = session
+    return connection.sa_session
+
+def new_session(**kw):
+    if hasattr(connection, 'sa_session'):
+        delattr(connection, 'sa_session')
+    get_session()
+signals.request_started.connect(new_session)
+
 
 
 def prepare_models():
@@ -82,13 +90,9 @@ def prepare_models():
             backref.init()
 
 
-class class_property(property):
-    def __get__(self, cls, owner):
-        return self.fget.__get__(None, owner)()
-
-
 class BaseSQLAModel(object):
-    @class_property
     @classmethod
-    def query(cls):
+    def query(cls, *a, **kw):
+        if a or kw:
+            return get_session().query(*a, **kw)
         return get_session().query(cls)
