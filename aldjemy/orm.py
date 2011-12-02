@@ -29,9 +29,10 @@ def prepare_models():
 
     for model in models:
         name = model._meta.db_table
+        mixin = getattr(model, 'aldjemy_mixin', None)
+        bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel, )
         table = tables[name]
-        sa_models[name] = type(model._meta.object_name, (BaseSQLAModel, ),
-                    {'table': table})
+        sa_models[name] = type(model._meta.object_name, bases, {'table': table})
 
     for model in models:
         name = model._meta.db_table
