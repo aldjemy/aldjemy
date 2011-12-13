@@ -48,7 +48,11 @@ DATA_TYPES = {
 
 def get_django_models():
     ac = AppCache()
-    models = ac.get_models()
+    return ac.get_models()
+
+
+def get_all_django_models():
+    models = get_django_models()
     # Get M2M models
     new_models = []
     for model in models:
@@ -60,7 +64,7 @@ def get_django_models():
 
 
 def generate_tables(metadata):
-    models = get_django_models()
+    models = get_all_django_models()
     for model in  models:
         name = model._meta.db_table
         if name in metadata.tables:

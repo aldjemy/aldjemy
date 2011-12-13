@@ -2,6 +2,16 @@
 Aldjemy
 =======
 
+Whats new?
+----------
+
+2011-12-14 Added M2M fields generation. Now we dont generate models for m2m tables.
+2011-12-14 Sqlite datetime double conversion fix
+
+Before:
+
+- mixins support
+
 Base
 ----
 

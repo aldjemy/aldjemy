@@ -1,5 +1,6 @@
 from sqlalchemy import orm
-from django.db.models.fields.related import ForeignKey, OneToOneField
+from django.db.models.fields.related import (ForeignKey, OneToOneField,
+        ManyToManyField)
 from django.db import connection
 from django.core import signals
 
@@ -42,8 +43,9 @@ def prepare_models():
         fks = [t for t in model._meta.fields
                  if isinstance(t, (ForeignKey, OneToOneField))]
         attrs = {}
-        for fk in fks:
-            if not fk.column in table.c:
+        rel_fields = fks + model._meta.many_to_many
+        for fk in rel_fields:
+            if not fk.column in table.c and not isinstance(fk, ManyToManyField):
                 continue
             parent_model = fk.related.parent_model._meta
             p_table = tables[parent_model.db_table]
@@ -56,12 +58,27 @@ def prepare_models():
                 if not isinstance(fk, OneToOneField):
                     backref = backref  + '_set'
 
-            attrs[fk.name] = orm.relationship(
-                    sa_models[parent_model.db_table],
+            kw = {}
+            if isinstance(fk, ManyToManyField):
+                model_pk = model._meta.pk.column
+                sec_table = tables[fk.related.field.m2m_db_table()]
+                sec_column = fk.m2m_column_name()
+                p_sec_column = fk.m2m_reverse_name()
+                kw.update(
+                    secondary=sec_table,
+                    primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
+                    secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name])
+                    )
+            else:
+                kw.update(
                     foreign_keys=[table.c[fk.column]],
                     primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
-                    backref=backref,
                     remote_side=p_table.c[p_name],
+                    )
+            attrs[fk.name] = orm.relationship(
+                    sa_models[parent_model.db_table],
+                    backref=backref,
+                    **kw
                     )
         name = model._meta.db_table
         orm.mapper(sa_models[name], table, attrs)
