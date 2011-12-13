@@ -4,6 +4,7 @@ from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
 from .table import generate_tables
+from .sqlite import SqliteWrapper
 
 
 __all__ = ['get_engine', 'get_meta', 'get_tables']
@@ -23,20 +24,27 @@ SQLALCHEMY_ENGINES = {
 }
 
 
-def get_connection_string():
+def get_engine_string():
     sett = connection.settings_dict
-    engine = SQLALCHEMY_ENGINES[sett['ENGINE'].rsplit('.')[-1]]
+    return sett['ENGINE'].rsplit('.')[-1]
+
+
+def get_connection_string():
+    engine = SQLALCHEMY_ENGINES[get_engine_string()]
     options = '?charset=utf8' if engine == 'mysql' else ''
     return engine + '://' + options
 
 
 def get_engine():
     if not getattr(Cache, 'engine', None):
+        engine_string = get_engine_string()
         # we have to use autocommit=True, because SQLAlchemy
         # is not aware of Django transactions
+        kw = {'execution_options': {'autocommit': True}}
+        if engine_string == 'sqlite3':
+            kw['native_datetime'] = True
         Cache.engine = create_engine(get_connection_string(),
-                                   pool=DjangoPool(creator=None),
-                                   execution_options=dict(autocommit=True))
+                                   pool=DjangoPool(creator=None), **kw)
     return Cache.engine
 
 
@@ -82,6 +90,8 @@ class _ConnectionRecord(_ConnectionRecordBase):
     def connection(self):
         if connection.connection is None:
             connection._cursor()
+        if connection.vendor == 'sqlite':
+            return SqliteWrapper(connection.connection)
         return connection.connection
 
     def close(self):

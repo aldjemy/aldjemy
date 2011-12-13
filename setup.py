@@ -11,7 +11,7 @@ def read(fname):
 setupconf = dict(
     name = 'aldjemy',
     #version = (0, 2, 1),
-    version = "0.2.2",
+    version = "0.2.4",
     license = 'BSD',
     url = 'https://github.com/Deepwalker/aldjemy/',
     author = 'Mihail Krivushin',
