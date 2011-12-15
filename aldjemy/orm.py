@@ -75,9 +75,10 @@ def prepare_models():
                     primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
                     remote_side=p_table.c[p_name],
                     )
+            if not getattr(model, 'sa_m2m', False):
+                kw['backref'] = backref
             attrs[fk.name] = orm.relationship(
                     sa_models[parent_model.db_table],
-                    backref=backref,
                     **kw
                     )
         name = model._meta.db_table

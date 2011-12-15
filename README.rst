@@ -5,6 +5,10 @@ Aldjemy
 Whats new?
 ----------
 
+2011-12-15:
+
+- Add M2M models generations. Storing them on core.Cache.models.
+
 2011-12-14:
 
 - Added M2M fields generation. Now we dont generate models for m2m tables.
