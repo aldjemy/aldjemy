@@ -33,7 +33,7 @@ DATA_TYPES = {
     'FloatField':        simple(types.Float),
     'IntegerField':      simple(types.Integer),
     'BigIntegerField':   simple(types.BigInteger),
-    'IPAddressField':    lambda field: types.CHAR(lenght=15),
+    'IPAddressField':    lambda field: types.CHAR(length=15),
     'NullBooleanField':  simple(types.Boolean),
     'OneToOneField':     foreign_key,
     'ForeignKey':        foreign_key,
