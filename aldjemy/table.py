@@ -33,7 +33,7 @@ DATA_TYPES = {
     'FloatField':        simple(types.Float),
     'IntegerField':      simple(types.Integer),
     'BigIntegerField':   simple(types.BigInteger),
-    'IPAddressField':    lambda field: types.CHAR(length=15),
+    'IPAddressField':    lambda field: types.CHAR(lenght=15),
     'NullBooleanField':  simple(types.Boolean),
     'OneToOneField':     foreign_key,
     'ForeignKey':        foreign_key,
@@ -48,20 +48,23 @@ DATA_TYPES = {
 
 def get_django_models():
     ac = AppCache()
-    models = ac.get_models()
+    return ac.get_models()
+
+
+def get_all_django_models():
+    models = get_django_models()
     # Get M2M models
     new_models = []
     for model in models:
         for field in model._meta.many_to_many:
             new_model = field.rel.through
-            new_model.sa_m2m = True
             if new_model:
                 new_models.append(new_model)
     return models + new_models
 
 
 def generate_tables(metadata):
-    models = get_django_models()
+    models = get_all_django_models()
     for model in  models:
         name = model._meta.db_table
         if name in metadata.tables:
