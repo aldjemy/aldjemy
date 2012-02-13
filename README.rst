@@ -58,7 +58,7 @@ Mixins
 Often django models have helper function and properties that helps to
 represent models data (`__unicode__`), or represent some model based logic.
 
-For integrate it with aldjemy models you can put this methods to separate mixin::
+To integrate it with aldjemy models you can put this methods to separate mixin::
 
     class TaskMixin(object):
         def __unicode__(self):
@@ -68,5 +68,5 @@ For integrate it with aldjemy models you can put this methods to separate mixin:
         aldjemy_mixin = TaskMixin
         code = models.CharField(_('code'), max_length=32, unique=True)
 
-Viola! You can user `unicode` on aldjemy classes, because this mixin will be
+Viola! You can use `unicode` on aldjemy classes, because this mixin will be
 mixed into generated aldjemy model.
