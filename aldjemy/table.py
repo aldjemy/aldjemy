@@ -41,7 +41,7 @@ DATA_TYPES = {
     'PositiveSmallIntegerField': simple(types.SmallInteger),
     'SlugField':         varchar,
     'SmallIntegerField': simple(types.SmallInteger),
-    'TextField':         simple(types.UnicodeText),
+    'TextField':         simple(types.Text),
     'TimeField':         simple(types.Time),
 }
 
