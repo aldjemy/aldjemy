@@ -60,6 +60,8 @@ def prepare_models():
 
             kw = {}
             if isinstance(fk, ManyToManyField):
+                if fk.model() != model:
+                    continue
                 model_pk = model._meta.pk.column
                 sec_table = tables[fk.related.field.m2m_db_table()]
                 sec_column = fk.m2m_column_name()
