@@ -17,8 +17,6 @@ def get_session():
 
 
 def new_session(**kw):
-    if hasattr(connection, 'sa_session'):
-        delattr(connection, 'sa_session')
     get_session()
 signals.request_started.connect(new_session)
 
