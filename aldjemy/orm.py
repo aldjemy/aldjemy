@@ -58,8 +58,6 @@ def prepare_models():
 
             kw = {}
             if isinstance(fk, ManyToManyField):
-                if fk.model() != model:
-                    continue
                 model_pk = model._meta.pk.column
                 sec_table = tables[fk.related.field.m2m_db_table()]
                 sec_column = fk.m2m_column_name()
@@ -69,6 +67,8 @@ def prepare_models():
                     primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                     secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name])
                     )
+                if fk.model() != model:
+                    backref = None
             else:
                 kw.update(
                     foreign_keys=[table.c[fk.column]],
