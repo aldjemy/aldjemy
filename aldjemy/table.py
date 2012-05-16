@@ -1,22 +1,9 @@
 #! /usr/bin/env python
 
-from sqlalchemy import types, Column, Table, ForeignKey
+from sqlalchemy import types, Column, Table
 from django.db.models.loading import AppCache
-
-
-def simple(typ):
-    return lambda field: typ()
-
-
-def varchar(field):
-    return types.String(length=field.max_length)
-
-
-def foreign_key(field):
-    target = field.related.parent_model._meta
-    target_table = target.db_table
-    target_pk = target.pk.column
-    return types.Integer, ForeignKey('%s.%s' % (target_table, target_pk))
+from aldjemy.types import simple, foreign_key, varchar
+from django.conf import settings
 
 
 DATA_TYPES = {
@@ -44,6 +31,8 @@ DATA_TYPES = {
     'TextField':         simple(types.Text),
     'TimeField':         simple(types.Time),
 }
+
+DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
 
 
 def get_django_models():
@@ -75,7 +64,7 @@ def generate_tables(metadata):
                 continue
             typ = DATA_TYPES[field.get_internal_type()](field)
             if not isinstance(typ, (list, tuple)):
-                typ=[typ]
+                typ = [typ]
             columns.append(Column(field.column,
                     *typ, primary_key=field.primary_key))
         Table(name, metadata, *columns)
