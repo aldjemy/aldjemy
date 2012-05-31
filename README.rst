@@ -52,6 +52,16 @@ We have some staff in the aldjemy cache too::
 You can use this staff if you need - may be you want to build queries with tables, or something like this.
 
 
+Settings
+--------
+
+You can add your own field types to map django types to sqlalchemy ones with 
+``ALDJEMY_DATA_TYPES`` settings parameter.
+
+Parameter must be a ``dict``, keys is result of ``field.get_internal_type()``,
+value must be a one arg function. You can get idea from ``aldjemy.types``.
+
+
 Mixins
 ------
 
