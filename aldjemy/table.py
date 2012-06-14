@@ -56,7 +56,7 @@ def generate_tables(metadata):
     models = get_all_django_models()
     for model in  models:
         name = model._meta.db_table
-        if name in metadata.tables:
+        if name in metadata.tables or model._meta.proxy:
             continue
         columns = []
         for field, parent_model in model._meta.get_fields_with_model():
