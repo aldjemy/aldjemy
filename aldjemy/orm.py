@@ -42,7 +42,7 @@ def _extract_model_attrs(model, sa_models):
         if not backref:
             backref = model._meta.object_name.lower()
             if not isinstance(fk, OneToOneField):
-                backref = backref  + '_set'
+                backref = backref + '_set'
 
         kw = {}
         if isinstance(fk, ManyToManyField):
@@ -71,7 +71,6 @@ def _extract_model_attrs(model, sa_models):
     return attrs
 
 
-
 def prepare_models():
     tables = get_tables()
     models = get_django_models()
@@ -82,7 +81,8 @@ def prepare_models():
         mixin = getattr(model, 'aldjemy_mixin', None)
         bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel, )
         table = tables[name]
-        sa_models[name] = type(model._meta.object_name, bases, {'table': table})
+        sa_models[name] = type(model._meta.object_name, bases,
+                               {'table': table})
 
     for model in models:
         name = model._meta.db_table
