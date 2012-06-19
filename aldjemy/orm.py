@@ -35,53 +35,53 @@ def prepare_models():
 
     for model in models:
         name = model._meta.db_table
-        if 'id' in  sa_models[name].__dict__:
-            continue
-        table = tables[name]
-        fks = [t for t in model._meta.fields
-                 if isinstance(t, (ForeignKey, OneToOneField))]
-        attrs = {}
-        rel_fields = fks + model._meta.many_to_many
-        for fk in rel_fields:
-            if not fk.column in table.c and not isinstance(fk, ManyToManyField):
-                continue
-            parent_model = fk.related.parent_model._meta
-            p_table = tables[parent_model.db_table]
-            p_name = parent_model.pk.column
+        if 'id' not in  sa_models[name].__dict__:
+            table = tables[name]
+            fks = [t for t in model._meta.fields
+                     if isinstance(t, (ForeignKey, OneToOneField))]
+            attrs = {}
+            rel_fields = fks + model._meta.many_to_many
+            for fk in rel_fields:
+                if not fk.column in table.c and not isinstance(fk, ManyToManyField):
+                    continue
+                parent_model = fk.related.parent_model._meta
+                p_table = tables[parent_model.db_table]
+                p_name = parent_model.pk.column
 
-            backref = (fk.rel.related_name.lower().strip('+')
-                       if fk.rel.related_name else None)
-            if not backref:
-                backref = model._meta.object_name.lower()
-                if not isinstance(fk, OneToOneField):
-                    backref = backref  + '_set'
+                backref = (fk.rel.related_name.lower().strip('+')
+                           if fk.rel.related_name else None)
+                if not backref:
+                    backref = model._meta.object_name.lower()
+                    if not isinstance(fk, OneToOneField):
+                        backref = backref  + '_set'
 
-            kw = {}
-            if isinstance(fk, ManyToManyField):
-                model_pk = model._meta.pk.column
-                sec_table = tables[fk.related.field.m2m_db_table()]
-                sec_column = fk.m2m_column_name()
-                p_sec_column = fk.m2m_reverse_name()
-                kw.update(
-                    secondary=sec_table,
-                    primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
-                    secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name])
-                    )
-                if fk.model() != model:
-                    backref = None
-            else:
-                kw.update(
-                    foreign_keys=[table.c[fk.column]],
-                    primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
-                    remote_side=p_table.c[p_name],
-                    )
-            attrs[fk.name] = orm.relationship(
-                    sa_models[parent_model.db_table],
-                    backref=backref,
-                    **kw
-                    )
-        name = model._meta.db_table
-        orm.mapper(sa_models[name], table, attrs)
+                kw = {}
+                if isinstance(fk, ManyToManyField):
+                    model_pk = model._meta.pk.column
+                    sec_table = tables[fk.related.field.m2m_db_table()]
+                    sec_column = fk.m2m_column_name()
+                    p_sec_column = fk.m2m_reverse_name()
+                    kw.update(
+                        secondary=sec_table,
+                        primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
+                        secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name])
+                        )
+                    if fk.model() != model:
+                        backref = None
+                else:
+                    kw.update(
+                        foreign_keys=[table.c[fk.column]],
+                        primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
+                        remote_side=p_table.c[p_name],
+                        )
+                attrs[fk.name] = orm.relationship(
+                        sa_models[parent_model.db_table],
+                        backref=backref,
+                        **kw
+                        )
+            name = model._meta.db_table
+            orm.mapper(sa_models[name], table, attrs)
+
         model.sa = sa_models[name]
 
     Cache.models = sa_models
