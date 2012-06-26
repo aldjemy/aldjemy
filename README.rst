@@ -21,16 +21,16 @@ Before:
 Base
 ----
 
-Small package for integration SQLAlchemy into existent Django project.
-Primarily use case of package is building complex queries that not possible
-in Django ORM.
+Small package for integration SQLAlchemy into an existent Django project.
+The primary use case of this package is building complex queries that are
+not possible with the Django ORM.
 
-You need to include aldjemy to the end of `INSTALLED_APPS`. On models
-importing aldjemy will read all models and contribute `sa` attribute to them.
+You need to include aldjemy at the end of `INSTALLED_APPS`. When models are
+imported, aldjemy will read all models and contribute `sa` attribute to them.
 `sa` attribute is a class, mapped to Table class.
 
-Internally aldjemy generate tables from Django models. Its important distinction
-from standart decision with reflection.
+Internally, aldjemy generates tables from Django models. This is an important
+distinction from the standard decision of using SQLAlchemy reflection.
 
 Code example::
 
@@ -40,16 +40,17 @@ M2M sample::
 
     User.sa.query().join(User.sa.groups).filter(Group.sa.name=="GROUP_NAME")
 
-Explicit joins is part of SQLAlchemy philosophy, so aldjemy cant get you Django expirience.
-But aldjemy is not positioned as Django ORM drop-in replacement. Its helper for special situations.
+Explicit joins is part of SQLAlchemy philosophy, so aldjemy can't get you exactly 
+the same experience as Django.
+But aldjemy is not positioned as Django ORM drop-in replacement. It's a helper for special situations.
 
-We have some staff in the aldjemy cache too::
+We have some stuff in the aldjemy cache too::
 
     from aldjemy import core
     core.Cache.models # All generated models
     core.get_tables() # All tables, and M2M tables too
 
-You can use this staff if you need - may be you want to build queries with tables, or something like this.
+You can use this stuff if you need - maybe you want to build queries with tables, or something like this.
 
 
 Settings
@@ -66,9 +67,9 @@ Mixins
 ------
 
 Often django models have helper function and properties that helps to
-represent models data (`__unicode__`), or represent some model based logic.
+represent the model's data (`__unicode__`), or represent some model based logic.
 
-To integrate it with aldjemy models you can put this methods to separate mixin::
+To integrate it with aldjemy models you can put these methods into a separate mixin::
 
     class TaskMixin(object):
         def __unicode__(self):
@@ -78,5 +79,5 @@ To integrate it with aldjemy models you can put this methods to separate mixin::
         aldjemy_mixin = TaskMixin
         code = models.CharField(_('code'), max_length=32, unique=True)
 
-Viola! You can use `unicode` on aldjemy classes, because this mixin will be
+Voilà! You can use `unicode` on aldjemy classes, because this mixin will be
 mixed into generated aldjemy model.
