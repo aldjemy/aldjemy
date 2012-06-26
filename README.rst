@@ -22,8 +22,8 @@ Base
 ----
 
 Small package for integration SQLAlchemy into an existent Django project.
-Primary use case of this package is building complex queries that are not
-possible with the Django ORM.
+The primary use case of this package is building complex queries that are
+not possible with the Django ORM.
 
 You need to include aldjemy at the end of `INSTALLED_APPS`. When models are
 imported, aldjemy will read all models and contribute `sa` attribute to them.
