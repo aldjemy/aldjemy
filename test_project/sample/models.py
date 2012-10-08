@@ -1,16 +1,25 @@
-from django.db import models as m
-
-# Create your models here.
-
-class G(m.Model):
-    a = m.CharField(max_length="200")
+from django.db import models
 
 
-class M(m.Model):
-    a = m.CharField(max_length="200")
-    b = m.TextField()
+class Chapter(models.Model):
+    title = models.CharField(max_length=200)
+    book = models.ForeignKey('Book')
 
-    g = m.ManyToManyField(G, related_name='cc_lprojects')
 
-class MN(M):
-    c = m.TextField()
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=200)
+    biography = models.TextField()
+
+    books = models.ManyToManyField(Book, related_name='books')
+
+
+class StaffAuthor(Author):
+    role = models.TextField()
+
+
+class Review(models.Model):
+    book = models.ForeignKey('a_sample.BookProxy')

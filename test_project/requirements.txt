@@ -1,0 +1,9 @@
+Django==1.4
+SQLAlchemy==0.7.9
+argparse==1.2.1
+distribute==0.6.24
+django-extensions==0.9
+ipdb==0.7
+ipython==0.13
+wsgiref==0.1.2
+yolk==0.4.3
