@@ -1,3 +1,3 @@
-from sample.models import MN
+from sample.models import StaffAuthor
 
-print MN.sa.query().all()
+print StaffAuthor.sa.query().all()
