@@ -1,8 +1,6 @@
-from django.db import models as m
-from sample.models import G
+from sample.models import Book
 
-# Create your models here.
 
-class GP(G):
+class BookProxy(Book):
     class Meta:
-    	proxy=True
+        proxy = True
