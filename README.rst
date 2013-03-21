@@ -40,7 +40,7 @@ M2M sample::
 
     User.sa.query().join(User.sa.groups).filter(Group.sa.name=="GROUP_NAME")
 
-Explicit joins is part of SQLAlchemy philosophy, so aldjemy can't get you exactly 
+Explicit joins is part of SQLAlchemy philosophy, so aldjemy can't get you exactly
 the same experience as Django.
 But aldjemy is not positioned as Django ORM drop-in replacement. It's a helper for special situations.
 
@@ -56,11 +56,17 @@ You can use this stuff if you need - maybe you want to build queries with tables
 Settings
 --------
 
-You can add your own field types to map django types to sqlalchemy ones with 
-``ALDJEMY_DATA_TYPES`` settings parameter.
-
-Parameter must be a ``dict``, keys is result of ``field.get_internal_type()``,
+You can add your own field types to map django types to sqlalchemy ones with
+``ALDJEMY_DATA_TYPES`` settings parameter.  
+Parameter must be a ``dict``, key is result of ``field.get_internal_type()``,
 value must be a one arg function. You can get idea from ``aldjemy.types``.
+  
+Also it is possible to extend/override list of supported SQLALCHEMY engines
+using ``ALDJEMY_ENGINES`` settings parameter.  
+Parameter should be a ``dict``, key is substring after last dot from 
+Django database engine setting (e.g. ``sqlite3`` from ``django.db.backends.sqlite3``),
+value is SQLAlchemy driver which will be used for connection (e.g. ``sqlite``, ``sqlite+pysqlite``).
+It could be helpful if you want to use ``django-postgrespool``.
 
 
 Mixins

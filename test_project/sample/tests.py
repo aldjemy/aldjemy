@@ -18,3 +18,7 @@ class SimpleTest(TestCase):
         self.assertTrue(StaffAuthor.sa)
         self.assertTrue(Review.sa)
         self.assertTrue(BookProxy.sa)
+
+    def test_engine_override_test(self):
+        from aldjemy import core
+        self.assertEquals(core.get_connection_string(), 'sqlite+pysqlite://')
