@@ -1,4 +1,5 @@
 from django.db import connection
+from django.conf import settings
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
@@ -23,6 +24,7 @@ SQLALCHEMY_ENGINES = {
     'postgresql_psycopg2': 'postgresql+psycopg2',
     'oracle': 'oracle',
 }
+SQLALCHEMY_ENGINES.update(getattr(settings, 'ALDJEMY_ENGINES', {}))
 
 
 def get_engine_string():
