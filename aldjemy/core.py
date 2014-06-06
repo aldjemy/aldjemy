@@ -1,3 +1,4 @@
+from collections import deque
 from django.db import connection
 from django.conf import settings
 from sqlalchemy import MetaData, create_engine
@@ -85,6 +86,7 @@ class _ConnectionRecord(_ConnectionRecordBase):
     def __init__(self, pool):
         self.__pool = pool
         self.info = {}
+        self.finalize_callback = deque()
 
         self.wrap = False
         #pool.dispatch.first_connect.exec_once(self.connection, self)
