@@ -54,7 +54,7 @@ def get_all_django_models():
 
 def generate_tables(metadata):
     models = get_all_django_models()
-    for model in  models:
+    for model in models:
         name = model._meta.db_table
         if name in metadata.tables or model._meta.proxy:
             continue

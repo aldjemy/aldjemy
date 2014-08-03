@@ -1,4 +1,6 @@
 dist/
 aldjemy.egg-info/
 *.pyc
+*.sq
 ve/
+/SQLAlchemy-*

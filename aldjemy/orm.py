@@ -1,24 +1,25 @@
 from sqlalchemy import orm
 from django.db.models.fields.related import (ForeignKey, OneToOneField,
         ManyToManyField)
-from django.db import connection
-from django.core import signals
+from django.db import connections, router
+from django.db.backends import signals
 
 from .core import get_tables, get_engine, Cache
 from .table import get_django_models
 
 
-def get_session():
+def get_session(alias='default'):
+    connection = connections[alias]
     if not hasattr(connection, 'sa_session'):
         session = orm.create_session()
-        session.bind = get_engine()
+        session.bind = get_engine(alias)
         connection.sa_session = session
     return connection.sa_session
 
 
-def new_session(**kw):
-    get_session()
-signals.request_started.connect(new_session)
+def new_session(sender, connection, **kw):
+    get_session(alias=connection.alias)
+signals.connection_created.connect(new_session)
 
 
 def _extract_model_attrs(model, sa_models):
@@ -81,12 +82,16 @@ def prepare_models():
         mixin = getattr(model, 'aldjemy_mixin', None)
         bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel, )
         table = tables[name]
+
+        # because querying happens on sqlalchemy side, we can use only one
+        # type of queries for alias, so we use 'read' type
         sa_models[name] = type(model._meta.object_name, bases,
-                               {'table': table})
+                               {'table': table,
+                                'alias': router.db_for_read(model)})
 
     for model in models:
         name = model._meta.db_table
-        if 'id' not in  sa_models[name].__dict__:
+        if 'id' not in sa_models[name].__dict__:
             table = tables[name]
             attrs = _extract_model_attrs(model, sa_models)
             name = model._meta.db_table
@@ -99,6 +104,7 @@ def prepare_models():
 class BaseSQLAModel(object):
     @classmethod
     def query(cls, *a, **kw):
+        alias = getattr(cls, 'alias', 'default')
         if a or kw:
-            return get_session().query(*a, **kw)
-        return get_session().query(cls)
+            return get_session(alias).query(*a, **kw)
+        return get_session(alias).query(cls)

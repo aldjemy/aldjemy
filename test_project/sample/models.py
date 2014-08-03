@@ -23,3 +23,9 @@ class StaffAuthor(Author):
 
 class Review(models.Model):
     book = models.ForeignKey('a_sample.BookProxy')
+
+
+class Log(models.Model):
+    _DATABASE = 'logs'
+
+    record = models.CharField(max_length=100)
