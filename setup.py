@@ -9,15 +9,14 @@ def read(fname):
 
 
 setupconf = dict(
-    name = 'aldjemy',
-    version = "0.3.8",
-    license = 'BSD',
-    url = 'https://github.com/Deepwalker/aldjemy/',
-    author = 'Mihail Krivushin',
-    author_email = 'krivushinme@gmail.com',
-    description = ('SQLAlchemy to Django integration library'),
+    name='aldjemy',
+    version="0.3.9",
+    license='BSD',
+    url='https://github.com/Deepwalker/aldjemy/',
+    author='Mihail Krivushin',
+    author_email='krivushinme@gmail.com',
+    description=('SQLAlchemy to Django integration library'),
     long_description = read('README.rst'),
-
     packages = find_packages(),
 
     install_requires = ['sqlalchemy>0.7.1'],
