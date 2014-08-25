@@ -1,9 +1,15 @@
 #! /usr/bin/env python
 
 from sqlalchemy import types, Column, Table
-from django.db.models.loading import AppCache
-from aldjemy.types import simple, foreign_key, varchar
+
 from django.conf import settings
+try:
+    from django.apps import apps as django_apps
+except ImportError:
+    from django.db.models.loading import AppCache
+    django_apps = AppCache()
+
+from aldjemy.types import simple, foreign_key, varchar
 
 
 DATA_TYPES = {
@@ -36,8 +42,7 @@ DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
 
 
 def get_django_models():
-    ac = AppCache()
-    return ac.get_models()
+    return django_apps.get_models()
 
 
 def get_all_django_models():
