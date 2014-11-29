@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from sqlalchemy import types, Column, Table
+from sqlalchemy.dialects.postgresql import HSTORE
 
 from django.conf import settings
 try:
@@ -36,6 +37,7 @@ DATA_TYPES = {
     'SmallIntegerField': simple(types.SmallInteger),
     'TextField':         simple(types.Text),
     'TimeField':         simple(types.Time),
+    'DictionaryField':   simple(HSTORE),
 }
 
 DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
