@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from sqlalchemy import types, Column, Table
+from sqlalchemy.dialects.postgresql import HSTORE
 
 from django.conf import settings
 try:
@@ -10,6 +11,8 @@ except ImportError:
     django_apps = AppCache()
 
 from aldjemy.types import simple, foreign_key, varchar
+
+import warnings
 
 
 DATA_TYPES = {
@@ -36,6 +39,7 @@ DATA_TYPES = {
     'SmallIntegerField': simple(types.SmallInteger),
     'TextField':         simple(types.Text),
     'TimeField':         simple(types.Time),
+    'DictionaryField':   simple(HSTORE),
 }
 
 DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
@@ -65,9 +69,11 @@ def generate_tables(metadata):
             continue
         columns = []
         for field, parent_model in model._meta.get_fields_with_model():
-            if parent_model:
+            django_internal_type = field.get_internal_type()
+            if parent_model or django_internal_type not in DATA_TYPES:
+                warnings.warn('Unrecognized field type: "%s"' % (django_internal_type, ), Warning)
                 continue
-            typ = DATA_TYPES[field.get_internal_type()](field)
+            typ = DATA_TYPES[django_internal_type](field)
             if not isinstance(typ, (list, tuple)):
                 typ = [typ]
             columns.append(Column(field.column,
