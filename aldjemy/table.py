@@ -12,6 +12,8 @@ except ImportError:
 
 from aldjemy.types import simple, foreign_key, varchar
 
+import warnings
+
 
 DATA_TYPES = {
     'AutoField':         simple(types.Integer),
@@ -69,6 +71,7 @@ def generate_tables(metadata):
         for field, parent_model in model._meta.get_fields_with_model():
             django_internal_type = field.get_internal_type()
             if parent_model or django_internal_type not in DATA_TYPES:
+                warnings.warn('Unrecognized field type: "%s"' % (django_internal_type, ), Warning)
                 continue
             typ = DATA_TYPES[django_internal_type](field)
             if not isinstance(typ, (list, tuple)):
