@@ -97,6 +97,8 @@ def prepare_models():
             name = model._meta.db_table
             orm.mapper(sa_models[name], table, attrs)
         model.sa = sa_models[name]
+        model.t = tables[name]
+        model.c = model.t.c
 
     Cache.models = sa_models
 
@@ -108,3 +110,9 @@ class BaseSQLAModel(object):
         if a or kw:
             return get_session(alias).query(*a, **kw)
         return get_session(alias).query(cls)
+
+    @classmethod
+    def bind(cls, sel):
+        alias = getattr(cls, 'alias', 'default')
+        sel.bind = get_engine(alias)
+        return sel
