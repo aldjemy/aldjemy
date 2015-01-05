@@ -97,7 +97,7 @@ class _ConnectionRecord(_ConnectionRecordBase):
 
         self.alias = alias
         self.wrap = False
-        #pool.dispatch.first_connect.exec_once(self.connection, self)
+        pool.dispatch.first_connect.exec_once(self.connection, self)
         pool.dispatch.connect(self.connection, self)
         self.wrap = True
 
