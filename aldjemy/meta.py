@@ -1,4 +1,4 @@
-from django.db.base import ModelBase
+from django.db.models.base import ModelBase
 
 
 class AldjemyMeta(ModelBase):
@@ -8,9 +8,9 @@ class AldjemyMeta(ModelBase):
         new_class = ModelBase.__new__(cls, name, bases, attrs, **kwds)
 
         aldjemy_attrs = {}
-        for name, attr in attrs.items():
+        for attr_name, attr in attrs.items():
             if callable(attr) or isinstance(attr, property):
-                aldjemy_attrs[name] = attr
+                aldjemy_attrs[attr_name] = attr
 
         new_class.aldjemy_mixin = type(
             'AldjemyMixin_' + name, (object,),

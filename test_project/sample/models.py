@@ -1,4 +1,5 @@
 from django.db import models
+from aldjemy.meta import AldjemyMeta
 
 
 class Chapter(models.Model):
@@ -29,3 +30,14 @@ class Log(models.Model):
     _DATABASE = 'logs'
 
     record = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.record
+
+    @property
+    def reversed_record(self):
+        return self.record[::-1]
+
+    this_is_not_copied = 'something'
+
+    __metaclass__ = AldjemyMeta

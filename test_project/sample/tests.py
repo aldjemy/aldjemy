@@ -22,6 +22,8 @@ class SimpleTest(TestCase):
 
 
 class AliasesTest(TestCase):
+    multi_db = True
+
     def test_engines_cache(self):
         from aldjemy.core import Cache, get_engine
 
@@ -48,3 +50,16 @@ class AliasesTest(TestCase):
         self.assertEqual(Log.objects.using('logs').count(), 2)
         self.assertEqual(Log.sa.query().count(), 2)
         self.assertEqual(Log.sa.query().all()[0].record, '1')
+
+
+class AldjemyMetaTests(TestCase):
+    multi_db = True
+
+    def test_meta(self):
+        from sample.models import Log
+        Log.objects.create(record='foo')
+
+        foo = Log.sa.query().one()
+        self.assertEqual(unicode(foo), 'foo')
+        self.assertEqual(foo.reversed_record, 'oof')
+        self.assertFalse(hasattr(foo, 'this_is_not_copied'))
