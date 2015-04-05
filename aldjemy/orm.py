@@ -1,4 +1,5 @@
 from sqlalchemy import orm
+import django
 from django.db.models.fields.related import (ForeignKey, OneToOneField,
         ManyToManyField)
 from django.db import connections, router
@@ -30,11 +31,16 @@ def _extract_model_attrs(model, sa_models):
     fks = [t for t in model._meta.fields
              if isinstance(t, (ForeignKey, OneToOneField))]
     attrs = {}
-    rel_fields = fks + model._meta.many_to_many
+    rel_fields = fks + list(model._meta.many_to_many)
     for fk in rel_fields:
         if not fk.column in table.c and not isinstance(fk, ManyToManyField):
             continue
-        parent_model = fk.related.parent_model._meta
+
+        if django.VERSION < (1, 8):
+            parent_model = fk.related.parent_model._meta
+        else:
+            parent_model = fk.related.model._meta
+
         p_table = tables[parent_model.db_table]
         p_name = parent_model.pk.column
 
