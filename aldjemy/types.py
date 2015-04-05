@@ -1,5 +1,6 @@
-#coding: utf-8
+# coding: utf-8
 
+import django
 from sqlalchemy import types, ForeignKey
 
 
@@ -12,7 +13,12 @@ def varchar(field):
 
 
 def foreign_key(field):
-    target = field.related.parent_model._meta
+    if django.VERSION < (1, 8):
+        parent_model = field.related.parent_model
+    else:
+        parent_model = field.related.model
+
+    target = parent_model._meta
     target_table = target.db_table
     target_pk = target.pk.column
     return types.Integer, ForeignKey('%s.%s' % (target_table, target_pk))

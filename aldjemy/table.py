@@ -67,9 +67,17 @@ def generate_tables(metadata):
         for field, parent_model in model._meta.get_fields_with_model():
             if parent_model:
                 continue
-            typ = DATA_TYPES[field.get_internal_type()](field)
-            if not isinstance(typ, (list, tuple)):
-                typ = [typ]
-            columns.append(Column(field.column,
-                    *typ, primary_key=field.primary_key))
+
+            try:
+                internal_type = field.get_internal_type()
+            except AttributeError:
+                continue
+
+            if internal_type in DATA_TYPES:
+                typ = DATA_TYPES[internal_type](field)
+                if not isinstance(typ, (list, tuple)):
+                    typ = [typ]
+                columns.append(Column(field.column,
+                        *typ, primary_key=field.primary_key))
+
         Table(name, metadata, *columns)
