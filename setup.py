@@ -10,7 +10,7 @@ def read(fname):
 
 setupconf = dict(
     name='aldjemy',
-    version="0.3.10",
+    version="0.4.0",
     license='BSD',
     url='https://github.com/Deepwalker/aldjemy/',
     author='Mihail Krivushin',
