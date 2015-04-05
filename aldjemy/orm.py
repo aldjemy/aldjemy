@@ -4,6 +4,7 @@ from django.db.models.fields.related import (ForeignKey, OneToOneField,
         ManyToManyField)
 from django.db import connections, router
 from django.db.backends import signals
+from django.conf import settings
 
 from .core import get_tables, get_engine, Cache
 from .table import get_django_models
@@ -19,7 +20,9 @@ def get_session(alias='default'):
 
 
 def new_session(sender, connection, **kw):
-    get_session(alias=connection.alias)
+    if connection.alias in settings.DATABASES:
+        get_session(alias=connection.alias)
+
 signals.connection_created.connect(new_session)
 
 
