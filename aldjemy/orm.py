@@ -46,7 +46,7 @@ def _extract_model_attrs(model, sa_models):
         p_table = tables[parent_model.db_table]
         p_name = parent_model.pk.column
 
-        disable_backref = True if fk.rel.related_name and fk.rel.related_name.endswith('+') else False
+        disable_backref = fk.rel.related_name and fk.rel.related_name.endswith('+')
         backref = (fk.rel.related_name.lower().strip('+')
                    if fk.rel.related_name else None)
         if not backref and not disable_backref:
