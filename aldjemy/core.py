@@ -14,6 +14,7 @@ __all__ = ['get_engine', 'get_meta', 'get_tables']
 
 
 class Cache(object):
+
     """Module level cache"""
     engines = {}
 
@@ -68,7 +69,9 @@ def get_tables():
 
 
 class DjangoPool(NullPool):
-    def __init__(self, alias, *args, **kwargs):
+
+    def __init__(self, *args, **kwargs):
+        alias = kwargs.pop("alias",None)
         super(DjangoPool, self).__init__(*args, **kwargs)
         self.alias = alias
 
@@ -82,14 +85,15 @@ class DjangoPool(NullPool):
         self.logger.info("Pool recreating")
 
         return DjangoPool(self._creator,
-            recycle=self._recycle,
-            alias=self.alias,
-            echo=self.echo,
-            logging_name=self._orig_logging_name,
-            use_threadlocal=self._use_threadlocal)
+                          recycle=self._recycle,
+                          alias=self.alias,
+                          echo=self.echo,
+                          logging_name=self._orig_logging_name,
+                          use_threadlocal=self._use_threadlocal)
 
 
 class _ConnectionRecord(_ConnectionRecordBase):
+
     def __init__(self, pool, alias):
         self.__pool = pool
         self.info = {}
