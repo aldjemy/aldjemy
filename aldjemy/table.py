@@ -21,6 +21,7 @@ DATA_TYPES = {
     'DateTimeField':     simple(types.DateTime),
     'DecimalField':      lambda x: types.Numeric(scale=x.decimal_places,
                                                  precision=x.max_digits),
+    'DurationField':     simple(types.Interval),
     'FileField':         varchar,
     'FilePathField':     varchar,
     'FloatField':        simple(types.Float),
