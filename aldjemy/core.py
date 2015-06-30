@@ -118,7 +118,7 @@ class _ConnectionRecord(_ConnectionRecordBase):
     def close(self):
         pass
 
-    def invalidate(self, e=None):
+    def invalidate(self, e=None, soft=False):
         pass
 
     def get_connection(self):
