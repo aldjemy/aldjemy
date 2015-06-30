@@ -9,6 +9,8 @@ from .table import generate_tables
 from .wrapper import Wrapper
 from .sqlite import SqliteWrapper
 
+import time
+
 
 __all__ = ['get_engine', 'get_meta', 'get_tables']
 
@@ -94,6 +96,7 @@ class _ConnectionRecord(_ConnectionRecordBase):
         self.__pool = pool
         self.info = {}
         self.finalize_callback = deque()
+        self.starttime = time.time()
 
         self.alias = alias
         self.wrap = False
