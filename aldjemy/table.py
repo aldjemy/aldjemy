@@ -14,6 +14,7 @@ from aldjemy.types import simple, foreign_key, varchar
 
 DATA_TYPES = {
     'AutoField':         simple(types.Integer),
+    'BigAutoField':      simple(types.BigInteger),
     'BooleanField':      simple(types.Boolean),
     'CharField':         varchar,
     'CommaSeparatedIntegerField': varchar,
