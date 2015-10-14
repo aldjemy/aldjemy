@@ -11,6 +11,8 @@ def sqlite_wrapper(func):
     from django.db.backends.sqlite3.base import Database
 
     def null_converter(s):
+        if isinstance(s, bytes):
+            return s.decode('utf-8')
         return s
 
     def wrapper(*a, **kw):

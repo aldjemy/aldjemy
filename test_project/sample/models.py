@@ -20,6 +20,7 @@ class Author(models.Model):
 
 class StaffAuthor(Author):
     role = models.TextField()
+    date = models.DateTimeField()
 
 
 class Review(models.Model):

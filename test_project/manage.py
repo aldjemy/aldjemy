@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+try:
+    import pundle
+    pundle.activate()
+except:
+    pass
 
 from django.core.management import execute_from_command_line
 import os, sys
