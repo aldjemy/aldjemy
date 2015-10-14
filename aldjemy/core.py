@@ -83,12 +83,14 @@ class DjangoPool(NullPool):
     def recreate(self):
         self.logger.info("Pool recreating")
 
-        return DjangoPool(self._creator,
+        return DjangoPool(
+            self.alias,
+            self._creator,
             recycle=self._recycle,
-            alias=self.alias,
             echo=self.echo,
             logging_name=self._orig_logging_name,
-            use_threadlocal=self._use_threadlocal)
+            use_threadlocal=self._use_threadlocal
+        )
 
 
 class _ConnectionRecord(_ConnectionRecordBase):
