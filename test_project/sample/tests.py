@@ -1,3 +1,7 @@
+import sys
+if sys.version_info[0] == 3:
+    unicode = str
+
 from django.test import TestCase
 from sample.models import Chapter, Book, Author, StaffAuthor, Review
 from a_sample.models import BookProxy
@@ -18,6 +22,7 @@ class SimpleTest(TestCase):
 
     def test_querying(self):
         Book.objects.create(title='book title')
+        Book.objects.all()
         self.assertEqual(Book.sa.query().count(), 1)
 
 

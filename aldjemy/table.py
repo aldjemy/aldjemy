@@ -75,7 +75,7 @@ def generate_tables(metadata):
             except AttributeError:
                 continue
 
-            if internal_type in DATA_TYPES:
+            if internal_type in DATA_TYPES and hasattr(field, 'column'):
                 typ = DATA_TYPES[internal_type](field)
                 if not isinstance(typ, (list, tuple)):
                     typ = [typ]

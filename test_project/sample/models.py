@@ -27,7 +27,8 @@ class Review(models.Model):
     book = models.ForeignKey('a_sample.BookProxy')
 
 
-class Log(models.Model):
+from six import with_metaclass
+class Log(with_metaclass(AldjemyMeta, models.Model)):
     _DATABASE = 'logs'
 
     record = models.CharField(max_length=100)
@@ -35,10 +36,11 @@ class Log(models.Model):
     def __unicode__(self):
         return self.record
 
+    def __str__(self):
+        return self.record
+
     @property
     def reversed_record(self):
         return self.record[::-1]
 
     this_is_not_copied = 'something'
-
-    __metaclass__ = AldjemyMeta

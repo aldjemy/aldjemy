@@ -1,7 +1,5 @@
-"Wrapper to disable commit in sqla"
-
-
 class Wrapper(object):
+    "Wrapper to disable commit in sqla"
     def __init__(self, obj):
         self.obj = obj
 
