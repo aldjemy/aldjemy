@@ -21,11 +21,15 @@ imported, aldjemy will read all models and contribute `sa` attribute to them.
 Internally, aldjemy generates tables from Django models. This is an important
 distinction from the standard decision of using SQLAlchemy reflection.
 
-Code example::
+Code example:
+
+.. code-block:: python
 
     User.sa.query().filter(User.sa.username=='Brubeck')
 
-M2M sample::
+M2M sample:
+
+.. code-block:: python
 
     User.sa.query().join(User.sa.groups).filter(Group.sa.name=="GROUP_NAME")
 
@@ -33,7 +37,9 @@ Explicit joins is part of SQLAlchemy philosophy, so aldjemy can't get you exactl
 the same experience as Django.
 But aldjemy is not positioned as Django ORM drop-in replacement. It's a helper for special situations.
 
-We have some stuff in the aldjemy cache too::
+We have some stuff in the aldjemy cache too:
+
+.. code-block:: python
 
     from aldjemy import core
     core.Cache.models # All generated models
@@ -64,7 +70,9 @@ Mixins
 Often django models have helper function and properties that helps to
 represent the model's data (`__unicode__`), or represent some model based logic.
 
-To integrate it with aldjemy models you can put these methods into a separate mixin::
+To integrate it with aldjemy models you can put these methods into a separate mixin:
+
+.. code-block:: python
 
     class TaskMixin(object):
         def __unicode__(self):
@@ -79,7 +87,9 @@ mixed into generated aldjemy model.
 
 If you want to expose all methods and properties without creating a
 separate mixin class, you can use the `aldjemy.meta.AldjemyMeta`
-metaclass::
+metaclass:
+
+.. code-block:: python
 
     from aldjemy.meta import AldjemyMeta
 
@@ -94,7 +104,9 @@ metaclass::
 The result is same as with the example above, only you didn't need to
 create the mixin class at all.
 
-Also note that with Python 3, the syntax is a bit different::
+Also note that with Python 3, the syntax is a bit different:
+
+.. code-block:: python
 
     class Task(models.Model, metaclass=AldjemyMeta):
         code = models.CharField(_('code'), max_length=32, unique=True)
