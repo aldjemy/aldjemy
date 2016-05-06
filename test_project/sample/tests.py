@@ -3,8 +3,12 @@ if sys.version_info[0] == 3:
     unicode = str
 
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 from sample.models import Chapter, Book, Author, StaffAuthor, Review
 from a_sample.models import BookProxy
+
+
+User = get_user_model()
 
 
 class SimpleTest(TestCase):
@@ -15,6 +19,7 @@ class SimpleTest(TestCase):
         self.assertTrue(StaffAuthor.sa)
         self.assertTrue(Review.sa)
         self.assertTrue(BookProxy.sa)
+        self.assertTrue(User.sa)
 
     def test_engine_override_test(self):
         from aldjemy import core
@@ -24,6 +29,12 @@ class SimpleTest(TestCase):
         Book.objects.create(title='book title')
         Book.objects.all()
         self.assertEqual(Book.sa.query().count(), 1)
+
+    def test_user_model(self):
+        u = User.objects.create()
+        Author.objects.create(user=u)
+        a = Author.sa.query().first()
+        self.assertEqual(a.user.id, u.id)
 
 
 class AliasesTest(TestCase):

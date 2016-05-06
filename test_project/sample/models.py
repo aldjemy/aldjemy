@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from aldjemy.meta import AldjemyMeta
 
@@ -16,6 +17,7 @@ class Author(models.Model):
     biography = models.TextField()
 
     books = models.ManyToManyField(Book, related_name='books')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
 
 class StaffAuthor(Author):
