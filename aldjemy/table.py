@@ -2,6 +2,7 @@
 
 from sqlalchemy import types, Column, Table
 
+import django
 from django.conf import settings
 try:
     from django.apps import apps as django_apps
@@ -66,7 +67,17 @@ def generate_tables(metadata):
         if name in metadata.tables or model._meta.proxy:
             continue
         columns = []
-        for field, parent_model in model._meta.get_fields_with_model():
+        if django.VERSION < (1, 9):
+            model_fields = model._meta.get_fields_with_model()
+        else:
+            model_fields = [
+                (f, f.model if f.model != model else None)
+                for f in model._meta.get_fields()
+                if not f.is_relation
+                    or f.one_to_one
+                    or (f.many_to_one and f.related_model)
+            ]
+        for field, parent_model in model_fields:
             if parent_model:
                 continue
 

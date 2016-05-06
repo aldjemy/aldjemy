@@ -25,6 +25,12 @@ def new_session(sender, connection, **kw):
 signals.connection_created.connect(new_session)
 
 
+def get_remote_field(foreign_key):
+    if django.VERSION >= (1, 9):
+        return foreign_key.remote_field
+    return foreign_key.related
+
+
 def _extract_model_attrs(model, sa_models):
     tables = get_tables()
 
@@ -41,7 +47,7 @@ def _extract_model_attrs(model, sa_models):
         if django.VERSION < (1, 8):
             parent_model = fk.related.parent_model._meta
         else:
-            parent_model = fk.related.model._meta
+            parent_model = get_remote_field(fk).model._meta
 
         p_table = tables[parent_model.db_table]
         p_name = parent_model.pk.column
@@ -57,7 +63,7 @@ def _extract_model_attrs(model, sa_models):
         kw = {}
         if isinstance(fk, ManyToManyField):
             model_pk = model._meta.pk.column
-            sec_table = tables[fk.related.field.m2m_db_table()]
+            sec_table = tables[get_remote_field(fk).field.m2m_db_table()]
             sec_column = fk.m2m_column_name()
             p_sec_column = fk.m2m_reverse_name()
             kw.update(
