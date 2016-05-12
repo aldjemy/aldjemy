@@ -115,15 +115,15 @@ Also note that with Python 3, the syntax is a bit different:
             return self.code
 
 
-.. |pypi_downloads| image:: https://img.shields.io/pypi/dm/trafaret.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/trafaret
+.. |pypi_downloads| image:: https://img.shields.io/pypi/dm/aldjemy.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
 
-.. |pypi_version| image:: https://img.shields.io/pypi/v/trafaret.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/trafaret
+.. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
 
-.. |pypi_license| image:: https://img.shields.io/pypi/l/trafaret.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/trafaret
+.. |pypi_license| image:: https://img.shields.io/pypi/l/aldjemy.svg?style=flat-square
+    :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
 
