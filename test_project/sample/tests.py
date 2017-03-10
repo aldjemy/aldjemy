@@ -4,7 +4,8 @@ if sys.version_info[0] == 3:
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
-from sample.models import Chapter, Book, Author, StaffAuthor, Review
+from sample.models import (
+    Chapter, Book, Author, StaffAuthor, StaffAuthorProxy, Review)
 from a_sample.models import BookProxy
 
 
@@ -17,6 +18,7 @@ class SimpleTest(TestCase):
         self.assertTrue(Book.sa)
         self.assertTrue(Author.sa)
         self.assertTrue(StaffAuthor.sa)
+        self.assertTrue(StaffAuthorProxy.sa)
         self.assertTrue(Review.sa)
         self.assertTrue(BookProxy.sa)
         self.assertTrue(User.sa)

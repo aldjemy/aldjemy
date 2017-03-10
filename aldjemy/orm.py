@@ -45,12 +45,14 @@ def _extract_model_attrs(model, sa_models):
             continue
 
         if django.VERSION < (1, 8):
-            parent_model = fk.related.parent_model._meta
+            parent_model = fk.related.parent_model
         else:
-            parent_model = get_remote_field(fk).model._meta
+            parent_model = get_remote_field(fk).model
 
-        p_table = tables[parent_model.db_table]
-        p_name = parent_model.pk.column
+        parent_model_meta = parent_model._meta
+
+        p_table = tables[parent_model_meta.db_table]
+        p_name = parent_model_meta.pk.column
 
         disable_backref = fk.rel.related_name and fk.rel.related_name.endswith('+')
         backref = (fk.rel.related_name.lower().strip('+')
@@ -82,7 +84,7 @@ def _extract_model_attrs(model, sa_models):
             if backref:
                 kw.update(backref=backref)
         attrs[fk.name] = orm.relationship(
-                sa_models[parent_model.db_table],
+                sa_models[parent_model],
                 **kw
                 )
     return attrs
@@ -91,7 +93,7 @@ def _extract_model_attrs(model, sa_models):
 def prepare_models():
     tables = get_tables()
     models = get_django_models()
-    sa_models = getattr(Cache, 'models', {})
+    sa_models = {}
 
     for model in models:
         name = model._meta.db_table
@@ -101,20 +103,17 @@ def prepare_models():
 
         # because querying happens on sqlalchemy side, we can use only one
         # type of queries for alias, so we use 'read' type
-        sa_models[name] = type(model._meta.object_name, bases,
-                               {'table': table,
-                                'alias': router.db_for_read(model)})
+        sa_models[model] = type(model._meta.object_name, bases,
+                                {'table': table,
+                                 'alias': router.db_for_read(model)})
 
     for model in models:
         name = model._meta.db_table
-        if 'id' not in sa_models[name].__dict__:
-            table = tables[name]
-            attrs = _extract_model_attrs(model, sa_models)
-            name = model._meta.db_table
-            orm.mapper(sa_models[name], table, attrs)
-        model.sa = sa_models[name]
-
-    Cache.models = sa_models
+        table = tables[name]
+        attrs = _extract_model_attrs(model, sa_models)
+        name = model._meta.db_table
+        orm.mapper(sa_models[model], table, attrs)
+        model.sa = sa_models[model]
 
 
 class BaseSQLAModel(object):
