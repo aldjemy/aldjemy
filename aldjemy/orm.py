@@ -91,9 +91,11 @@ def _extract_model_attrs(model, sa_models):
 
 
 def prepare_models():
+
     tables = get_tables()
     models = get_django_models()
-    sa_models = {}
+
+    sa_models = getattr(Cache, 'models', {})
 
     for model in models:
         name = model._meta.db_table
@@ -114,6 +116,8 @@ def prepare_models():
         name = model._meta.db_table
         orm.mapper(sa_models[model], table, attrs)
         model.sa = sa_models[model]
+
+    Cache.models = sa_models
 
 
 class BaseSQLAModel(object):
