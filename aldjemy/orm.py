@@ -1,3 +1,4 @@
+import warnings
 from sqlalchemy import orm
 import django
 from django.db.models.fields.related import (ForeignKey, OneToOneField,
@@ -95,29 +96,37 @@ def prepare_models():
     tables = get_tables()
     models = get_django_models()
 
-    sa_models = getattr(Cache, 'models', {})
+    sa_models_by_django_models = getattr(Cache, 'sa_models', {})
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        sa_models_by_table_names = getattr(Cache, 'models', {})
 
     for model in models:
-        name = model._meta.db_table
+
+        table_name = model._meta.db_table
         mixin = getattr(model, 'aldjemy_mixin', None)
         bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel, )
-        table = tables[name]
+        table = tables[table_name]
 
         # because querying happens on sqlalchemy side, we can use only one
         # type of queries for alias, so we use 'read' type
-        sa_models[model] = type(model._meta.object_name, bases,
-                                {'table': table,
-                                 'alias': router.db_for_read(model)})
+        sa_model = type(model._meta.object_name, bases,
+                        {'table': table,
+                         'alias': router.db_for_read(model)})
+
+        sa_models_by_table_names[table_name] = sa_model
+        sa_models_by_django_models[model] = sa_model
 
     for model in models:
-        name = model._meta.db_table
-        table = tables[name]
-        attrs = _extract_model_attrs(model, sa_models)
-        name = model._meta.db_table
-        orm.mapper(sa_models[model], table, attrs)
-        model.sa = sa_models[model]
+        sa_model = sa_models_by_django_models[model]
+        table = tables[model._meta.db_table]
+        attrs = _extract_model_attrs(model, sa_models_by_django_models)
+        orm.mapper(sa_model, table, attrs)
+        model.sa = sa_model
 
-    Cache.models = sa_models
+    Cache.sa_models = sa_models_by_django_models
+    Cache.models = sa_models_by_table_names
 
 
 class BaseSQLAModel(object):
