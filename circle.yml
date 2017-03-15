@@ -6,8 +6,8 @@ machine:
 
 dependencies:
   pre:
-    - pip install Django SQLAlchemy
+    - pip install -r test_project/frozen.txt
 
 test:
   override:
-      - python -m unittest
+      - sh test.sh
