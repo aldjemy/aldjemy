@@ -116,7 +116,7 @@ Also note that with Python 3, the syntax is a bit different:
 
 
 .. |circleci_build| image:: https://circleci.com/gh/Deepwalker/aldjemy.svg?style=shield
-    :target: https://pypi.python.org/pypi/trafaret
+    :target: https://pypi.python.org/pypi/aldjemy
     :alt: Build status
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
