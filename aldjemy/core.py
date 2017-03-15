@@ -1,3 +1,4 @@
+import warnings
 from collections import deque
 from django.db import connections
 from django.conf import settings
@@ -15,8 +16,19 @@ import time
 __all__ = ['get_engine', 'get_meta', 'get_tables']
 
 
+class CacheType(type):
+
+    def __getattribute__(cls, name):
+        if name == 'models':
+            warnings.warn('Cache.models attribute is deprecated. '
+                          'Use Cache.sa_models instead.',
+                          DeprecationWarning, stacklevel=2)
+        return type.__getattribute__(cls, name)
+
+
 class Cache(object):
     """Module level cache"""
+    __metaclass__ = CacheType
     engines = {}
 
 

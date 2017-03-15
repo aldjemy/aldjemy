@@ -25,6 +25,11 @@ class StaffAuthor(Author):
     date = models.DateTimeField()
 
 
+class StaffAuthorProxy(Author):
+    class Meta:
+        proxy = True
+
+
 class Review(models.Model):
     book = models.ForeignKey('a_sample.BookProxy')
 
