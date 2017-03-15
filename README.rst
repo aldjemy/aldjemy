@@ -2,7 +2,7 @@
 Aldjemy
 =======
 
-|pypi_downloads| |pypi_version| |pypi_license|
+|pypi_version| |pypi_license|
 
 -----
 
@@ -114,10 +114,6 @@ Also note that with Python 3, the syntax is a bit different:
         def __str__(self):
             return self.code
 
-
-.. |pypi_downloads| image:: https://img.shields.io/pypi/dm/aldjemy.svg?style=flat-square
-    :target: https://pypi.python.org/pypi/aldjemy
-    :alt: Downloads
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aldjemy
