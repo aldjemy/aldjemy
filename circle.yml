@@ -1,0 +1,13 @@
+## Customize the test machine
+machine:
+  python:
+    version:
+      3.6.0
+
+dependencies:
+  pre:
+    - pip install Django SQLAlchemy
+
+test:
+  override:
+      - python -m unittest
