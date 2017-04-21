@@ -62,6 +62,8 @@ def _extract_model_attrs(model, sa_models):
             backref = model._meta.object_name.lower()
             if not isinstance(fk, OneToOneField):
                 backref = backref + '_set'
+        elif backref and isinstance(fk, OneToOneField):
+            backref = orm.backref(backref, uselist=False)
 
         kw = {}
         if isinstance(fk, ManyToManyField):
