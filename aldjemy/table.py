@@ -78,19 +78,20 @@ def generate_tables(metadata):
                     or (f.many_to_one and f.related_model)
             ]
         for field, parent_model in model_fields:
-            if parent_model:
-                continue
+            if field not in model._meta.virtual_fields:
+                if parent_model:
+                    continue
 
-            try:
-                internal_type = field.get_internal_type()
-            except AttributeError:
-                continue
+                try:
+                    internal_type = field.get_internal_type()
+                except AttributeError:
+                    continue
 
-            if internal_type in DATA_TYPES and hasattr(field, 'column'):
-                typ = DATA_TYPES[internal_type](field)
-                if not isinstance(typ, (list, tuple)):
-                    typ = [typ]
-                columns.append(Column(field.column,
-                        *typ, primary_key=field.primary_key))
+                if internal_type in DATA_TYPES and hasattr(field, 'column'):
+                    typ = DATA_TYPES[internal_type](field)
+                    if not isinstance(typ, (list, tuple)):
+                        typ = [typ]
+                    columns.append(Column(field.column,
+                            *typ, primary_key=field.primary_key))
 
         Table(name, metadata, *columns)
