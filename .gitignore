@@ -4,3 +4,4 @@ aldjemy.egg-info/
 *.sq
 ve/
 /SQLAlchemy-*
+.tox
