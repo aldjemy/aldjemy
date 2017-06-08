@@ -57,9 +57,14 @@ def _extract_model_attrs(model, sa_models):
         p_table = tables[parent_model_meta.db_table]
         p_name = parent_model_meta.pk.column
 
-        disable_backref = fk.rel.related_name and fk.rel.related_name.endswith('+')
-        backref = (fk.rel.related_name.lower().strip('+')
-                   if fk.rel.related_name else None)
+        if django.VERSION < (1, 9):
+            disable_backref = fk.rel.related_name and fk.rel.related_name.endswith('+')
+            backref = (fk.rel.related_name.lower().strip('+')
+                       if fk.rel.related_name else None)
+        else:
+            disable_backref = fk.remote_field.related_name and fk.remote_field.related_name.endswith('+')
+            backref = (fk.remote_field.related_name.lower().strip('+')
+                       if fk.remote_field.related_name else None)
         if not backref and not disable_backref:
             backref = model._meta.object_name.lower()
             if not isinstance(fk, OneToOneField):

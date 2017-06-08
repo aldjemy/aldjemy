@@ -5,7 +5,7 @@ from aldjemy.meta import AldjemyMeta
 
 class Chapter(models.Model):
     title = models.CharField(max_length=200)
-    book = models.ForeignKey('Book')
+    book = models.ForeignKey('Book', on_delete=models.CASCADE)
 
 
 class Book(models.Model):
@@ -17,7 +17,7 @@ class Author(models.Model):
     biography = models.TextField()
 
     books = models.ManyToManyField(Book, related_name='books')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
 class StaffAuthor(Author):
@@ -31,7 +31,7 @@ class StaffAuthorProxy(Author):
 
 
 class Review(models.Model):
-    book = models.ForeignKey('a_sample.BookProxy')
+    book = models.ForeignKey('a_sample.BookProxy', on_delete=models.CASCADE)
 
 
 from six import with_metaclass

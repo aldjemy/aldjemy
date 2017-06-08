@@ -54,7 +54,10 @@ def get_all_django_models():
     new_models = []
     for model in models:
         for field in model._meta.many_to_many:
-            new_model = field.rel.through
+            if django.VERSION < (1, 9):
+                new_model = field.rel.through
+            else:
+                new_model = field.remote_field.through
             if new_model:
                 new_models.append(new_model)
     return models + new_models
