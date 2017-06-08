@@ -5,6 +5,11 @@ try:
 except:
     pass
 
+import warnings
+
+warnings.filterwarnings("always", category=DeprecationWarning)
+warnings.filterwarnings("always", category=PendingDeprecationWarning)
+
 from django.core.management import execute_from_command_line
 import os, sys
 try:
