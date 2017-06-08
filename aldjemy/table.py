@@ -67,7 +67,7 @@ def generate_tables(metadata):
         if name in metadata.tables or model._meta.proxy:
             continue
         columns = []
-        if django.VERSION < (1, 9):
+        if django.VERSION < (1, 8):
             model_fields = model._meta.get_fields_with_model()
         else:
             model_fields = [

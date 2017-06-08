@@ -27,9 +27,11 @@ signals.connection_created.connect(new_session)
 
 
 def get_remote_field(foreign_key):
-    if django.VERSION >= (1, 9):
-        return foreign_key.remote_field
-    return foreign_key.related
+    if django.VERSION < (1, 8):
+        return foreign_key.related
+    elif django.VERSION < (1, 9):
+        return foreign_key.rel
+    return foreign_key.remote_field
 
 
 def _extract_model_attrs(model, sa_models):
