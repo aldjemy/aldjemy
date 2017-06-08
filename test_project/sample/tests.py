@@ -25,7 +25,7 @@ class SimpleTest(TestCase):
 
     def test_engine_override_test(self):
         from aldjemy import core
-        self.assertEquals(core.get_connection_string(), 'sqlite+pysqlite://')
+        self.assertEqual(core.get_connection_string(), 'sqlite+pysqlite://')
 
     def test_querying(self):
         Book.objects.create(title='book title')
