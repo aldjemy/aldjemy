@@ -39,7 +39,7 @@ DATA_TYPES = {
     'SlugField':         varchar,
     'SmallIntegerField': simple(types.SmallInteger),
     'TextField':         simple(types.Text),
-    'TimeField':         simple(types.Time)
+    'TimeField':         simple(types.Time),
 }
 
 
