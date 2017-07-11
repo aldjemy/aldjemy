@@ -5,3 +5,5 @@ aldjemy.egg-info/
 ve/
 /SQLAlchemy-*
 .tox
+.idea*
+.venv*

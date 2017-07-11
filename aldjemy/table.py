@@ -11,6 +11,7 @@ except ImportError:
     django_apps = AppCache()
 
 from aldjemy.types import simple, foreign_key, varchar
+from aldjemy import postgres
 
 
 DATA_TYPES = {
@@ -41,6 +42,12 @@ DATA_TYPES = {
     'TimeField':         simple(types.Time),
 }
 
+
+# Update with dialect specific data types
+DATA_TYPES['ArrayField'] = lambda field: postgres.array_type(DATA_TYPES, field)
+
+
+# Update with user specified data types
 DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
 
 

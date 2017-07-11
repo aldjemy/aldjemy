@@ -6,3 +6,7 @@ To run the tests, you can do::
     tox
 
 This will run tests on all supported environments.
+
+To include tests for postgres specific functionality::
+
+    tox -- -p
