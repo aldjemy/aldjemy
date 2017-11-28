@@ -87,8 +87,11 @@ def generate_tables(metadata):
                     or f.one_to_one
                     or (f.many_to_one and f.related_model)
             ]
+        private_fields = (model._meta.private_fields  # >= Django 1.10
+                          if hasattr(model._meta, 'private_fields')
+                          else model._meta.virtual_fields)  # < Django 2.0
         for field, parent_model in model_fields:
-            if field not in model._meta.virtual_fields:
+            if field not in private_fields:
                 if parent_model:
                     continue
 
