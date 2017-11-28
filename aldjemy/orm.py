@@ -103,7 +103,7 @@ def _extract_model_attrs(model, sa_models):
 def prepare_models():
 
     tables = get_tables()
-    models = get_django_models()
+    models = [model for model in get_django_models() if not model._meta.proxy]
 
     sa_models_by_django_models = getattr(Cache, 'sa_models', {})
 
