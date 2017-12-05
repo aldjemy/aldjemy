@@ -11,16 +11,19 @@ from .core import get_tables, get_engine, Cache
 from .table import get_django_models
 
 
-def get_session(alias='default'):
+def get_session(alias='default', recreate=False):
     connection = connections[alias]
-    session = orm.sessionmaker(bind=get_engine(alias))
-    connection.sa_session = session()
+    if not hasattr(connection, 'sa_session') or recreate:
+        engine = get_engine(alias)
+        session = orm.sessionmaker(bind=engine)
+        connection.sa_session = session()
     return connection.sa_session
 
 
 def new_session(sender, connection, **kw):
     if connection.alias in settings.DATABASES:
-        get_session(alias=connection.alias)
+        get_session(alias=connection.alias, recreate=True)
+
 
 signals.connection_created.connect(new_session)
 
@@ -52,6 +55,9 @@ def _extract_model_attrs(model, sa_models):
             parent_model = get_remote_field(fk).model
 
         parent_model_meta = parent_model._meta
+
+        if parent_model_meta.proxy:
+            continue
 
         p_table = tables[parent_model_meta.db_table]
         p_name = parent_model_meta.pk.column
