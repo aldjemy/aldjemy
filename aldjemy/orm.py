@@ -45,6 +45,13 @@ def _extract_model_attrs(model, sa_models):
              if isinstance(t, (ForeignKey, OneToOneField))]
     attrs = {}
     rel_fields = fks + list(model._meta.many_to_many)
+
+    for f in model._meta.fields:
+        if not isinstance(f, (ForeignKey, OneToOneField)):
+            if f.model != model:
+                continue  # Fields from parent model are not supported
+            attrs[f.name] = orm.column_property(table.c[f.column])
+
     for fk in rel_fields:
         if not fk.column in table.c and not isinstance(fk, ManyToManyField):
             continue
