@@ -37,6 +37,7 @@ SQLALCHEMY_ENGINES = {
     'mysql': 'mysql',
     'postgresql': 'postgresql',
     'postgresql_psycopg2': 'postgresql+psycopg2',
+    'postgis': 'postgresql+psycopg2',
     'oracle': 'oracle',
 }
 SQLALCHEMY_ENGINES.update(getattr(settings, 'ALDJEMY_ENGINES', {}))
