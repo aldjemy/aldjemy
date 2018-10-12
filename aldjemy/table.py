@@ -13,12 +13,6 @@ except ImportError:
 from aldjemy.types import simple, foreign_key, varchar
 from aldjemy import postgres
 
-try:
-    import geolchemy2 as g2
-    is_supported_geoalchemy2 = True
-except:
-    is_supported_geoalchemy2 = False
-
 DATA_TYPES = {
     'AutoField':         simple(types.Integer),
     'BigAutoField':      simple(types.BigInteger),
@@ -51,9 +45,15 @@ DATA_TYPES = {
 # Update with dialect specific data types
 DATA_TYPES['ArrayField'] = lambda field: postgres.array_type(DATA_TYPES, field)
 
-if is_suppoted_geoalchemy2:
-    DATA_TYPES['PointField'] = lambda field: g2.types.Geography(geometry_type='POINT', srid=field.srid)
-    DATA_TYPES['LineStringField'] = lambda field: g2.types.Geography(geometry_type='LINESTRING', srid=field.srid)
+try:
+    import aldjemy.geoalchemy2 as g2
+    is_supported_geoalchemy2 = True
+except Exception:
+    is_supported_geoalchemy2 = False
+
+if is_supported_geoalchemy2:
+    DATA_TYPES['PointField'] = lambda field: g2.get_geo_field(geometry_type='POINT', field=field)
+    DATA_TYPES['LineStringField'] = lambda field: g2.get_geo_field(geometry_type='LINESTRING', field=field)
 
 # Update with user specified data types
 DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
