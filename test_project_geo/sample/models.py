@@ -11,7 +11,7 @@ class PointGeography(models.Model, metaclass=AldjemyMeta):
     )
 
 
-class LineStringiGeography(models.Model, metaclass=AldjemyMeta):
+class LineStringGeography(models.Model, metaclass=AldjemyMeta):
     location = models.LineStringField(
         geography=True,
         srid=SRID
