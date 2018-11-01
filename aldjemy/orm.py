@@ -7,8 +7,8 @@ from django.db import connections, router
 from django.db.backends import signals
 from django.conf import settings
 
-from .core import get_tables, get_engine, Cache
-from .table import get_django_models
+from .core import get_meta, get_engine, Cache
+from .table import get_django_models, generate_tables
 
 
 def get_session(alias='default', recreate=False):
@@ -36,11 +36,12 @@ def get_remote_field(foreign_key):
     return foreign_key.remote_field
 
 
-def _extract_model_attrs(model, sa_models):
-    tables = get_tables()
+def _extract_model_attrs(metadata, model, sa_models):
+    tables = metadata.tables
 
     name = model._meta.db_table
-    table = tables[name]
+    qualname = (metadata.schema + '.' + name) if metadata.schema else name
+    table = tables[qualname]
     fks = [t for t in model._meta.fields
              if isinstance(t, (ForeignKey, OneToOneField))]
     attrs = {}
@@ -66,7 +67,12 @@ def _extract_model_attrs(model, sa_models):
         if parent_model_meta.proxy:
             continue
 
-        p_table = tables[parent_model_meta.db_table]
+        p_table_name = parent_model_meta.db_table
+        p_table_qualname = (
+            metadata.schema + '.' + p_table_name
+            if metadata.schema else p_table_name
+        )
+        p_table = tables[p_table_qualname]
         p_name = parent_model_meta.pk.column
 
         if django.VERSION < (1, 9):
@@ -87,7 +93,12 @@ def _extract_model_attrs(model, sa_models):
         kw = {}
         if isinstance(fk, ManyToManyField):
             model_pk = model._meta.pk.column
-            sec_table = tables[get_remote_field(fk).field.m2m_db_table()]
+            sec_table_name = get_remote_field(fk).field.m2m_db_table()
+            sec_table_qualname = (
+                metadata.schema + '.' + sec_table_name
+                if metadata.schema else sec_table_name
+            )
+            sec_table = tables[sec_table_qualname]
             sec_column = fk.m2m_column_name()
             p_sec_column = fk.m2m_reverse_name()
             kw.update(
@@ -113,19 +124,33 @@ def _extract_model_attrs(model, sa_models):
 
 
 def prepare_models():
+    metadata = get_meta()
+    models = [model for model in get_django_models() if not model._meta.proxy]
+    Cache.sa_models = construct_models(metadata)
+    Cache.models = {}
+    for model in models:
+        table_name = (
+            metadata.schema + '.' + model._meta.db_table
+            if metadata.schema else model._meta.db_table
+        )
+        Cache.models[table_name] = Cache.sa_models[model]
+        model.sa = Cache.sa_models[model]
 
-    tables = get_tables()
+
+def construct_models(metadata):
+    if not metadata.tables:
+        generate_tables(metadata)
+    tables = metadata.tables
     models = [model for model in get_django_models() if not model._meta.proxy]
 
-    sa_models_by_django_models = getattr(Cache, 'sa_models', {})
-
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        sa_models_by_table_names = getattr(Cache, 'models', {})
+    sa_models_by_django_models = {}
 
     for model in models:
 
-        table_name = model._meta.db_table
+        table_name = (
+            metadata.schema + '.' + model._meta.db_table
+            if metadata.schema else model._meta.db_table
+        )
         mixin = getattr(model, 'aldjemy_mixin', None)
         bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel, )
         table = tables[table_name]
@@ -136,18 +161,20 @@ def prepare_models():
                         {'table': table,
                          'alias': router.db_for_read(model)})
 
-        sa_models_by_table_names[table_name] = sa_model
         sa_models_by_django_models[model] = sa_model
 
     for model in models:
         sa_model = sa_models_by_django_models[model]
-        table = tables[model._meta.db_table]
-        attrs = _extract_model_attrs(model, sa_models_by_django_models)
+        table_name = (
+            metadata.schema + '.' + model._meta.db_table
+            if metadata.schema else model._meta.db_table
+        )
+        table = tables[table_name]
+        attrs = _extract_model_attrs(
+            metadata, model, sa_models_by_django_models)
         orm.mapper(sa_model, table, attrs)
-        model.sa = sa_model
 
-    Cache.sa_models = sa_models_by_django_models
-    Cache.models = sa_models_by_table_names
+    return sa_models_by_django_models
 
 
 class BaseSQLAModel(object):

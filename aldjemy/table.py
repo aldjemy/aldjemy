@@ -74,7 +74,8 @@ def generate_tables(metadata):
     models = get_all_django_models()
     for model in models:
         name = model._meta.db_table
-        if name in metadata.tables or model._meta.proxy:
+        qualname = (metadata.schema + '.' + name) if metadata.schema else name
+        if qualname in metadata.tables or model._meta.proxy:
             continue
         columns = []
         if django.VERSION < (1, 8):
