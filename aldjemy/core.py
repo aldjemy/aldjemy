@@ -6,7 +6,6 @@ from sqlalchemy import MetaData, create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
-from .table import generate_tables
 from .wrapper import Wrapper
 from .sqlite import SqliteWrapper
 
@@ -72,13 +71,6 @@ def get_meta():
     if not getattr(Cache, 'meta', None):
         Cache.meta = MetaData()
     return Cache.meta
-
-
-def get_tables():
-    if not getattr(Cache, 'tables_loaded', False):
-        generate_tables(get_meta())
-        Cache.tables_loaded = True
-    return get_meta().tables
 
 
 class DjangoPool(NullPool):

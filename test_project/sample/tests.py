@@ -4,6 +4,9 @@ if sys.version_info[0] == 3:
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from sqlalchemy import MetaData
+from sqlalchemy.orm import aliased
+from aldjemy.orm import construct_models
 from sample.models import (
     Chapter, Book, Author, StaffAuthor, StaffAuthorProxy, Review)
 from a_sample.models import BookProxy
@@ -81,3 +84,26 @@ class AldjemyMetaTests(TestCase):
         self.assertEqual(unicode(foo), 'foo')
         self.assertEqual(foo.reversed_record, 'oof')
         self.assertFalse(hasattr(foo, 'this_is_not_copied'))
+
+
+class CustomMetaDataTests(TestCase):
+    def test_custom_metadata_schema(self):
+        """Use a custom MetaData instance to add a schema."""
+        # The use-case for this functionality is to allow using
+        # Foreign Data Wrappers, each with a full set of Django
+        # tables, to copy between databases using SQLAlchemy
+        # and the automatically generation of aldjemy.
+        from sample.models import Log
+        metadata = MetaData(schema='arbitrary')
+        sa_models = construct_models(metadata)
+        self.assertEqual(sa_models[Log].table.schema, 'arbitrary')
+
+    def test_custom_metadata_schema_aliased(self):
+        """Make sure the aliased command works with the schema."""
+        # This was an issue that cropped up after things seemed
+        # to be generating properly, so we want to test it and
+        # make sure that it stays working.
+        from sample.models import Log
+        metadata = MetaData(schema='pseudorandom')
+        sa_models = construct_models(metadata)
+        aliased(sa_models[Log])
