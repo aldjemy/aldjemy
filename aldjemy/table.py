@@ -48,7 +48,7 @@ DATA_TYPES['ArrayField'] = lambda field: postgres.array_type(DATA_TYPES, field)
 try:
     import aldjemy.geoalchemy2 as g2
     is_supported_geoalchemy2 = True
-except Exception:
+except ImportError:
     is_supported_geoalchemy2 = False
 
 if is_supported_geoalchemy2:
