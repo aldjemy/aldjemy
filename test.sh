@@ -11,7 +11,7 @@ if [ "$PY27_DJANGO17" = "0" ]; then
     while getopts ":p" opt; do
         case $opt in
             p)
-                pip install psycopg2==2.6.2
+                pip install psycopg2
                 cd ../test_project_postgres
                 python manage.py test
                 EXIT2=$?
