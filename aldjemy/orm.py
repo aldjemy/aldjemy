@@ -49,7 +49,7 @@ def _extract_model_attrs(metadata, model, sa_models):
 
     for f in model._meta.fields:
         if not isinstance(f, (ForeignKey, OneToOneField)):
-            if f.model != model:
+            if f.model != model or f.column not in table.c:
                 continue  # Fields from parent model are not supported
             attrs[f.name] = orm.column_property(table.c[f.column])
 

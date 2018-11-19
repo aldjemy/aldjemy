@@ -1,6 +1,6 @@
 from django.test import TestCase
 from sqlalchemy.dialects.postgresql import array
-from sample.models import TicTacToeBoard
+from sample.models import TicTacToeBoard, JsonModel
 
 
 class TestArrayField(TestCase):
@@ -29,3 +29,11 @@ class TestArrayField(TestCase):
         assert query.filter(contains('x')).count() == 2
         assert query.filter(contains('o')).count() == 2
         assert query.filter(contains(' ')).count() == 3
+
+
+class TestJsonField(TestCase):
+    def test_model_creates(self):
+        """
+        It's important that the field not cause the project to fail startup.
+        """
+        assert JsonModel.sa is not None
