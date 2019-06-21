@@ -114,7 +114,7 @@ def _extract_model_attrs(metadata, model, sa_models):
                 primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
                 remote_side=p_table.c[p_name],
                 )
-            if backref:
+            if backref and not disable_backref:
                 kw.update(backref=backref)
         attrs[fk.name] = orm.relationship(
                 sa_models[parent_model],
