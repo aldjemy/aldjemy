@@ -8,7 +8,7 @@ from django.db.backends import signals
 from django.conf import settings
 
 from .core import get_meta, get_engine, Cache
-from .table import get_django_models, generate_tables
+from .table import get_all_django_models, generate_tables
 
 
 def get_session(alias='default', recreate=False):
@@ -125,7 +125,7 @@ def _extract_model_attrs(metadata, model, sa_models):
 
 def prepare_models():
     metadata = get_meta()
-    models = [model for model in get_django_models() if not model._meta.proxy]
+    models = [model for model in get_all_django_models() if not model._meta.proxy]
     Cache.sa_models = construct_models(metadata)
     Cache.models = {}
     for model in models:
@@ -141,7 +141,7 @@ def construct_models(metadata):
     if not metadata.tables:
         generate_tables(metadata)
     tables = metadata.tables
-    models = [model for model in get_django_models() if not model._meta.proxy]
+    models = [model for model in get_all_django_models() if not model._meta.proxy]
 
     sa_models_by_django_models = {}
 

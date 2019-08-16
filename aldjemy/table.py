@@ -65,7 +65,7 @@ def get_all_django_models():
                 new_model = field.rel.through
             else:
                 new_model = field.remote_field.through
-            if new_model:
+            if new_model and new_model not in models + new_models:
                 new_models.append(new_model)
     return models + new_models
 
