@@ -43,7 +43,6 @@ We have some stuff in the aldjemy cache too:
 
     from aldjemy import core
     core.Cache.models # All generated models
-    core.get_tables() # All tables, and M2M tables too
 
 You can use this stuff if you need - maybe you want to build queries with tables, or something like this.
 
@@ -52,13 +51,13 @@ Settings
 --------
 
 You can add your own field types to map django types to sqlalchemy ones with
-``ALDJEMY_DATA_TYPES`` settings parameter.  
+``ALDJEMY_DATA_TYPES`` settings parameter.
 Parameter must be a ``dict``, key is result of ``field.get_internal_type()``,
 value must be a one arg function. You can get idea from ``aldjemy.types``.
-  
+
 Also it is possible to extend/override list of supported SQLALCHEMY engines
-using ``ALDJEMY_ENGINES`` settings parameter.  
-Parameter should be a ``dict``, key is substring after last dot from 
+using ``ALDJEMY_ENGINES`` settings parameter.
+Parameter should be a ``dict``, key is substring after last dot from
 Django database engine setting (e.g. ``sqlite3`` from ``django.db.backends.sqlite3``),
 value is SQLAlchemy driver which will be used for connection (e.g. ``sqlite``, ``sqlite+pysqlite``).
 It could be helpful if you want to use ``django-postgrespool``.
@@ -126,4 +125,3 @@ Also note that with Python 3, the syntax is a bit different:
 .. |pypi_license| image:: https://img.shields.io/pypi/l/aldjemy.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
-
