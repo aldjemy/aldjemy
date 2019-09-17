@@ -11,10 +11,10 @@ from .core import get_meta, get_engine, Cache
 from .table import get_django_models, generate_tables
 
 
-def get_session(alias='default', recreate=False):
+def get_session(alias='default', recreate=False, **kwargs):
     connection = connections[alias]
     if not hasattr(connection, 'sa_session') or recreate:
-        engine = get_engine(alias)
+        engine = get_engine(alias, **kwargs)
         session = orm.sessionmaker(bind=engine)
         connection.sa_session = session()
     return connection.sa_session
