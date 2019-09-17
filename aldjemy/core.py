@@ -52,18 +52,17 @@ def get_connection_string(alias='default'):
     return engine + '://' + options
 
 
-def get_engine(alias='default'):
+def get_engine(alias='default', **kwargs):
     if alias not in Cache.engines:
         engine_string = get_engine_string(alias)
         # we have to use autocommit=True, because SQLAlchemy
         # is not aware of Django transactions
-        kw = {}
         if engine_string == 'sqlite3':
-            kw['native_datetime'] = True
+            kwargs['native_datetime'] = True
 
         pool = DjangoPool(alias=alias, creator=None)
         Cache.engines[alias] = create_engine(get_connection_string(alias),
-                                             pool=pool, **kw)
+                                             pool=pool, **kwargs)
     return Cache.engines[alias]
 
 
