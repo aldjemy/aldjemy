@@ -25,7 +25,9 @@ def new_session(sender, connection, **kw):
         get_session(alias=connection.alias, recreate=True)
 
 
-signals.connection_created.connect(new_session)
+# This is not setting the json_deserializer which forces the PG dialect to use SQL Alchemy's json.loads deserializer
+# This tries to do a json.loads on dict which further fails to deserialize
+# signals.connection_created.connect(new_session)
 
 
 def get_remote_field(foreign_key):
