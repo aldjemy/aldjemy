@@ -51,3 +51,7 @@ class Log(with_metaclass(AldjemyMeta, models.Model)):
         return self.record[::-1]
 
     this_is_not_copied = 'something'
+
+
+class Person(models.Model):
+    parents = models.ManyToManyField('self', related_name='children')

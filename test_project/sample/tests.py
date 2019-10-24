@@ -2,11 +2,12 @@ import sys
 if sys.version_info[0] == 3:
     unicode = str
 
+import django
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
-from aldjemy.orm import construct_models
+from aldjemy.orm import construct_models, get_remote_field
 from sample.models import (
     Chapter, Book, Author, StaffAuthor, StaffAuthorProxy, Review)
 from a_sample.models import BookProxy
@@ -25,6 +26,13 @@ class SimpleTest(TestCase):
         self.assertTrue(Review.sa)
         self.assertTrue(BookProxy.sa)
         self.assertTrue(User.sa)
+
+        # Automatic Many to Many fields get the ``sa`` property
+        books_field = Author._meta.get_field('books')
+        if django.VERSION < (1, 9):
+            self.assertTrue(books_field.rel.through.sa)
+        else:
+            self.assertTrue(books_field.remote_field.through.sa)
 
     def test_engine_override_test(self):
         from aldjemy import core
@@ -107,3 +115,30 @@ class CustomMetaDataTests(TestCase):
         metadata = MetaData(schema='pseudorandom')
         sa_models = construct_models(metadata)
         aliased(sa_models[Log])
+
+    def test_many_to_many_through_self(self):
+        """Make sure recursive through tables work."""
+        from sample.models import Person
+        through_field = Person._meta.get_field('parents')
+        if django.VERSION < (1, 9):
+            through = through_field.rel.through
+        else:
+            through = through_field.remote_field.through
+
+        metadata = MetaData(schema='unique')
+        sa_models = construct_models(metadata)
+        self.assertEqual(sa_models[through].table.schema, 'unique')
+
+
+    def test_many_to_many_through_self_aliased(self):
+        """Make sure aliased recursive through tables work."""
+        from sample.models import Person
+        through_field = Person._meta.get_field('parents')
+        if django.VERSION < (1, 9):
+            through = through_field.rel.through
+        else:
+            through = through_field.remote_field.through
+
+        metadata = MetaData(schema='unique')
+        sa_models = construct_models(metadata)
+        aliased(sa_models[through])

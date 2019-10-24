@@ -12,7 +12,7 @@ from .sqlite import SqliteWrapper
 import time
 
 
-__all__ = ['get_engine', 'get_meta', 'get_tables']
+__all__ = ['get_engine', 'get_meta']
 
 
 class CacheType(type):

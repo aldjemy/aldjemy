@@ -51,12 +51,8 @@ DATA_TYPES['ArrayField'] = lambda field: postgres.array_type(DATA_TYPES, field)
 DATA_TYPES.update(getattr(settings, 'ALDJEMY_DATA_TYPES', {}))
 
 
-def get_django_models():
-    return django_apps.get_models()
-
-
 def get_all_django_models():
-    models = get_django_models()
+    models = django_apps.get_models()
     # Get M2M models
     new_models = []
     for model in models:
@@ -65,7 +61,7 @@ def get_all_django_models():
                 new_model = field.rel.through
             else:
                 new_model = field.remote_field.through
-            if new_model:
+            if new_model and new_model not in models + new_models:
                 new_models.append(new_model)
     return models + new_models
 

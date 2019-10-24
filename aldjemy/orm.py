@@ -8,7 +8,7 @@ from django.db.backends import signals
 from django.conf import settings
 
 from .core import get_meta, get_engine, Cache
-from .table import get_django_models, generate_tables
+from .table import get_all_django_models, generate_tables
 
 
 def get_session(alias='default', recreate=False, **kwargs):
@@ -114,7 +114,7 @@ def _extract_model_attrs(metadata, model, sa_models):
                 primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
                 remote_side=p_table.c[p_name],
                 )
-            if backref:
+            if backref and not disable_backref:
                 kw.update(backref=backref)
         attrs[fk.name] = orm.relationship(
                 sa_models[parent_model],
@@ -125,23 +125,26 @@ def _extract_model_attrs(metadata, model, sa_models):
 
 def prepare_models():
     metadata = get_meta()
-    models = [model for model in get_django_models() if not model._meta.proxy]
+    models = [model for model in get_all_django_models() if not model._meta.proxy]
     Cache.sa_models = construct_models(metadata)
-    Cache.models = {}
+    cache_models = {}
     for model in models:
         table_name = (
             metadata.schema + '.' + model._meta.db_table
             if metadata.schema else model._meta.db_table
         )
-        Cache.models[table_name] = Cache.sa_models[model]
+        cache_models[table_name] = Cache.sa_models[model]
         model.sa = Cache.sa_models[model]
+
+    # Assign the deprecated attribute to the cache all at once
+    Cache.models = cache_models
 
 
 def construct_models(metadata):
     if not metadata.tables:
         generate_tables(metadata)
     tables = metadata.tables
-    models = [model for model in get_django_models() if not model._meta.proxy]
+    models = [model for model in get_all_django_models() if not model._meta.proxy]
 
     sa_models_by_django_models = {}
 
