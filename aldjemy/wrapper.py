@@ -18,8 +18,8 @@ class Wrapper(object):
         "Implement if you need to make your customized wrapper"
         return obj
 
-    def __call__(self, *a, **kw):
-        self.obj = self.obj(*a, **kw)
+    def __call__(self, *args, **kwargs):
+        self.obj = self.obj(*args, **kwargs)
         return self
 
 

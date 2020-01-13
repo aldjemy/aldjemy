@@ -19,7 +19,7 @@ def get_session(alias="default", recreate=False, **kwargs):
     return connection.sa_session
 
 
-def new_session(sender, connection, **kw):
+def new_session(sender, connection, **kwargs):
     if connection.alias in settings.DATABASES:
         get_session(alias=connection.alias, recreate=True)
 
@@ -94,7 +94,7 @@ def _extract_model_attrs(metadata, model, sa_models):
         elif backref and isinstance(fk, OneToOneField):
             backref = orm.backref(backref, uselist=False)
 
-        kw = {}
+        kwargs = {}
         if isinstance(fk, ManyToManyField):
             model_pk = model._meta.pk.column
             sec_table_name = get_remote_field(fk).field.m2m_db_table()
@@ -106,7 +106,7 @@ def _extract_model_attrs(metadata, model, sa_models):
             sec_table = tables[sec_table_qualname]
             sec_column = fk.m2m_column_name()
             p_sec_column = fk.m2m_reverse_name()
-            kw.update(
+            kwargs.update(
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                 secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name]),
@@ -114,14 +114,14 @@ def _extract_model_attrs(metadata, model, sa_models):
             if fk.model() != model:
                 backref = None
         else:
-            kw.update(
+            kwargs.update(
                 foreign_keys=[table.c[fk.column]],
                 primaryjoin=(table.c[fk.column] == p_table.c[p_name]),
                 remote_side=p_table.c[p_name],
             )
             if backref and not disable_backref:
-                kw.update(backref=backref)
-        attrs[fk.name] = orm.relationship(sa_models[parent_model], **kw)
+                kwargs.update(backref=backref)
+        attrs[fk.name] = orm.relationship(sa_models[parent_model], **kwargs)
     return attrs
 
 
@@ -188,8 +188,8 @@ def construct_models(metadata):
 
 class BaseSQLAModel(object):
     @classmethod
-    def query(cls, *a, **kw):
+    def query(cls, *args, **kwargs):
         alias = getattr(cls, "alias", "default")
-        if a or kw:
-            return get_session(alias).query(*a, **kw)
+        if args or kwargs:
+            return get_session(alias).query(*args, **kwargs)
         return get_session(alias).query(cls)
