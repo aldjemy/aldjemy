@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 from sqlalchemy import types, Column, Table
+import sqlalchemy.dialects.postgresql
 
 import django
 from django.conf import settings
@@ -45,6 +46,7 @@ DATA_TYPES = {
 
 # Update with dialect specific data types
 DATA_TYPES['ArrayField'] = lambda field: postgres.array_type(DATA_TYPES, field)
+DATA_TYPES['UUIDField'] = simple(sqlalchemy.dialects.postgresql.UUID)
 
 
 # Update with user specified data types
