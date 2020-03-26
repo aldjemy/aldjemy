@@ -1,15 +1,16 @@
 class Wrapper(object):
     "Wrapper to disable commit in sqla"
+
     def __init__(self, obj):
         self.obj = obj
 
     def __getattr__(self, attr):
-        if attr in ['commit', 'rollback']:
+        if attr in ["commit", "rollback"]:
             return nullop
         obj = getattr(self.obj, attr)
-        if attr not in ['cursor', 'execute']:
+        if attr not in ["cursor", "execute"]:
             return obj
-        if attr == 'cursor':
+        if attr == "cursor":
             return type(self)(obj)
         return self.wrapper(obj)
 

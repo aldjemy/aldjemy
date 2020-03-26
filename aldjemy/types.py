@@ -23,4 +23,4 @@ def foreign_key(field):
     target = parent_model._meta
     target_table = target.db_table
     target_pk = target.pk.column
-    return types.Integer, ForeignKey('%s.%s' % (target_table, target_pk))
+    return types.Integer, ForeignKey("%s.%s" % (target_table, target_pk))
