@@ -2,6 +2,9 @@
 Aldjemy
 =======
 
+.. image:: logo.png
+   :alt: Aldjemy Logo
+
 |pypi_version| |pypi_license|
 
 -----
