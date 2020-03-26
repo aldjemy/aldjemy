@@ -6,7 +6,7 @@ class Wrapper(object):
 
     def __getattr__(self, attr):
         if attr in ["commit", "rollback"]:
-            return nullop
+            return lambda *args, **kwargs: None
         obj = getattr(self.obj, attr)
         if attr not in ["cursor", "execute"]:
             return obj
@@ -21,7 +21,3 @@ class Wrapper(object):
     def __call__(self, *a, **kw):
         self.obj = self.obj(*a, **kw)
         return self
-
-
-def nullop(*a, **kw):
-    return
