@@ -9,13 +9,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('sample', '0001_initial'),
+        ("sample", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tictactoeboard',
-            name='board',
-            field=django.contrib.postgres.fields.ArrayField(base_field=models.TextField(), size=9),
+            model_name="tictactoeboard",
+            name="board",
+            field=django.contrib.postgres.fields.ArrayField(
+                base_field=models.TextField(), size=9
+            ),
         ),
     ]

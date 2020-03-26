@@ -1,0 +1,36 @@
+name: Tests
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [2.7, 3.5, 3.6, 3.7]
+        django-version: ["1.7", "1.8", "1.9", "1.10", "1.11", "2.0", "2.1"]
+        exclude:
+          - python-version: 2.7
+            django-version: "2.0"
+          - python-version: 2.7
+            django-version: "2.1"
+          - python-version: 3.5
+            django-version: "1.7"
+          - python-version: 3.6
+            django-version: "1.7"
+          - python-version: 3.7
+            django-version: "1.7"
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install six sqlalchemy django-extensions 'django~=${{ matrix.django-version }}.0'
+      - name: Run tests
+        run: |
+          ./test.sh

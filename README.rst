@@ -2,7 +2,10 @@
 Aldjemy
 =======
 
-|circleci_build| |pypi_version| |pypi_license|
+.. image:: logo.png
+   :alt: Aldjemy Logo
+
+|pypi_version| |pypi_license|
 
 -----
 
@@ -113,10 +116,6 @@ Also note that with Python 3, the syntax is a bit different:
         def __str__(self):
             return self.code
 
-
-.. |circleci_build| image:: https://circleci.com/gh/Deepwalker/aldjemy.svg?style=shield
-    :target: https://circleci.com/gh/Deepwalker/aldjemy
-    :alt: Build status
 
 .. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aldjemy
