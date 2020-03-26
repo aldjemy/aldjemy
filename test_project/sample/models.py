@@ -5,7 +5,7 @@ from aldjemy.meta import AldjemyMeta
 
 class Chapter(models.Model):
     title = models.CharField(max_length=200)
-    book = models.ForeignKey('Book', on_delete=models.CASCADE)
+    book = models.ForeignKey("Book", on_delete=models.CASCADE)
 
 
 class Book(models.Model):
@@ -16,7 +16,7 @@ class Author(models.Model):
     name = models.CharField(max_length=200)
     biography = models.TextField()
 
-    books = models.ManyToManyField(Book, related_name='books')
+    books = models.ManyToManyField(Book, related_name="books")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
@@ -31,12 +31,14 @@ class StaffAuthorProxy(Author):
 
 
 class Review(models.Model):
-    book = models.ForeignKey('a_sample.BookProxy', on_delete=models.CASCADE)
+    book = models.ForeignKey("a_sample.BookProxy", on_delete=models.CASCADE)
 
 
 from six import with_metaclass
+
+
 class Log(with_metaclass(AldjemyMeta, models.Model)):
-    _DATABASE = 'logs'
+    _DATABASE = "logs"
 
     record = models.CharField(max_length=100)
 
@@ -50,8 +52,8 @@ class Log(with_metaclass(AldjemyMeta, models.Model)):
     def reversed_record(self):
         return self.record[::-1]
 
-    this_is_not_copied = 'something'
+    this_is_not_copied = "something"
 
 
 class Person(models.Model):
-    parents = models.ManyToManyField('self', related_name='children')
+    parents = models.ManyToManyField("self", related_name="children")

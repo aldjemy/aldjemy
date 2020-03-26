@@ -13,10 +13,10 @@ class TestArrayField(TestCase):
         Test querying the TicTacToeBoard model.
         """
         boards = [
-            ['x', 'o', 'x', 'o', 'o', 'x', 'x', 'x', 'o'],  # both (full board)
-            [' ', ' ', ' ', ' ', 'x', ' ', ' ', ' ', ' '],  # only x
-            [' ', ' ', ' ', 'o', 'o', ' ', ' ', ' ', 'o'],  # only o
-            [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],  # none
+            ["x", "o", "x", "o", "o", "x", "x", "x", "o"],  # both (full board)
+            [" ", " ", " ", " ", "x", " ", " ", " ", " "],  # only x
+            [" ", " ", " ", "o", "o", " ", " ", " ", "o"],  # only o
+            [" ", " ", " ", " ", " ", " ", " ", " ", " "],  # none
         ]
         for board in boards:
             ttt = TicTacToeBoard(board=board)
@@ -26,9 +26,9 @@ class TestArrayField(TestCase):
 
         query = TicTacToeBoard.sa.query(TicTacToeBoard.sa.id)
 
-        assert query.filter(contains('x')).count() == 2
-        assert query.filter(contains('o')).count() == 2
-        assert query.filter(contains(' ')).count() == 3
+        assert query.filter(contains("x")).count() == 2
+        assert query.filter(contains("o")).count() == 2
+        assert query.filter(contains(" ")).count() == 3
 
 
 class TestJsonField(TestCase):
