@@ -14,10 +14,10 @@ def sqlite_wrapper(func):
             return s.decode("utf-8")
         return s
 
-    def wrapper(*a, **kw):
+    def wrapper(*args, **kwargs):
         converter = Database.converters.pop("DATETIME")
         Database.register_converter("datetime", null_converter)
-        res = func(*a, **kw)
+        res = func(*args, **kwargs)
         Database.register_converter("DATETIME", converter)
         return res
 
