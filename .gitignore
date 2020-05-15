@@ -7,3 +7,4 @@ ve/
 .tox
 .idea*
 .venv*
+/.vscode/
