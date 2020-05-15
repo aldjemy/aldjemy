@@ -52,7 +52,8 @@ class SimpleTest(TestCase):
 
 
 class AliasesTest(TestCase):
-    multi_db = True
+    multi_db = True  # Django<2.2
+    databases = "__all__"
 
     def test_engines_cache(self):
         from aldjemy.core import Cache, get_engine
@@ -85,7 +86,8 @@ class AliasesTest(TestCase):
 
 
 class AldjemyMetaTests(TestCase):
-    multi_db = True
+    multi_db = True  # Django<2.2
+    databases = "__all__"
 
     def test_meta(self):
         from sample.models import Log
