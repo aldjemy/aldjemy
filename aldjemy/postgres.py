@@ -13,8 +13,6 @@ def array_type(data_types, field):
     # currently no support for multi-dimensional arrays
     if internal_type in data_types and internal_type != "ArrayField":
         sub_type = data_types[internal_type](field)
-        if not isinstance(sub_type, (list, tuple)):
-            sub_type = [sub_type]
     else:
         raise RuntimeError("Unsupported array element type")
 
