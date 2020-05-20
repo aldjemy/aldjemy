@@ -71,9 +71,11 @@ class TestArrayField(TestCase):
             ttt.save()
             created_objects.append(ttt)
 
-        query = select([TicTacToeBoard.sa.id, TicTacToeBoard.sa.board]) \
-            .order_by(TicTacToeBoard.sa.id) \
+        query = (
+            select([TicTacToeBoard.sa.id, TicTacToeBoard.sa.board])
+            .order_by(TicTacToeBoard.sa.id)
             .limit(10)
+        )
 
         with get_engine().begin() as connection:
             test_data = connection.execute(query)
