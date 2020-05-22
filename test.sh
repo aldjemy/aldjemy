@@ -7,7 +7,7 @@ python manage.py test
 EXIT1=$?
 
 EXIT2=0
-if [ "$PY27_DJANGO17" = "0" ]; then
+#if [ "$PY27_DJANGO17" = "0" ]; then
     while getopts ":p" opt; do
         case $opt in
             p)
@@ -18,7 +18,7 @@ if [ "$PY27_DJANGO17" = "0" ]; then
            ;;
         esac
     done
-fi
+#fi
 
 
 cd $PWD
