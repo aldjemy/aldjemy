@@ -13,6 +13,7 @@ EXIT2=0
             p)
                 pip install psycopg2
                 cd ../test_project_postgres
+                python manage.py migrate
                 python manage.py test
                 EXIT2=$?
            ;;
