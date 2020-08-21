@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - try-to-start-test-postgres
   pull_request:
     branches:
       - master

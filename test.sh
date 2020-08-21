@@ -7,19 +7,17 @@ python manage.py test
 EXIT1=$?
 
 EXIT2=0
-#if [ "$PY27_DJANGO17" = "0" ]; then
-    while getopts ":p" opt; do
-        case $opt in
-            p)
-                pip install psycopg2
-                cd ../test_project_postgres
-                python manage.py migrate
-                python manage.py test
-                EXIT2=$?
-           ;;
-        esac
-    done
-#fi
+while getopts ":p" opt; do
+    case $opt in
+        p)
+            pip install psycopg2
+            cd ../test_project_postgres
+            python manage.py migrate
+            python manage.py test --no-input
+            EXIT2=$?
+        ;;
+    esac
+done
 
 
 cd $PWD
