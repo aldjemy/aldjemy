@@ -19,7 +19,10 @@ DATABASES = {
         "HOST": "",  # Set to empty string for localhost. Not used with sqlite3.
         "PORT": "",  # Set to empty string for default. Not used with sqlite3.
     },
-    "logs": {"ENGINE": "django.db.backends.sqlite3", "NAME": "db2.sq",},
+    "logs": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "db2.sq",
+    },
 }
 
 DATABASE_ROUTERS = ("sample.routers.LogsRouter",)
