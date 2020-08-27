@@ -14,7 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - "3.5"
           - "3.6"
           - "3.7"
           - "3.8"
@@ -26,13 +25,6 @@ jobs:
         with-postgres:
           - true
           - false
-        exclude:
-          - python-version: "3.5"
-            django-version: "30"
-          - python-version: "3.5"
-            django-version: "31"
-          - python-version: "3.5"
-            django-version: "master"
     services:
       postgres:
         image: postgres:10.8
