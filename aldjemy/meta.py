@@ -13,7 +13,9 @@ class AldjemyMeta(ModelBase):
                 aldjemy_attrs[attr_name] = attr
 
         new_class.aldjemy_mixin = type(
-            "AldjemyMixin_" + name, (object,), aldjemy_attrs,
+            "AldjemyMixin_" + name,
+            (object,),
+            aldjemy_attrs,
         )
 
         return new_class
