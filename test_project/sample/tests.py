@@ -8,7 +8,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
-from aldjemy.orm import construct_models, get_remote_field
+from aldjemy.orm import construct_models
 from sample.models import Chapter, Book, Author, StaffAuthor, StaffAuthorProxy, Review
 from a_sample.models import BookProxy
 

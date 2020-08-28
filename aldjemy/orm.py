@@ -1,6 +1,4 @@
-import warnings
 from sqlalchemy import orm
-import django
 from django.db.models.fields.related import ForeignKey, OneToOneField, ManyToManyField
 from django.db import connections, router
 from django.db.backends import signals
@@ -27,14 +25,6 @@ def new_session(sender, connection, **kwargs):
 signals.connection_created.connect(new_session)
 
 
-def get_remote_field(foreign_key):
-    if django.VERSION < (1, 8):
-        return foreign_key.related
-    elif django.VERSION < (1, 9):
-        return foreign_key.rel
-    return foreign_key.remote_field
-
-
 def _extract_model_attrs(metadata, model, sa_models):
     tables = metadata.tables
 
@@ -52,13 +42,10 @@ def _extract_model_attrs(metadata, model, sa_models):
             attrs[f.name] = orm.column_property(table.c[f.column])
 
     for fk in rel_fields:
-        if not fk.column in table.c and not isinstance(fk, ManyToManyField):
+        if fk.column not in table.c and not isinstance(fk, ManyToManyField):
             continue
 
-        if django.VERSION < (1, 8):
-            parent_model = fk.related.parent_model
-        else:
-            parent_model = get_remote_field(fk).model
+        parent_model = fk.remote_field.model
 
         parent_model_meta = parent_model._meta
 
@@ -72,21 +59,14 @@ def _extract_model_attrs(metadata, model, sa_models):
         p_table = tables[p_table_qualname]
         p_name = parent_model_meta.pk.column
 
-        if django.VERSION < (1, 9):
-            disable_backref = fk.rel.related_name and fk.rel.related_name.endswith("+")
-            backref = (
-                fk.rel.related_name.lower().strip("+") if fk.rel.related_name else None
-            )
-        else:
-            disable_backref = (
-                fk.remote_field.related_name
-                and fk.remote_field.related_name.endswith("+")
-            )
-            backref = (
-                fk.remote_field.related_name.lower().strip("+")
-                if fk.remote_field.related_name
-                else None
-            )
+        disable_backref = (
+            fk.remote_field.related_name and fk.remote_field.related_name.endswith("+")
+        )
+        backref = (
+            fk.remote_field.related_name.lower().strip("+")
+            if fk.remote_field.related_name
+            else None
+        )
         if not backref and not disable_backref:
             backref = model._meta.object_name.lower()
             if not isinstance(fk, OneToOneField):
@@ -97,7 +77,7 @@ def _extract_model_attrs(metadata, model, sa_models):
         kwargs = {}
         if isinstance(fk, ManyToManyField):
             model_pk = model._meta.pk.column
-            sec_table_name = get_remote_field(fk).field.m2m_db_table()
+            sec_table_name = fk.remote_field.field.m2m_db_table()
             sec_table_qualname = (
                 metadata.schema + "." + sec_table_name
                 if metadata.schema
