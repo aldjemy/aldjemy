@@ -10,7 +10,7 @@ EXIT2=0
 while getopts ":p" opt; do
     case $opt in
         p)
-            pip install psycopg2
+            pip install psycopg2-binary
             cd ../test_project_postgres
             python manage.py migrate
             python manage.py test --no-input

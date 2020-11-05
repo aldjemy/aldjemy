@@ -10,12 +10,12 @@ def read(fname):
 
 setupconf = dict(
     name="aldjemy",
-    version="0.10.1",
+    version="1.0.0",
     license="BSD",
-    url="https://github.com/Deepwalker/aldjemy/",
+    url="https://github.com/aldjemy/aldjemy/",
     author="Mihail Krivushin",
     author_email="krivushinme@gmail.com",
-    description=("SQLAlchemy to Django integration library"),
+    description="SQLAlchemy to Django integration library",
     long_description=read("README.rst"),
     packages=find_packages(),
     install_requires=["sqlalchemy>0.7.1"],
@@ -26,6 +26,11 @@ setupconf = dict(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Framework :: Django",
+        "Framework :: Django :: 2.2",
+        "Framework :: Django :: 3.0",
+        "Framework :: Django :: 3.1",
     ],
 )
 
