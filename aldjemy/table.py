@@ -1,21 +1,12 @@
 #! /usr/bin/env python
 
-from sqlalchemy import types, Column, Table
 import sqlalchemy.dialects.postgresql
-
-import django
+from django.apps import apps as django_apps
 from django.conf import settings
+from sqlalchemy import Column, Table, types
 
-try:
-    from django.apps import apps as django_apps
-except ImportError:
-    from django.db.models.loading import AppCache
-
-    django_apps = AppCache()
-
-from aldjemy.types import simple, foreign_key, varchar
 from aldjemy import postgres
-
+from aldjemy.types import foreign_key, simple, varchar
 
 DATA_TYPES = {
     "AutoField": simple(types.Integer),
@@ -62,10 +53,7 @@ def get_all_django_models():
     new_models = []
     for model in models:
         for field in model._meta.many_to_many:
-            if django.VERSION < (1, 9):
-                new_model = field.rel.through
-            else:
-                new_model = field.remote_field.through
+            new_model = field.remote_field.through
             if new_model and new_model not in models + new_models:
                 new_models.append(new_model)
     return models + new_models
@@ -79,21 +67,12 @@ def generate_tables(metadata):
         if qualname in metadata.tables or model._meta.proxy:
             continue
         columns = []
-        if django.VERSION < (1, 8):
-            model_fields = model._meta.get_fields_with_model()
-        else:
-            model_fields = [
-                (f, f.model if f.model != model else None)
-                for f in model._meta.get_fields()
-                if not f.is_relation
-                or f.one_to_one
-                or (f.many_to_one and f.related_model)
-            ]
-        private_fields = (
-            model._meta.private_fields  # >= Django 1.10
-            if hasattr(model._meta, "private_fields")
-            else model._meta.virtual_fields
-        )  # < Django 2.0
+        model_fields = [
+            (f, f.model if f.model != model else None)
+            for f in model._meta.get_fields()
+            if not f.is_relation or f.one_to_one or (f.many_to_one and f.related_model)
+        ]
+        private_fields = model._meta.private_fields
         for field, parent_model in model_fields:
             if field not in private_fields:
                 if parent_model:
