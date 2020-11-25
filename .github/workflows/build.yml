@@ -48,17 +48,23 @@ jobs:
           poetry-version: "1.1.4"
       - name: Configure poetry
         shell: bash
-        run: python -m poetry config virtualenvs.in-project true
+        run: poetry config virtualenvs.in-project true
       - name: Set up cache
         uses: actions/cache@v2
         id: cache
         with:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
-      - name: Install dependencies
+      - name: Install dependencies (django release ${{ matrix.django-version }})
+        if: ${{ matrix.django-version != 'master' }}
         run: |
           poetry install
           poetry run pip install django==${{ matrix.django-version }}
+      - name: Install dependencies (django development)
+        if: ${{ matrix.django-version == 'master' }}
+        run: |
+          poetry install
+          poetry run pip install https://github.com/django/django/archive/master.tar.gz
       - name: Run tests
         if: ${{ !matrix.with-postgres }}
         run: |
