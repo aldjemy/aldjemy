@@ -1,3 +1,0 @@
-Django
-django_extensions
-sqlalchemy
