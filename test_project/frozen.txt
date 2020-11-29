@@ -1,3 +1,3 @@
 django-extensions==1.6.1 # django_extensions << requirements file
-django==1.9.6        # Django << requirements file
+django==3.1.3        # Django << requirements file
 sqlalchemy==1.0.12   # sqlalchemy << requirements file
