@@ -102,6 +102,23 @@ metaclass:
 The result is same as with the example above, only you didn't need to
 create the mixin class at all.
 
+Release Process
+---------------
+
+ 1. Make a Pull Request with updated changelog and bumped version of the project
+
+    .. code-block:: bash
+
+       poetry version (major|minor|patch) # choose which version to bump
+
+ 2. Once the pull request is merged, create a github release with the same version, on the web console or with github cli.
+
+    .. code-block:: bash
+
+       gh release create
+
+ 3. Enjoy!
+
 .. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
