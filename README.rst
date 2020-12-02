@@ -2,7 +2,7 @@
 Aldjemy
 =======
 
-.. image:: logo.png
+.. image:: https://raw.githubusercontent.com/aldjemy/aldjemy/master/logo.png
    :alt: Aldjemy Logo
 
 |pypi_version| |pypi_license|
