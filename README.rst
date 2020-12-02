@@ -70,21 +70,21 @@ Mixins
 ------
 
 Often django models have helper function and properties that helps to
-represent the model's data (`__unicode__`), or represent some model based logic.
+represent the model's data (`__str__`), or represent some model based logic.
 
 To integrate it with aldjemy models you can put these methods into a separate mixin:
 
 .. code-block:: python
 
-    class TaskMixin(object):
-        def __unicode__(self):
+    class TaskMixin:
+        def __str__(self):
             return self.code
 
     class Task(TaskMixin, models.Model):
         aldjemy_mixin = TaskMixin
         code = models.CharField(_('code'), max_length=32, unique=True)
 
-Voilà! You can use `unicode` on aldjemy classes, because this mixin will be
+Voilà! You can use ``__str__`` on aldjemy classes, because this mixin will be
 mixed into generated aldjemy model.
 
 If you want to expose all methods and properties without creating a
