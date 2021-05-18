@@ -2,10 +2,10 @@ name: Tests
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:
@@ -21,7 +21,7 @@ jobs:
           - "2.2"
           - "3.0"
           - "3.1"
-          - master
+          - "3.2"
         with-postgres:
           - true
           - false
@@ -56,15 +56,15 @@ jobs:
           path: .venv
           key: venv-${{ runner.os }}-${{ steps.full-python-version.outputs.version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies (django release ${{ matrix.django-version }})
-        if: ${{ matrix.django-version != 'master' }}
+        if: ${{ matrix.django-version != 'main' }}
         run: |
           poetry install
           poetry run pip install django==${{ matrix.django-version }}
       - name: Install dependencies (django development)
-        if: ${{ matrix.django-version == 'master' }}
+        if: ${{ matrix.django-version == 'main' }}
         run: |
           poetry install
-          poetry run pip install https://github.com/django/django/archive/master.tar.gz
+          poetry run pip install https://github.com/django/django/archive/main.tar.gz
       - name: Run tests
         if: ${{ !matrix.with-postgres }}
         run: |
