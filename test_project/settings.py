@@ -25,7 +25,7 @@ DATABASES = {
     },
 }
 
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 DATABASE_ROUTERS = ("sample.routers.LogsRouter",)
 
