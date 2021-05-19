@@ -111,7 +111,7 @@ def construct_models(metadata):
     tables = metadata.tables
     models = [model for model in get_all_django_models() if not model._meta.proxy]
 
-    sa_models_by_django_models = {}
+    sa_models = {}
 
     for model in models:
 
@@ -132,20 +132,20 @@ def construct_models(metadata):
             {"table": table, "alias": router.db_for_read(model)},
         )
 
-        sa_models_by_django_models[model] = sa_model
+        sa_models[model] = sa_model
 
     for model in models:
-        sa_model = sa_models_by_django_models[model]
+        sa_model = sa_models[model]
         table_name = (
             metadata.schema + "." + model._meta.db_table
             if metadata.schema
             else model._meta.db_table
         )
         table = tables[table_name]
-        attrs = _extract_model_attrs(metadata, model, sa_models_by_django_models)
+        attrs = _extract_model_attrs(metadata, model, sa_models)
         orm.mapper(sa_model, table, attrs)
 
-    return sa_models_by_django_models
+    return sa_models
 
 
 class BaseSQLAModel:
