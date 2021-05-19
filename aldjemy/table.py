@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import sqlalchemy.dialects.postgresql
-from django.apps import apps as django_apps
+from django.apps import apps
 from django.conf import settings
 from sqlalchemy import Column, Table, types
 
@@ -47,20 +47,8 @@ DATA_TYPES["UUIDField"] = simple(sqlalchemy.dialects.postgresql.UUID)
 DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
 
 
-def get_all_django_models():
-    models = django_apps.get_models()
-    # Get M2M models
-    new_models = []
-    for model in models:
-        for field in model._meta.many_to_many:
-            new_model = field.remote_field.through
-            if new_model and new_model not in models + new_models:
-                new_models.append(new_model)
-    return models + new_models
-
-
 def generate_tables(metadata):
-    models = get_all_django_models()
+    models = apps.get_models(include_auto_created=True)
     for model in models:
         name = model._meta.db_table
         qualname = (metadata.schema + "." + name) if metadata.schema else name

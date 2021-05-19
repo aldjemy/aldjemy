@@ -11,6 +11,7 @@ Incompatible changes:
 * Removed ``aldjemy.core.Cache.sa_models``.
 * Removed ``aldjemy.core.Cache.meta``.
 * Removed ``aldjemy.orm.prepare_models``.
+* Removed ``aldjemy.table.get_all_django_models``.
 
 Deprecations:
 
