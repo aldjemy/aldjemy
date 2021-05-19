@@ -1,8 +1,7 @@
-import warnings
 from collections import deque
 from django.db import connections
 from django.conf import settings
-from sqlalchemy import MetaData, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
