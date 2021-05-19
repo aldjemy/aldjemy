@@ -25,6 +25,8 @@ DATABASES = {
     },
 }
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 DATABASE_ROUTERS = ("sample.routers.LogsRouter",)
 
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
@@ -107,13 +109,8 @@ MIDDLEWARE_CLASSES = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.contrib.auth.middleware.SessionAuthenticationMiddleware",
 ]
-
-
-if django.VERSION >= (1, 8):
-    MIDDLEWARE_CLASSES.append(
-        "django.contrib.auth.middleware.SessionAuthenticationMiddleware"
-    )
 
 
 ROOT_URLCONF = "sample.urls"
