@@ -1,6 +1,6 @@
 from django.apps import AppConfig
-
-from .orm import prepare_models
+from sqlalchemy import MetaData
+from .orm import construct_models
 
 
 class AldjemyConfig(AppConfig):
@@ -8,5 +8,6 @@ class AldjemyConfig(AppConfig):
     verbose_name = "Aldjemy"
 
     def ready(self):
-        # Django App registry is ready. Patch models.
-        prepare_models()
+        # Patch models with SQLAlchemy models
+        for model, sa_model in construct_models(MetaData()).items():
+            model.sa = sa_model

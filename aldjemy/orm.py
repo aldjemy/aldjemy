@@ -105,14 +105,6 @@ def _extract_model_attrs(metadata, model, sa_models):
     return attrs
 
 
-def prepare_models():
-    metadata = get_meta()
-    models = [model for model in get_all_django_models() if not model._meta.proxy]
-    Cache.sa_models = construct_models(metadata)
-    for model in models:
-        model.sa = Cache.sa_models[model]
-
-
 def construct_models(metadata):
     if not metadata.tables:
         generate_tables(metadata)

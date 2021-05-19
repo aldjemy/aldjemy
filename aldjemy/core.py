@@ -12,7 +12,7 @@ from .sqlite import SqliteWrapper
 import time
 
 
-__all__ = ["get_engine", "get_meta"]
+__all__ = ["get_engine"]
 
 
 class Cache:
@@ -55,12 +55,6 @@ def get_engine(alias="default", **kwargs):
             get_connection_string(alias), pool=pool, **kwargs
         )
     return Cache.engines[alias]
-
-
-def get_meta():
-    if not getattr(Cache, "meta", None):
-        Cache.meta = MetaData()
-    return Cache.meta
 
 
 class DjangoPool(NullPool):
