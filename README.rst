@@ -7,47 +7,26 @@ Aldjemy
 
 |pypi_version| |pypi_license|
 
------
 
+Aldjemy integrates SQLAlchemy into an existing Django project,
+to help you build complex queries that are difficult for the Django ORM.
 
-Base
-----
+Add ``aldjemy`` to your ``INSTALLED_APPS``.
+Aldjemy will automatically add a ``sa`` attribute to all models,
+which is an SQLAlchemy ``Model``.
+While other libraries use SQLAlchemy reflection to generate SQLAlchemy models,
+Aldjemy generates the SQLAlchemy models by introspecting the Django models.
 
-Small package for integration SQLAlchemy into an existent Django project.
-The primary use case of this package is building complex queries that are
-not possible with the Django ORM.
-
-You need to include aldjemy at the end of `INSTALLED_APPS`. When models are
-imported, aldjemy will read all models and contribute `sa` attribute to them.
-`sa` attribute is a class, mapped to Table class.
-
-Internally, aldjemy generates tables from Django models. This is an important
-distinction from the standard decision of using SQLAlchemy reflection.
-
-Code example:
+Example:
 
 .. code-block:: python
 
     User.sa.query().filter(User.sa.username=='Brubeck')
-
-M2M sample:
-
-.. code-block:: python
-
     User.sa.query().join(User.sa.groups).filter(Group.sa.name=="GROUP_NAME")
 
-Explicit joins is part of SQLAlchemy philosophy, so aldjemy can't get you exactly
-the same experience as Django.
-But aldjemy is not positioned as Django ORM drop-in replacement. It's a helper for special situations.
-
-We have some stuff in the aldjemy cache too:
-
-.. code-block:: python
-
-    from aldjemy import core
-    core.Cache.sa.models # All generated models
-
-You can use this stuff if you need - maybe you want to build queries with tables, or something like this.
+Explicit joins are part of the SQLAlchemy philosophy,
+so don't expect Aldjemy to be a Django ORM drop-in replacement.
+Instead, you should use Aldjemy to help with special situations.
 
 
 Settings
