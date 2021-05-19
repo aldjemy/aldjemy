@@ -45,7 +45,7 @@ We have some stuff in the aldjemy cache too:
 .. code-block:: python
 
     from aldjemy import core
-    core.Cache.models # All generated models
+    core.Cache.sa.models # All generated models
 
 You can use this stuff if you need - maybe you want to build queries with tables, or something like this.
 
