@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.test import TransactionTestCase
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
 from sample.models import TicTacToeBoard, JsonModel
@@ -6,7 +7,7 @@ from sample.models import TicTacToeBoard, JsonModel
 from aldjemy.core import get_engine
 
 
-class TestArrayField(TestCase):
+class TestArrayField(TransactionTestCase):
     """
     Tests that queries involving array fields can be performed.
     """
