@@ -12,6 +12,7 @@ Incompatible changes:
 * Removed ``aldjemy.core.Cache.meta``.
 * Removed ``aldjemy.orm.prepare_models``.
 * Removed ``aldjemy.table.get_all_django_models``.
+* Merged ``aldjemy.types`` and ``aldjemy.postgres`` into ``aldjemy.table``.
 
 Deprecations:
 
