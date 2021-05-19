@@ -11,11 +11,17 @@ Aldjemy
 Aldjemy integrates SQLAlchemy into an existing Django project,
 to help you build complex queries that are difficult for the Django ORM.
 
-Add ``aldjemy`` to your ``INSTALLED_APPS``.
-Aldjemy will automatically add a ``sa`` attribute to all models,
-which is an SQLAlchemy ``Model``.
 While other libraries use SQLAlchemy reflection to generate SQLAlchemy models,
 Aldjemy generates the SQLAlchemy models by introspecting the Django models.
+This allows you to better control what properties in a table are being accessed.
+
+
+Installation
+------------
+
+Add ``aldjemy`` to your ``INSTALLED_APPS``.
+Aldjemy will automatically add an ``sa`` attribute to all models,
+which is an SQLAlchemy ``Model``.
 
 Example:
 
