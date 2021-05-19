@@ -1,8 +1,5 @@
 import sys
 
-if sys.version_info[0] == 3:
-    unicode = str
-
 import django
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -29,10 +26,7 @@ class SimpleTest(TestCase):
 
         # Automatic Many to Many fields get the ``sa`` property
         books_field = Author._meta.get_field("books")
-        if django.VERSION < (1, 9):
-            self.assertTrue(books_field.rel.through.sa)
-        else:
-            self.assertTrue(books_field.remote_field.through.sa)
+        self.assertTrue(books_field.remote_field.through.sa)
 
     def test_engine_override_test(self):
         from aldjemy import core
@@ -52,7 +46,6 @@ class SimpleTest(TestCase):
 
 
 class AliasesTest(TestCase):
-    multi_db = True  # Django<2.2
     databases = "__all__"
 
     def test_engines_cache(self):
@@ -95,7 +88,7 @@ class AldjemyMetaTests(TestCase):
         Log.objects.create(record="foo")
 
         foo = Log.sa.query().one()
-        self.assertEqual(unicode(foo), "foo")
+        self.assertEqual(str(foo), "foo")
         self.assertEqual(foo.reversed_record, "oof")
         self.assertFalse(hasattr(foo, "this_is_not_copied"))
 
@@ -129,10 +122,7 @@ class CustomMetaDataTests(TestCase):
         from sample.models import Person
 
         through_field = Person._meta.get_field("parents")
-        if django.VERSION < (1, 9):
-            through = through_field.rel.through
-        else:
-            through = through_field.remote_field.through
+        through = through_field.remote_field.through
 
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
@@ -143,10 +133,7 @@ class CustomMetaDataTests(TestCase):
         from sample.models import Person
 
         through_field = Person._meta.get_field("parents")
-        if django.VERSION < (1, 9):
-            through = through_field.rel.through
-        else:
-            through = through_field.remote_field.through
+        through = through_field.remote_field.through
 
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)

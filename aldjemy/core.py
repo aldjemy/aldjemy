@@ -19,7 +19,7 @@ class CacheType(type):
     def __getattribute__(cls, name):
         if name == "models":
             warnings.warn(
-                "Cache.models attribute is deprecated. " "Use Cache.sa_models instead.",
+                "Cache.models attribute is deprecated. Use Cache.sa_models instead.",
                 DeprecationWarning,
                 stacklevel=2,
             )

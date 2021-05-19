@@ -1,7 +1,2 @@
+# No longer needed from Django 3.2, removed support for in Django 4.1
 default_app_config = "aldjemy.apps.AldjemyConfig"
-
-
-def to_list(qs_or_ilist):
-    if hasattr(qs_or_ilist, "all"):
-        return list(qs_or_ilist.all())
-    return list(qs_or_ilist)

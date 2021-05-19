@@ -14,25 +14,14 @@ class LogsRouter(object):
     def db_for_write(self, model, **hints):
         return self.db_for_read(model, **hints)
 
-    if django.VERSION < (1, 8):
-
-        def allow_migrate(self, db, model):
-            if db == "logs":
-                return self.use_logs(model)
-            elif self.use_logs(model):
-                return False
+    def allow_migrate(self, db, app_label, model_name=None, **hints):
+        if app_label in ("sites", "contenttypes", "auth"):
+            return True
+        model = hints.get("model", None)
+        if model is None:
             return None
-
-    else:
-
-        def allow_migrate(self, db, app_label, model_name=None, **hints):
-            if app_label in ("sites", "contenttypes", "auth"):
-                return True
-            model = hints.get("model", None)
-            if model is None:
-                return None
-            if db == "logs":
-                return self.use_logs(model)
-            elif self.use_logs(model):
-                return False
-            return None
+        if db == "logs":
+            return self.use_logs(model)
+        elif self.use_logs(model):
+            return False
+        return None
