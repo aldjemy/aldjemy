@@ -4,7 +4,7 @@ from django.db import connections, router
 from django.db.backends import signals
 from django.conf import settings
 
-from .core import get_meta, get_engine, Cache
+from .core import get_engine
 from .table import get_all_django_models, generate_tables
 
 
