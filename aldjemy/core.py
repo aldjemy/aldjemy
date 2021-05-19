@@ -15,21 +15,9 @@ import time
 __all__ = ["get_engine", "get_meta"]
 
 
-class CacheType(type):
-    def __getattribute__(cls, name):
-        if name == "models":
-            warnings.warn(
-                "Cache.models attribute is deprecated. Use Cache.sa_models instead.",
-                DeprecationWarning,
-                stacklevel=2,
-            )
-        return type.__getattribute__(cls, name)
-
-
-class Cache(object):
+class Cache:
     """Module level cache"""
 
-    __metaclass__ = CacheType
     engines = {}
 
 

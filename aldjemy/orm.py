@@ -109,18 +109,8 @@ def prepare_models():
     metadata = get_meta()
     models = [model for model in get_all_django_models() if not model._meta.proxy]
     Cache.sa_models = construct_models(metadata)
-    cache_models = {}
     for model in models:
-        table_name = (
-            metadata.schema + "." + model._meta.db_table
-            if metadata.schema
-            else model._meta.db_table
-        )
-        cache_models[table_name] = Cache.sa_models[model]
         model.sa = Cache.sa_models[model]
-
-    # Assign the deprecated attribute to the cache all at once
-    Cache.models = cache_models
 
 
 def construct_models(metadata):
@@ -166,7 +156,7 @@ def construct_models(metadata):
     return sa_models_by_django_models
 
 
-class BaseSQLAModel(object):
+class BaseSQLAModel:
     @classmethod
     def query(cls, *args, **kwargs):
         alias = getattr(cls, "alias", "default")
