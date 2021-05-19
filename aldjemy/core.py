@@ -1,8 +1,7 @@
-import warnings
 from collections import deque
 from django.db import connections
 from django.conf import settings
-from sqlalchemy import MetaData, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
@@ -12,7 +11,7 @@ from .sqlite import SqliteWrapper
 import time
 
 
-__all__ = ["get_engine", "get_meta"]
+__all__ = ["get_engine"]
 
 
 class Cache:
@@ -55,12 +54,6 @@ def get_engine(alias="default", **kwargs):
             get_connection_string(alias), pool=pool, **kwargs
         )
     return Cache.engines[alias]
-
-
-def get_meta():
-    if not getattr(Cache, "meta", None):
-        Cache.meta = MetaData()
-    return Cache.meta
 
 
 class DjangoPool(NullPool):

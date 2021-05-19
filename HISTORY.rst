@@ -6,8 +6,11 @@ Incompatible changes:
 * Dropped support for Python < 3.6.
 * Dropped support for Django < 2.2.
 * Removed ``aldjemy.to_list``.
+* Removed ``aldjemy.core.get_meta``.
 * Removed ``aldjemy.core.Cache.models``.
-  Use ``aldjemy.core.Cache.sa_models`` instead.
+* Removed ``aldjemy.core.Cache.sa_models``.
+* Removed ``aldjemy.core.Cache.meta``.
+* Removed ``aldjemy.orm.prepare_models``.
 
 Deprecations:
 

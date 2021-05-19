@@ -4,7 +4,7 @@ from django.db import connections, router
 from django.db.backends import signals
 from django.conf import settings
 
-from .core import get_meta, get_engine, Cache
+from .core import get_engine
 from .table import get_all_django_models, generate_tables
 
 
@@ -103,14 +103,6 @@ def _extract_model_attrs(metadata, model, sa_models):
                 kwargs.update(backref=backref)
         attrs[fk.name] = orm.relationship(sa_models[parent_model], **kwargs)
     return attrs
-
-
-def prepare_models():
-    metadata = get_meta()
-    models = [model for model in get_all_django_models() if not model._meta.proxy]
-    Cache.sa_models = construct_models(metadata)
-    for model in models:
-        model.sa = Cache.sa_models[model]
 
 
 def construct_models(metadata):
