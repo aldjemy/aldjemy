@@ -1,29 +1,16 @@
 #!/bin/bash
 
-PWD=`pwd`
+set -e
 
-cd test_project
-python manage.py test
-EXIT1=$?
-
-EXIT2=0
+TESTDIR='test_project'
 while getopts ":p" opt; do
     case $opt in
         p)
-            cd ../test_project_postgres
-            python manage.py migrate
-            python manage.py test --no-input
-            EXIT2=$?
+            TESTDIR='test_project_postgres'
         ;;
     esac
 done
 
-
-cd $PWD
-
-if test $EXIT1 -eq 0 && test $EXIT2 -eq 0
-then
-    exit 0
-else
-    exit 1
-fi
+cd $TESTDIR
+python manage.py migrate
+python manage.py test
