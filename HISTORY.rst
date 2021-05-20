@@ -17,3 +17,11 @@ Incompatible changes:
 Deprecations:
 
 * Deprecated ``aldjemy.core.Cache`` without a warning or replacement.
+
+Fixes:
+
+* Silence some warnings from SQLAlchemy 1.4.
+  Many to many fields create duplicated active relationships,
+  which SQLAlchemy discourages.
+  However, this retains backward compatibility
+  and seems like a reasonable compromise for translating Django models.
