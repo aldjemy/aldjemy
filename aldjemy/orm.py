@@ -91,6 +91,7 @@ def _extract_model_attrs(metadata, model, sa_models):
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                 secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name]),
+                overlaps=",".join([fk.m2m_field_name(), fk.m2m_reverse_field_name()]),
             )
             if fk.model() != model:
                 backref = None
