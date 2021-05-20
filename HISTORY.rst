@@ -1,10 +1,11 @@
-2.0 (TBD)
-+++++++++
+2.0 (2021-05-20)
+++++++++++++++++
 
 Incompatible changes:
 
 * Dropped support for Python < 3.6.
 * Dropped support for Django < 2.2.
+* Dropped support for SQLALchemy < 1.4.
 * Removed ``aldjemy.to_list``.
 * Removed ``aldjemy.core.get_meta``.
 * Removed ``aldjemy.core.Cache.models``.

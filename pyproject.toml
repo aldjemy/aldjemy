@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "aldjemy"
-version = "1.0.0"
-description = "Integration SQLAlchemy in Django projects for effective query building purposes"
+version = "2.0"
+description = "SQLAlchemy for your Django models"
 authors = ["Mikhail Krivushin"]
 license = "BSD 3-Clause \"New\" or \"Revised\" License"
 
 [tool.poetry.dependencies]
 python = ">=3.6"
-SQLAlchemy = ">=1.3.20"
+SQLAlchemy = ">=1.4"
 Django = ">=2.2"
 
 [tool.poetry.dev-dependencies]
