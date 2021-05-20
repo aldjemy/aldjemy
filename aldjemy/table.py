@@ -1,12 +1,40 @@
-#! /usr/bin/env python
-
-import sqlalchemy.dialects.postgresql
-from django.apps import apps as django_apps
+from django.apps import apps
 from django.conf import settings
-from sqlalchemy import Column, Table, types
+from sqlalchemy import Column, Table, types, ForeignKey
+from sqlalchemy.dialects.postgresql import ARRAY, UUID, JSONB
 
-from aldjemy import postgres
-from aldjemy.types import foreign_key, simple, varchar
+
+def simple(typ):
+    return lambda field: typ()
+
+
+def varchar(field):
+    return types.String(length=field.max_length)
+
+
+def foreign_key(field):
+    parent_model = field.related_model
+    target = parent_model._meta
+    target_table = target.db_table
+    target_pk = target.pk.column
+    return types.Integer, ForeignKey("%s.%s" % (target_table, target_pk))
+
+
+def array_type(field):
+    """
+    Allows conversion of Django ArrayField to SQLAlchemy Array.
+    Takes care of mapping the type of the array element.
+    """
+    internal_type = field.base_field.get_internal_type()
+
+    # currently no support for multi-dimensional arrays
+    if internal_type in DATA_TYPES and internal_type != "ArrayField":
+        sub_type = DATA_TYPES[internal_type](field)
+    else:
+        raise RuntimeError("Unsupported array element type")
+
+    return ARRAY(sub_type)
+
 
 DATA_TYPES = {
     "AutoField": simple(types.Integer),
@@ -16,8 +44,8 @@ DATA_TYPES = {
     "CommaSeparatedIntegerField": varchar,
     "DateField": simple(types.Date),
     "DateTimeField": simple(types.DateTime),
-    "DecimalField": lambda x: types.Numeric(
-        scale=x.decimal_places, precision=x.max_digits
+    "DecimalField": lambda field: types.Numeric(
+        scale=field.decimal_places, precision=field.max_digits
     ),
     "DurationField": simple(types.Interval),
     "FileField": varchar,
@@ -35,32 +63,19 @@ DATA_TYPES = {
     "SmallIntegerField": simple(types.SmallInteger),
     "TextField": simple(types.Text),
     "TimeField": simple(types.Time),
+    # PostgreSQL-specific types
+    "ArrayField": array_type,
+    "UUIDField": simple(UUID),
+    "JSONField": simple(JSONB),
 }
-
-
-# Update with dialect specific data types
-DATA_TYPES["ArrayField"] = lambda field: postgres.array_type(DATA_TYPES, field)
-DATA_TYPES["UUIDField"] = simple(sqlalchemy.dialects.postgresql.UUID)
 
 
 # Update with user specified data types
 DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
 
 
-def get_all_django_models():
-    models = django_apps.get_models()
-    # Get M2M models
-    new_models = []
-    for model in models:
-        for field in model._meta.many_to_many:
-            new_model = field.remote_field.through
-            if new_model and new_model not in models + new_models:
-                new_models.append(new_model)
-    return models + new_models
-
-
 def generate_tables(metadata):
-    models = get_all_django_models()
+    models = apps.get_models(include_auto_created=True)
     for model in models:
         name = model._meta.db_table
         qualname = (metadata.schema + "." + name) if metadata.schema else name
