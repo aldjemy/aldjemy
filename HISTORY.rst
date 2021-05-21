@@ -23,13 +23,13 @@ Incompatible changes:
 * Removed ``aldjemy.table.get_all_django_models``.
 * Merged ``aldjemy.types`` and ``aldjemy.postgres`` into ``aldjemy.table``.
 
+Features:
+
+* Django's `JSONField` is now handled by default as a postgres `JSONB` type.
+
 Deprecations:
 
 * Deprecated ``aldjemy.core.Cache`` without a warning or replacement.
-
-New Features:
-
-* Django's `JSONField` is now handled by default as a postgres `JSONB` type.
 
 Fixes:
 
