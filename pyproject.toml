@@ -4,6 +4,7 @@ version = "2.1"
 description = "SQLAlchemy for your Django models"
 authors = ["Mikhail Krivushin"]
 license = "BSD 3-Clause \"New\" or \"Revised\" License"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = ">=3.6"
