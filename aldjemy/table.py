@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.conf import settings
 from sqlalchemy import Column, Table, types, ForeignKey
-from sqlalchemy.dialects.postgresql import ARRAY, UUID, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, UUID, JSONB, DATERANGE
 
 
 def simple(typ):
@@ -67,6 +67,7 @@ DATA_TYPES = {
     "ArrayField": array_type,
     "UUIDField": simple(UUID),
     "JSONField": simple(JSONB),
+    "DateRangeField": simple(DATERANGE),
 }
 
 

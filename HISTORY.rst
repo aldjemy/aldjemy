@@ -1,3 +1,11 @@
+2.1 (2021-05-21)
+++++++++++++++++
+
+Features:
+
+* Django's ``DateRangeField`` is now handled by default
+  as a postgres ``DATERANGE`` type.
+
 2.0 (2021-05-20)
 ++++++++++++++++
 
