@@ -1,3 +1,6 @@
+from aldjemy.table import foreign_key
+
+
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SECRET_KEY = "not-a-secret"
 ROOT_URLCONF = "test_project.urls"
@@ -5,6 +8,10 @@ SITE_ID = 1
 
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
 DATABASE_ROUTERS = ["sample.routers.LogsRouter"]
+
+ALDJEMY_DATA_TYPES = {
+    "AFakeType": foreign_key,
+}
 
 INSTALLED_APPS = [
     "django.contrib.auth",
