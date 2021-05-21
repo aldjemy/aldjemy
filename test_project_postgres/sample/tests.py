@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.test import TransactionTestCase
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
-from sample.models import TicTacToeBoard, JsonModel
+from sample.models import TicTacToeBoard, JsonModel, DateRangeModel
 
 from aldjemy.core import get_engine
 
@@ -93,3 +93,8 @@ class TestJsonField(TestCase):
         It's important that the field not cause the project to fail startup.
         """
         assert JsonModel.sa is not None
+
+
+class TestDateRangeField(TestCase):
+    def test_model_creates(self):
+        assert DateRangeModel.sa is not None
