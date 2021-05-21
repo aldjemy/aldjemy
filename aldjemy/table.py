@@ -70,11 +70,11 @@ DATA_TYPES = {
 }
 
 
-# Update with user specified data types
-DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
-
-
 def generate_tables(metadata):
+    # Update with user specified data types
+    COMBINED_DATA_TYPES = dict(DATA_TYPES)
+    COMBINED_DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
+
     models = apps.get_models(include_auto_created=True)
     for model in models:
         name = model._meta.db_table
@@ -98,8 +98,8 @@ def generate_tables(metadata):
                 except AttributeError:
                     continue
 
-                if internal_type in DATA_TYPES and hasattr(field, "column"):
-                    typ = DATA_TYPES[internal_type](field)
+                if internal_type in COMBINED_DATA_TYPES and hasattr(field, "column"):
+                    typ = COMBINED_DATA_TYPES[internal_type](field)
                     if not isinstance(typ, (list, tuple)):
                         typ = [typ]
                     columns.append(

@@ -41,7 +41,7 @@ Settings
 You can add your own field types to map django types to sqlalchemy ones with
 ``ALDJEMY_DATA_TYPES`` settings parameter.
 Parameter must be a ``dict``, key is result of ``field.get_internal_type()``,
-value must be a one arg function. You can get idea from ``aldjemy.types``.
+value must be a one arg function. You can get idea from ``aldjemy.table``.
 
 Also it is possible to extend/override list of supported SQLALCHEMY engines
 using ``ALDJEMY_ENGINES`` settings parameter.
