@@ -1,13 +1,21 @@
-import sys
-
-import django
+from django.db import connections
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
-from aldjemy.orm import construct_models
-from sample.models import Chapter, Book, Author, StaffAuthor, StaffAuthorProxy, Review
-from a_sample.models import BookProxy
+from aldjemy.orm import construct_models, get_session
+from aldjemy.core import Cache, get_engine, get_connection_string
+from sample.models import (
+    Chapter,
+    Book,
+    Author,
+    StaffAuthor,
+    StaffAuthorProxy,
+    Review,
+    BookProxy,
+    Person,
+    Log,
+)
 
 
 User = get_user_model()
@@ -29,9 +37,7 @@ class SimpleTest(TestCase):
         self.assertTrue(books_field.remote_field.through.sa)
 
     def test_engine_override_test(self):
-        from aldjemy import core
-
-        self.assertEqual(core.get_connection_string(), "sqlite+pysqlite://")
+        self.assertEqual(get_connection_string(), "sqlite+pysqlite://")
 
     def test_querying(self):
         Book.objects.create(title="book title")
@@ -49,17 +55,12 @@ class AliasesTest(TestCase):
     databases = "__all__"
 
     def test_engines_cache(self):
-        from aldjemy.core import Cache, get_engine
-
         self.assertEqual(get_engine("default"), Cache.engines["default"])
         self.assertEqual(get_engine("logs"), Cache.engines["logs"])
         self.assertEqual(get_engine(), Cache.engines["default"])
         self.assertNotEqual(get_engine("default"), get_engine("logs"))
 
     def test_sessions(self):
-        from aldjemy.orm import get_session
-        from django.db import connections
-
         session_default = get_session()
         session_default2 = get_session("default")
         self.assertEqual(session_default, session_default2)
@@ -69,8 +70,6 @@ class AliasesTest(TestCase):
         self.assertNotEqual(session_default, session_logs)
 
     def test_logs(self):
-        from sample.models import Log
-
         Log.objects.create(record="1")
         Log.objects.create(record="2")
         self.assertEqual(Log.objects.using("logs").count(), 2)
@@ -79,12 +78,9 @@ class AliasesTest(TestCase):
 
 
 class AldjemyMetaTests(TestCase):
-    multi_db = True  # Django<2.2
     databases = "__all__"
 
     def test_meta(self):
-        from sample.models import Log
-
         Log.objects.create(record="foo")
 
         foo = Log.sa.query().one()
@@ -100,8 +96,6 @@ class CustomMetaDataTests(TestCase):
         # Foreign Data Wrappers, each with a full set of Django
         # tables, to copy between databases using SQLAlchemy
         # and the automatically generation of aldjemy.
-        from sample.models import Log
-
         metadata = MetaData(schema="arbitrary")
         sa_models = construct_models(metadata)
         self.assertEqual(sa_models[Log].table.schema, "arbitrary")
@@ -111,16 +105,12 @@ class CustomMetaDataTests(TestCase):
         # This was an issue that cropped up after things seemed
         # to be generating properly, so we want to test it and
         # make sure that it stays working.
-        from sample.models import Log
-
         metadata = MetaData(schema="pseudorandom")
         sa_models = construct_models(metadata)
         aliased(sa_models[Log])
 
     def test_many_to_many_through_self(self):
         """Make sure recursive through tables work."""
-        from sample.models import Person
-
         through_field = Person._meta.get_field("parents")
         through = through_field.remote_field.through
 
@@ -130,8 +120,6 @@ class CustomMetaDataTests(TestCase):
 
     def test_many_to_many_through_self_aliased(self):
         """Make sure aliased recursive through tables work."""
-        from sample.models import Person
-
         through_field = Person._meta.get_field("parents")
         through = through_field.remote_field.through
 

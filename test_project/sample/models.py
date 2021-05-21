@@ -12,6 +12,11 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
 
 
+class BookProxy(Book):
+    class Meta:
+        proxy = True
+
+
 class Author(models.Model):
     name = models.CharField(max_length=200)
     biography = models.TextField()
@@ -31,7 +36,7 @@ class StaffAuthorProxy(Author):
 
 
 class Review(models.Model):
-    book = models.ForeignKey("a_sample.BookProxy", on_delete=models.CASCADE)
+    book = models.ForeignKey("BookProxy", on_delete=models.CASCADE)
 
 
 class Log(models.Model, metaclass=AldjemyMeta):

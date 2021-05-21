@@ -2,6 +2,7 @@ dist/
 aldjemy.egg-info/
 *.pyc
 *.sq
+*.db
 ve/
 /SQLAlchemy-*
 .tox

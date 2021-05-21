@@ -12,7 +12,6 @@ Django = ">=2.2"
 
 [tool.poetry.dev-dependencies]
 psycopg2-binary = "*"
-django-extensions = "*"
 black = "*"
 
 [build-system]

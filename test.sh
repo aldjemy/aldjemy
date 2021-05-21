@@ -12,5 +12,4 @@ while getopts ":p" opt; do
 done
 
 cd $TESTDIR
-python manage.py migrate
 python manage.py test
