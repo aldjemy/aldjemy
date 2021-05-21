@@ -1,3 +1,11 @@
+2.1 (2021-05-21)
+++++++++++++++++
+
+Fixes:
+
+* Allow types to be imported from ``aldjemy.tables`` in Django settings
+  without raising ``ImproperlyConfigured`` for the settings. (#167)
+
 2.0 (2021-05-20)
 ++++++++++++++++
 
@@ -18,6 +26,10 @@ Incompatible changes:
 Deprecations:
 
 * Deprecated ``aldjemy.core.Cache`` without a warning or replacement.
+
+New Features:
+
+* Django's `JSONField` is now handled by default as a postgres `JSONB` type.
 
 Fixes:
 
