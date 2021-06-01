@@ -1,8 +1,8 @@
-from django.test import TestCase
-from django.test import TransactionTestCase
+from django.db import transaction
+from django.test import TestCase, TransactionTestCase
+from sample.models import DateRangeModel, JsonModel, TicTacToeBoard
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
-from sample.models import TicTacToeBoard, JsonModel, DateRangeModel
 
 from aldjemy.core import get_engine
 
@@ -98,3 +98,28 @@ class TestJsonField(TestCase):
 class TestDateRangeField(TestCase):
     def test_model_creates(self):
         assert DateRangeModel.sa is not None
+
+
+class RegressionTests(TestCase):
+    def test_transaction_is_not_rolled_back(self):
+        """
+        https://github.com/aldjemy/aldjemy/issues/173
+        We are using savepoints in the hope of reproducing the conditions
+        that helped us identify a regression introduced by SQLAlchemy 1.4.
+
+        A ROLLBACK is emitted on every re-usage of a connection.
+        This is undesirable, since we assume django owns the connection
+        and the transaction state that comes with it.
+        """
+        board = [" "] * 9
+        with transaction.atomic():
+            tic_tac_toe = TicTacToeBoard.objects.create(board=board)
+            # Just initiate a connection with SQLA, because the transation is rollback
+            # the data we just created with django ORM is not available
+            # Hence sqlalchemy.exc.NoResultFound is raised
+
+            # if the exception is not raised, we assume, no ROLLBACK is emitted,
+            # Indicating we successfully disabled the ROLLBACK.
+            TicTacToeBoard.sa.query().filter(
+                TicTacToeBoard.sa.id == tic_tac_toe.id
+            ).one()
