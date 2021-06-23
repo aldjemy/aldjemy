@@ -1,15 +1,16 @@
+import functools
+import time
 from collections import deque
-from django.db import connections
+
 from django.conf import settings
-from sqlalchemy import create_engine
+from django.db import connections
+from sqlalchemy import create_engine, event, util
+from sqlalchemy.engine import base
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
 
-from .wrapper import Wrapper
 from .sqlite import SqliteWrapper
-
-import time
-
+from .wrapper import Wrapper
 
 __all__ = ["get_engine"]
 
@@ -60,6 +61,7 @@ class DjangoPool(NullPool):
     def __init__(self, alias, *args, **kwargs):
         super(DjangoPool, self).__init__(*args, **kwargs)
         self.alias = alias
+        self._aldjemy_handlers_init = False
 
     def status(self):
         return "DjangoPool"
@@ -80,6 +82,25 @@ class DjangoPool(NullPool):
         )
 
 
+def first_connect(engine, dbapi_connection, connection_record):
+    """
+    Like `sqlalchemy.engine.<locals>.first_connect`
+    Without rolling back the transaction.
+    https://github.com/sqlalchemy/sqlalchemy/blob/c2cad1f97c51c8a2a6ad5d371ece7bcd9c7ffcf9/lib/sqlalchemy/engine/create.py#L662
+    """
+    c = base.Connection(
+        engine,
+        connection=dbapi_connection,
+        _has_events=False,
+        # reconnecting will be a reentrant condition, so if the
+        # connection goes away, Connection is then closed
+        _allow_revalidate=False,
+    )
+    c._execution_options = util.EMPTY_DICT
+
+    engine.dialect.initialize(c)
+
+
 class _ConnectionRecord(_ConnectionRecordBase):
     def __init__(self, pool, alias):
         self.__pool = pool
@@ -89,7 +110,24 @@ class _ConnectionRecord(_ConnectionRecordBase):
 
         self.alias = alias
         self.wrap = False
-        # pool.dispatch.first_connect.exec_once(self.connection, self)
+        # Replace sqlalchemy's handler with ours
+        if not pool._aldjemy_handlers_init:
+            # we assume it's the last one
+            previous_handler_wrapper = pool.dispatch.connect.listeners.pop()
+            assert (
+                previous_handler_wrapper.__name__ == "go"
+            )  # wrapped by _once_unless_exception=True
+            handler = previous_handler_wrapper.__closure__[0].cell_contents
+            assert handler.__name__ == "first_connect", (handler, handler.__name__)
+
+            engine = get_engine(self.alias)
+            event.listen(
+                pool,
+                "connect",
+                functools.partial(first_connect, engine),
+                _once_unless_exception=True,
+            )
+            pool._aldjemy_handlers_init = True
         pool.dispatch.connect(self.connection, self)
         self.wrap = True
 
