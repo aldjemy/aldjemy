@@ -1,3 +1,11 @@
+2.1.1 (2021-08-18)
+++++++++++++++++++
+
+Fixes:
+
+* Prevent transactions rollback (#175).
+  The goal is to fully delegate transaction management to Django.
+
 2.1 (2021-05-21)
 ++++++++++++++++
 
