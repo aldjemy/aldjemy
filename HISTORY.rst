@@ -49,7 +49,7 @@ Deprecations:
   If you're wanting to get the Aldjemy model for a through table,
   like the through table for ``auth.User.groups``,
   get the Django model for that through table,
-  and then access the `sa` attribute as normal by calling
+  and then access the ``sa`` attribute as normal by calling
   ``auth.User._meta.get_field('groups').remote_field.through.sa``.
 
 Fixes:
