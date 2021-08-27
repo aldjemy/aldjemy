@@ -43,6 +43,14 @@ Features:
 Deprecations:
 
 * Deprecated ``aldjemy.core.Cache`` without a warning or replacement.
+  To get the ``MetaData`` instance that Aldjemy used
+  from a model like ``auth.User``,
+  call ``auth.User.sa.model.metadata``.
+  If you're wanting to get the Aldjemy model for a through table,
+  like the through table for ``auth.User.groups``,
+  get the Django model for that through table,
+  and then access the `sa` as normal by calling
+  ``auth.User._meta.get_field('groups').remote_field.through.sa``.
 
 Fixes:
 
