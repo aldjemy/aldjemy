@@ -35,6 +35,8 @@ jobs:
           POSTGRES_DB: aldjemy
         ports:
           - 5432:5432
+    env:
+      SQLALCHEMY_WARN_20: 1
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
