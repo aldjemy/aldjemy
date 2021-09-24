@@ -5,7 +5,7 @@ Aldjemy
 .. image:: https://raw.githubusercontent.com/aldjemy/aldjemy/main/logo.png
    :alt: Aldjemy Logo
 
-|pypi_version| |pypi_license|
+|pypi_version| |pypi_license| |ci-tests|
 
 
 Aldjemy integrates SQLAlchemy into an existing Django project,
@@ -88,6 +88,7 @@ The result is same as with the example above, only you didn't need to
 create the mixin class at all.
 
 Release Process
+
 ---------------
 
  1. Make a Pull Request with updated changelog and bumped version of the project
@@ -110,4 +111,8 @@ Release Process
 
 .. |pypi_license| image:: https://img.shields.io/pypi/l/aldjemy.svg?style=flat-square
     :target: https://pypi.python.org/pypi/aldjemy
-    :alt: Downloads
+    :alt: License
+
+.. |ci-tests| image:: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml/badge.svg
+   :target: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml
+   :alt: Continuous Integration results
