@@ -1,9 +1,9 @@
-from sqlalchemy import orm
 from django.apps import apps
-from django.db.models.fields.related import ForeignKey, OneToOneField, ManyToManyField
+from django.conf import settings
 from django.db import connections, router
 from django.db.backends import signals
-from django.conf import settings
+from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
+from sqlalchemy import orm
 
 from .core import get_engine
 from .table import generate_tables
@@ -91,7 +91,13 @@ def _extract_model_attrs(metadata, model, sa_models):
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                 secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name]),
-                overlaps=",".join([fk.m2m_field_name(), fk.m2m_reverse_field_name()]),
+                overlaps=",".join(
+                    (
+                        fk.m2m_field_name(),
+                        fk.m2m_reverse_field_name(),
+                        fk.remote_field.field.get_attname(),
+                    )
+                ),
             )
             if fk.model() != model:
                 backref = None
