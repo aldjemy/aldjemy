@@ -4,6 +4,7 @@ from django.db import connections, router
 from django.db.backends import signals
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from sqlalchemy import orm
+from sqlalchemy.orm import registry
 
 from .core import get_engine
 from .table import generate_tables
@@ -146,6 +147,7 @@ def construct_models(metadata):
 
         sa_models[model] = sa_model
 
+    mapper_registry = registry()
     for model in models:
         sa_model = sa_models[model]
         table_name = (
@@ -155,7 +157,7 @@ def construct_models(metadata):
         )
         table = tables[table_name]
         attrs = _extract_model_attrs(metadata, model, sa_models)
-        orm.mapper(sa_model, table, attrs)
+        mapper_registry.map_imperatively(sa_model, local_table=table, properties=attrs)
 
     return sa_models
 
