@@ -1,3 +1,14 @@
+2.3 (2021-09-27)
+++++++++++++++++
+
+Fixes:
+
+* Address some Deprecations Warnings coming from sqlalchemy 1.4 (#197) (#199)
+
+Tests:
+
+* Switch to pytest test runner (#201)
+
 2.2 (2021-08-18)
 ++++++++++++++++++
 
