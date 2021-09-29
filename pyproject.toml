@@ -5,6 +5,8 @@ description = "SQLAlchemy for your Django models"
 authors = ["Mikhail Krivushin"]
 license = "BSD 3-Clause \"New\" or \"Revised\" License"
 readme = "README.rst"
+homepage = "https://github.com/aldjemy/aldjemy"
+repository = "https://github.com/aldjemy/aldjemy"
 
 [tool.poetry.dependencies]
 python = ">=3.6"
