@@ -11,7 +11,7 @@ jobs:
   isort:
     runs-on: ubuntu-latest
     env:
-      PYTHON_VERSION: "3.9"
+      PYTHON_VERSION: "3.10"
 
     steps:
       - uses: actions/checkout@v2.3.4
