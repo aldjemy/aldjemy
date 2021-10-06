@@ -13,6 +13,19 @@ class Book(models.Model):
     title = models.CharField(max_length=200)
 
 
+class ArticleAuthorAssociation(models.Model):
+    author = models.ForeignKey(
+        "Author", on_delete=models.CASCADE, related_name="article_associations"
+    )
+    article = models.ForeignKey(
+        "Article", on_delete=models.CASCADE, related_name="author_associations"
+    )
+
+
+class Article(models.Model):
+    title = models.CharField(max_length=200)
+
+
 class BookProxy(Book):
     class Meta:
         proxy = True
@@ -21,8 +34,10 @@ class BookProxy(Book):
 class Author(models.Model):
     name = models.CharField(max_length=200)
     biography = models.TextField()
-
     books = models.ManyToManyField(Book, related_name="books")
+    article = models.ManyToManyField(
+        Article, through=ArticleAuthorAssociation, related_name="authors"
+    )
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
 
