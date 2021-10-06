@@ -1,7 +1,7 @@
 from django.apps import apps
 from django.conf import settings
-from sqlalchemy import Column, Table, types, ForeignKey
-from sqlalchemy.dialects.postgresql import ARRAY, UUID, JSONB, DATERANGE
+from sqlalchemy import Column, ForeignKey, Table, types
+from sqlalchemy.dialects.postgresql import ARRAY, DATERANGE, JSONB, UUID
 
 
 def simple(typ):

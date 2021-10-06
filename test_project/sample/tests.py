@@ -1,22 +1,22 @@
+from django.contrib.auth import get_user_model
 from django.db import connections
 from django.test import TestCase
-from django.contrib.auth import get_user_model
-from sqlalchemy import MetaData
-from sqlalchemy.orm import aliased
-from aldjemy.orm import construct_models, get_session
-from aldjemy.core import Cache, get_engine, get_connection_string
 from sample.models import (
-    Chapter,
-    Book,
     Author,
+    Book,
+    BookProxy,
+    Chapter,
+    Log,
+    Person,
+    Review,
     StaffAuthor,
     StaffAuthorProxy,
-    Review,
-    BookProxy,
-    Person,
-    Log,
 )
+from sqlalchemy import MetaData
+from sqlalchemy.orm import aliased
 
+from aldjemy.core import Cache, get_connection_string, get_engine
+from aldjemy.orm import construct_models, get_session
 
 User = get_user_model()
 
@@ -126,3 +126,9 @@ class CustomMetaDataTests(TestCase):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         aliased(sa_models[through])
+
+
+def test_sa_warnings_are_not_emmitted(recwarn, db):
+    Book.objects.create(title="book title")
+    Book.sa.query().count()
+    assert len(recwarn) == 0

@@ -1,6 +1,6 @@
 import django
+from django.contrib.postgres.fields import ArrayField, DateRangeField, JSONField
 from django.db import models
-from django.contrib.postgres.fields import ArrayField, JSONField, DateRangeField
 
 
 class TicTacToeBoard(models.Model):

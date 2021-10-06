@@ -1,6 +1,5 @@
 from aldjemy.table import foreign_key
 
-
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SECRET_KEY = "not-a-secret"
 ROOT_URLCONF = "test_project.urls"
