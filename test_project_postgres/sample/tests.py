@@ -73,7 +73,7 @@ class TestArrayField(TransactionTestCase):
             created_objects.append(ttt)
 
         query = (
-            select([TicTacToeBoard.sa.id, TicTacToeBoard.sa.board])
+            select(TicTacToeBoard.sa.id, TicTacToeBoard.sa.board)
             .order_by(TicTacToeBoard.sa.id)
             .limit(10)
         )
