@@ -126,9 +126,3 @@ class CustomMetaDataTests(TestCase):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         aliased(sa_models[through])
-
-
-def test_sa_warnings_are_not_emmitted(recwarn, db):
-    Book.objects.create(title="book title")
-    Book.sa.query().count()
-    assert len(recwarn) == 0

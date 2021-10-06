@@ -88,17 +88,22 @@ def _extract_model_attrs(metadata, model, sa_models):
             sec_table = tables[sec_table_qualname]
             sec_column = fk.m2m_column_name()
             p_sec_column = fk.m2m_reverse_name()
+            overlaps = (
+                fk.m2m_field_name(),
+                fk.m2m_reverse_field_name(),
+                fk.remote_field.field.get_attname(),
+                fk.remote_field.through._meta.get_field(
+                    fk.remote_field.field.m2m_field_name()
+                ).remote_field.related_name,
+                fk.remote_field.through._meta.get_field(
+                    fk.m2m_reverse_field_name()
+                ).remote_field.related_name,
+            )
             kwargs.update(
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                 secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name]),
-                overlaps=",".join(
-                    (
-                        fk.m2m_field_name(),
-                        fk.m2m_reverse_field_name(),
-                        fk.remote_field.field.get_attname(),
-                    )
-                ),
+                overlaps=",".join(overlaps),
             )
             if fk.model() != model:
                 backref = None
