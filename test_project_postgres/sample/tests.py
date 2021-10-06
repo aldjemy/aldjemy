@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
+from aldjemy.orm import get_session
 
 
 class TestArrayField(TransactionTestCase):
@@ -51,7 +52,8 @@ class TestArrayField(TransactionTestCase):
             ttt.save()
             created_objects.append(ttt)
 
-        test_object = TicTacToeBoard.sa.query().get(created_objects[0].id)
+        session = get_session()
+        test_object = session.get(TicTacToeBoard.sa, created_objects[0].id)
         assert test_object.id == created_objects[0].id
         assert test_object.board == boards[0]
 
