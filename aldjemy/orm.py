@@ -88,7 +88,7 @@ def _extract_model_attrs(metadata, model, sa_models):
             sec_table = tables[sec_table_qualname]
             sec_column = fk.m2m_column_name()
             p_sec_column = fk.m2m_reverse_name()
-            overlaps = (
+            overlaps = [
                 fk.m2m_field_name(),
                 fk.m2m_reverse_field_name(),
                 fk.remote_field.field.get_attname(),
@@ -98,7 +98,7 @@ def _extract_model_attrs(metadata, model, sa_models):
                 fk.remote_field.through._meta.get_field(
                     fk.m2m_reverse_field_name()
                 ).remote_field.related_name,
-            )
+            ]
             kwargs.update(
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
