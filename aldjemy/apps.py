@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 from sqlalchemy import MetaData
+
 from .orm import construct_models
 
 

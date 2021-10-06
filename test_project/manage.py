@@ -11,8 +11,10 @@ import warnings
 warnings.filterwarnings("always", category=DeprecationWarning)
 warnings.filterwarnings("always", category=PendingDeprecationWarning)
 
+import os
+import sys
+
 from django.core.management import execute_from_command_line
-import os, sys
 
 try:
     import settings  # Assumed to be in the same directory.
