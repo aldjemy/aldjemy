@@ -1,3 +1,12 @@
+2.4 (2021-10-07)
+++++++++++++++++
+
+Fixes:
+ * Address some Deprecations Warnings coming from sqlalchemy 1.4 (#212)
+
+Maintenance:
+ * adopt isort (#210)
+
 2.3 (2021-09-27)
 ++++++++++++++++
 
