@@ -145,9 +145,13 @@ def construct_models(metadata):
         # because querying happens on sqlalchemy side, we can use only one
         # type of queries for alias, so we use 'read' type
         sa_model = type(
-            model._meta.object_name,
+            model._meta.object_name + '.sa',
             bases,
-            {"table": table, "alias": router.db_for_read(model)},
+            {
+                "table": table,
+                "alias": router.db_for_read(model),
+                "__module__": model.__module__,
+            },
         )
 
         sa_models[model] = sa_model

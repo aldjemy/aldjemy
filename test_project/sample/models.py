@@ -4,6 +4,11 @@ from django.db import models
 from aldjemy.meta import AldjemyMeta
 
 
+class Group(models.Model):
+    """A model with the same name as a Django model to trigger some warnings."""
+    # https://github.com/aldjemy/aldjemy/issues/205
+
+
 class Chapter(models.Model):
     title = models.CharField(max_length=200)
     book = models.ForeignKey("Book", on_delete=models.CASCADE)
