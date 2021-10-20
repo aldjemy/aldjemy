@@ -1,10 +1,19 @@
+2.5 (2021-10-20)
+++++++++++++++++
+
+Fixes:
+
+* Address deprecation warnings for SQLAlchemy 1.4 for duplicate model names (#205)
+
 2.4 (2021-10-07)
 ++++++++++++++++
 
 Fixes:
- * Address some Deprecations Warnings coming from sqlalchemy 1.4 (#212)
+
+ * Address some deprecation warnings coming from sqlalchemy 1.4 (#212)
 
 Maintenance:
+
  * adopt isort (#210)
 
 2.3 (2021-09-27)
@@ -12,7 +21,7 @@ Maintenance:
 
 Fixes:
 
-* Address some Deprecations Warnings coming from sqlalchemy 1.4 (#197) (#199)
+* Address some deprecation warnings coming from sqlalchemy 1.4 (#197) (#199)
 
 Tests:
 
