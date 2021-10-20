@@ -145,7 +145,7 @@ def construct_models(metadata):
         # because querying happens on sqlalchemy side, we can use only one
         # type of queries for alias, so we use 'read' type
         sa_model = type(
-            model._meta.object_name + '.sa',
+            model._meta.object_name + ".sa",
             bases,
             {
                 "table": table,

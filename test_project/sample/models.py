@@ -6,6 +6,7 @@ from aldjemy.meta import AldjemyMeta
 
 class Group(models.Model):
     """A model with the same name as a Django model to trigger some warnings."""
+
     # https://github.com/aldjemy/aldjemy/issues/205
 
 
