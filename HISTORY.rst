@@ -1,3 +1,10 @@
+2.6 (2021-10-21)
+++++++++++++++++
+
+Fixes:
+
+* ManyToManyField with through attribute set (#221)
+
 2.5 (2021-10-20)
 ++++++++++++++++
 
