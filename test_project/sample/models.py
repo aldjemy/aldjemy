@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from aldjemy.meta import AldjemyMeta
 
@@ -81,3 +82,24 @@ class Log(models.Model, metaclass=AldjemyMeta):
 
 class Person(models.Model):
     parents = models.ManyToManyField("self", related_name="children")
+
+
+class MemberCollective(models.Model):
+    name = models.CharField(_("name"), max_length=20, null=False, blank=False)
+
+
+class Membership(models.Model):
+    member = models.ForeignKey("Member", on_delete=models.CASCADE)
+    member_collective = models.ForeignKey(
+        "MemberCollective", on_delete=models.CASCADE, related_name="member_memberships"
+    )
+
+
+class Member(models.Model):
+    name = models.CharField(_("name"), max_length=255, null=False, blank=False)
+
+    collectives = models.ManyToManyField(
+        MemberCollective,
+        related_name="members",
+        through="Membership",
+    )
