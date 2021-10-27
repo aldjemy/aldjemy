@@ -94,16 +94,16 @@ def _extract_model_attrs(metadata, model, sa_models):
                 fk.remote_field.field.get_attname(),
                 fk.remote_field.through._meta.get_field(
                     fk.remote_field.field.m2m_field_name()
-                ).remote_field.related_name,
+                ).remote_field.get_accessor_name(),
                 fk.remote_field.through._meta.get_field(
                     fk.m2m_reverse_field_name()
-                ).remote_field.related_name,
+                ).remote_field.get_accessor_name(),
             ]
             kwargs.update(
                 secondary=sec_table,
                 primaryjoin=(sec_table.c[sec_column] == table.c[model_pk]),
                 secondaryjoin=(sec_table.c[p_sec_column] == p_table.c[p_name]),
-                overlaps=",".join(overlap for overlap in overlaps if overlap),
+                overlaps=",".join(overlaps),
             )
             if fk.model() != model:
                 backref = None
