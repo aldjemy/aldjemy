@@ -1,9 +1,9 @@
-2.6 (TBD)
-+++++++++
+2.6 (2021-10-27)
+++++++++++++++++
 
 Fixes:
 
-* ManyToManyField with through attribute set (#221)
+* ManyToManyField with omitted related_name (#221)
 
 2.5 (2021-10-20)
 ++++++++++++++++
