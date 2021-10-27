@@ -61,14 +61,9 @@ def _extract_model_attrs(metadata, model, sa_models):
         p_table = tables[p_table_qualname]
         p_name = parent_model_meta.pk.column
 
-        disable_backref = (
-            fk.remote_field.related_name and fk.remote_field.related_name.endswith("+")
-        )
-        backref = (
-            fk.remote_field.related_name.lower().strip("+")
-            if fk.remote_field.related_name
-            else None
-        )
+        related_name = fk.remote_field.get_accessor_name()
+        disable_backref = related_name and related_name.endswith("+")
+        backref = related_name.lower().strip("+") if related_name else None
         if not backref and not disable_backref:
             backref = model._meta.object_name.lower()
             if not isinstance(fk, OneToOneField):
