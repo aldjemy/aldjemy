@@ -24,7 +24,7 @@ jobs:
         with:
           poetry-version: "1.1.11"
       - name: Setup cache
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: ~/.cache/pypoetry/virtualenvs
           key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}
