@@ -1,3 +1,11 @@
+2.7 (Not released)
+++++++++++++++++++
+
+Maintenance:
+
+ * Add support for Django 4.0
+ * Drop support for unmaintained versions of Django (3.0, 3.1). Will most likely continue to work. We just stop testing them.
+
 2.6 (2021-10-27)
 ++++++++++++++++
 
