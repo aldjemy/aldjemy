@@ -1,7 +1,7 @@
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SECRET_KEY = "not-a-secret"
 ROOT_URLCONF = "test_project_postgres.urls"
-USE_TZ = True  # Silence a warning until Django 5.0
+USE_TZ = False  # Silence a warning until Django 5.0
 
 INSTALLED_APPS = [
     "django.contrib.auth",
