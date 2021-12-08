@@ -24,9 +24,15 @@ jobs:
           - "3.0"
           - "3.1"
           - "3.2"
+          - "4.0"
         with-pg:
           - true
           - false
+        exclude:
+          - django-version: "4.0"
+            python-version: "3.6"
+          - django-version: "4.0"
+            python-version: "3.7"
     services:
       pg:
         image: postgres

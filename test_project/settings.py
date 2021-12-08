@@ -4,6 +4,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SECRET_KEY = "not-a-secret"
 ROOT_URLCONF = "test_project.urls"
 SITE_ID = 1
+USE_TZ = False  # Silence a warning until Django 5.0
 
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
 DATABASE_ROUTERS = ["sample.routers.LogsRouter"]

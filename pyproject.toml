@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aldjemy"
-version = "2.6"
+version = "2.7"
 description = "SQLAlchemy for your Django models"
 authors = ["Mikhail Krivushin"]
 license = "BSD 3-Clause \"New\" or \"Revised\" License"

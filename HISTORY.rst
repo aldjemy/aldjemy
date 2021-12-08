@@ -1,3 +1,10 @@
+2.7 (Not released)
+++++++++++++++++++
+
+Maintenance:
+
+ * Add support for Django 4.0
+
 2.6 (2021-10-27)
 ++++++++++++++++
 
