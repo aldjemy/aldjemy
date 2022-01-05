@@ -15,21 +15,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2.4.0
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2.3.1
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v2.1.4
-        with:
-          poetry-version: "1.1.11"
-      - name: Setup cache
-        uses: actions/cache@v2.1.7
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: venv-${{ runner.os }}-${{ env.PYTHON_VERSION }}-${{ hashFiles('poetry.lock') }}
-      - name: Install dependencies
-        run: |
-          poetry install
+      - uses: aldjemy/aldjemy/.github/workflows/_bootstrap-poetry.yml
       - name: Black
         run: poetry run black --check .

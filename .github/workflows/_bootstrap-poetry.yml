@@ -1,0 +1,34 @@
+name: Bootstrap Poetry
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: False
+        type: string
+        default: "3.10"
+      poetry-version:
+        required: False
+        type: string
+        default: "1.1.12"
+
+jobs:
+  setup-poetry:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v2.3.1
+        with:
+          python-version: ${{ inputs.python-version }}
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: ${{ inputs.poetry-version }}
+      - name: Setup cache
+        uses: actions/cache@v2.1.7
+        with:
+          path: ~/.cache/pypoetry/virtualenvs
+          key: venv-${{ runner.os }}-${{ inputs.python-version }}-${{ hashFiles('poetry.lock') }}
+      - name: Install dependencies
+        run: |
+          poetry install
