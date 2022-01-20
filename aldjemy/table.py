@@ -16,8 +16,18 @@ def foreign_key(field):
     parent_model = field.related_model
     target = parent_model._meta
     target_table = target.db_table
-    target_pk = target.pk.column
-    return types.Integer, ForeignKey("%s.%s" % (target_table, target_pk))
+
+    target_field, *composite = field.to_fields
+    if composite:
+        raise RuntimeError("Composite Foreign keys are not supported")
+
+    if target_field is None:
+        target_field = target.pk.column
+
+    target_internal_type = target.get_field(target_field).get_internal_type()
+    target_type = DATA_TYPES[target_internal_type](field)
+
+    return target_type, ForeignKey("%s.%s" % (target_table, target_field))
 
 
 def array_type(field):
