@@ -103,3 +103,16 @@ class Member(models.Model):
         related_name="members",
         through="Membership",
     )
+
+
+class Item(models.Model):
+    label = models.TextField(null=False, blank=False)
+    legacy_id = models.CharField(max_length=255, unique=True, null=False, blank=False)
+
+
+class RelatedToItemViaPrimaryKey(models.Model):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+
+
+class RelatedToItemViaUniqueField(models.Model):
+    item = models.ForeignKey(Item, to_field="legacy_id", on_delete=models.CASCADE)

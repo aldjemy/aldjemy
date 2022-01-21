@@ -6,8 +6,11 @@ from sample.models import (
     Book,
     BookProxy,
     Chapter,
+    Item,
     Log,
     Person,
+    RelatedToItemViaPrimaryKey,
+    RelatedToItemViaUniqueField,
     Review,
     StaffAuthor,
     StaffAuthorProxy,
@@ -126,3 +129,33 @@ class CustomMetaDataTests(TestCase):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         aliased(sa_models[through])
+
+
+class ForeignKeyTests(TestCase):
+    def test_foreign_key_through_pk(self):
+        """Make sure that foreign keys to primary keys work."""
+        metadata = MetaData(schema="unique")
+        sa_models = construct_models(metadata)
+        sa_model = sa_models[RelatedToItemViaPrimaryKey]
+        table = sa_model.table
+        self.assertEqual(len(table.foreign_keys), 1)
+        foreign_key, *_ = table.foreign_keys
+        foreign_column = foreign_key.column
+        item_table = sa_models[Item].table
+        self.assertIs(foreign_column.table, item_table)
+        self.assertEqual(foreign_column.name, "id")
+        self.assertEqual(foreign_column.type, item_table.c.id.type)
+
+    def test_foreign_key_through_unique_field(self):
+        """Make sure that foreign keys to unique but non primary columns work."""
+        metadata = MetaData(schema="unique")
+        sa_models = construct_models(metadata)
+        sa_model = sa_models[RelatedToItemViaUniqueField]
+        table = sa_model.table
+        self.assertEqual(len(table.foreign_keys), 1)
+        foreign_key, *_ = table.foreign_keys
+        foreign_column = foreign_key.column
+        item_table = sa_models[Item].table
+        self.assertIs(foreign_column.table, item_table)
+        self.assertEqual(foreign_column.name, "legacy_id")
+        self.assertEqual(foreign_column.type, item_table.c.legacy_id.type)
