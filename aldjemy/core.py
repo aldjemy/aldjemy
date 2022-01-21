@@ -52,7 +52,7 @@ def get_engine(alias="default", **kwargs):
 
         pool = DjangoPool(alias=alias, creator=None)
         Cache.engines[alias] = create_engine(
-            get_connection_string(alias), pool=pool, **kwargs
+            get_connection_string(alias), pool=pool, **kwargs, **getattr(settings, "ALDJEMY_ENGINE_KWARGS", {})
         )
     return Cache.engines[alias]
 
