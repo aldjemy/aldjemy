@@ -30,6 +30,8 @@ SQLALCHEMY_ENGINES = {
 }
 SQLALCHEMY_ENGINES.update(getattr(settings, "ALDJEMY_ENGINES", {}))
 
+SQLALCHEMY_ENGINE_KWARGS = getattr(settings, "ALDJEMY_ENGINE_KWARGS", {})
+
 
 def get_engine_string(alias):
     sett = connections[alias].settings_dict
@@ -52,7 +54,10 @@ def get_engine(alias="default", **kwargs):
 
         pool = DjangoPool(alias=alias, creator=None)
         Cache.engines[alias] = create_engine(
-            get_connection_string(alias), pool=pool, **kwargs
+            get_connection_string(alias),
+            pool=pool,
+            **kwargs,
+            **SQLALCHEMY_ENGINE_KWARGS
         )
     return Cache.engines[alias]
 
