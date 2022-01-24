@@ -4,14 +4,12 @@ on:
     branches:
       - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   isort:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: aldjemy/aldjemy/.github/workflows/_bootstrap-poetry.yml
+      - uses: aldjemy/aldjemy/.github/workflows/_bootstrap-poetry.yml@main
       - name: Isort
         run: poetry run isort --check .
