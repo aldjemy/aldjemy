@@ -11,6 +11,7 @@ from sample.models import (
     Person,
     RelatedToItemViaPrimaryKey,
     RelatedToItemViaUniqueField,
+    RelatedToItemAssignDb_column,
     Review,
     StaffAuthor,
     StaffAuthorProxy,
@@ -159,3 +160,9 @@ class ForeignKeyTests(TestCase):
         self.assertIs(foreign_column.table, item_table)
         self.assertEqual(foreign_column.name, "legacy_id")
         self.assertEqual(foreign_column.type, item_table.c.legacy_id.type)
+
+    def test_assign_db_column(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemAssignDb_column.objects.create(item_id="1")
+        t = RelatedToItemAssignDb_column.sa.query().one()
+        self.assertEqual(t.item.label, "test")
