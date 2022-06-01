@@ -119,4 +119,6 @@ class RelatedToItemViaUniqueField(models.Model):
 
 
 class RelatedToItemAssignDb_column(models.Model):
-    item = models.ForeignKey(Item, db_column="item", to_field="legacy_id", on_delete=models.CASCADE)
+    item = models.ForeignKey(
+        Item, db_column="item", to_field="legacy_id", on_delete=models.CASCADE
+    )
