@@ -165,4 +165,4 @@ class ForeignKeyTests(TestCase):
         Item.objects.create(label="test", legacy_id="1")
         RelatedToItemAssignDb_column.objects.create(item_id="1")
         t = RelatedToItemAssignDb_column.sa.query().one()
-        self.assertEqual(t.item.label, "test")
+        self.assertEqual(t.item_rs.label, "test")

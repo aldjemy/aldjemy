@@ -110,7 +110,10 @@ def _extract_model_attrs(metadata, model, sa_models):
             )
             if backref and not disable_backref:
                 kwargs.update(backref=backref)
-        attrs[fk.name] = orm.relationship(sa_models[parent_model], **kwargs)
+        fkName=fk.name
+        if fk.db_column == fk.name:
+            fkName=fk.db_column+"_rs"
+        attrs[fkName] = orm.relationship(sa_models[parent_model], **kwargs)
     return attrs
 
 
