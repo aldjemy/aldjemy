@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import connections
+from django.db.models import ForeignKey, OneToOneField
 from django.test import TestCase
 from sample.models import (
     Author,
@@ -161,8 +162,72 @@ class ForeignKeyTests(TestCase):
         self.assertEqual(foreign_column.name, "legacy_id")
         self.assertEqual(foreign_column.type, item_table.c.legacy_id.type)
 
-    def test_assign_db_column(self):
+
+class Assign_db_columnTests(TestCase):
+    def test_foreign_key_db_column_default_relationship(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemViaUniqueField.objects.create(item_id="1")
+        t = RelatedToItemViaUniqueField.sa.query().one()
+        self.assertEqual(t.item.label, "test")
+
+    def test_foreign_key_db_column_default_field(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemViaUniqueField.objects.create(item_id="1")
+        t = RelatedToItemViaUniqueField.sa.query().one()
+        self.assertEqual(t.item_id, "1")
+
+    def test_foreign_key_db_column_default_query(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemViaUniqueField.objects.create(item_id="1")
+        t = RelatedToItemViaUniqueField.sa.query(
+            RelatedToItemViaUniqueField.sa.item_id
+        ).one()
+        self.assertEqual(t.item_id, "1")
+
+    def test_foreign_key_AssignDb_column_relationship(self):
         Item.objects.create(label="test", legacy_id="1")
         RelatedToItemAssignDb_column.objects.create(item_id="1")
         t = RelatedToItemAssignDb_column.sa.query().one()
-        self.assertEqual(t.item_rs.label, "test")
+        self.assertEqual(t.item.label, "test")
+
+    def test_foreign_key_AssignDb_column_field(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemAssignDb_column.objects.create(item_id="1")
+        t = RelatedToItemAssignDb_column.sa.query().one()
+        self.assertEqual(t.item_id, "1")
+
+    def test_foreign_key_AssignDb_column_query(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemAssignDb_column.objects.create(item_id="1")
+        t = RelatedToItemAssignDb_column.sa.query(
+            RelatedToItemAssignDb_column.sa.item_id
+        ).one()
+        self.assertEqual(t.item_id, "1")
+
+    def test_non_related_fields_default(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemViaUniqueField.objects.create(item_id="1", label="test")
+        t = RelatedToItemViaUniqueField.sa.query().one()
+        self.assertEqual(t.label, "test")
+
+    def test_non_related_fields_AssignDb_column(self):
+        Item.objects.create(label="test", legacy_id="1")
+        RelatedToItemAssignDb_column.objects.create(item_id="1", label="test")
+        t = RelatedToItemAssignDb_column.sa.query().one()
+        self.assertEqual(t.label, "test")
+
+    def test_non_related_fields_attname_eq_name(self):
+        metadata = MetaData(schema="unique")
+        sa_models = construct_models(metadata)
+        for model in sa_models:
+            for f in model._meta.fields:
+                if not isinstance(f, (ForeignKey, OneToOneField)):
+                    self.assertEqual(f.attname, f.name)
+
+    def test_non_related_fields_attname_not_eq_name(self):
+        metadata = MetaData(schema="unique")
+        sa_models = construct_models(metadata)
+        for model in sa_models:
+            for f in model._meta.fields:
+                if isinstance(f, (ForeignKey, OneToOneField)):
+                    self.assertNotEqual(f.attname, f.name)

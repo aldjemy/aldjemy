@@ -116,9 +116,11 @@ class RelatedToItemViaPrimaryKey(models.Model):
 
 class RelatedToItemViaUniqueField(models.Model):
     item = models.ForeignKey(Item, to_field="legacy_id", on_delete=models.CASCADE)
+    label = models.TextField(null=False, blank=False)
 
 
 class RelatedToItemAssignDb_column(models.Model):
     item = models.ForeignKey(
         Item, db_column="item", to_field="legacy_id", on_delete=models.CASCADE
     )
+    label = models.TextField(db_column="label_name", null=False, blank=False)

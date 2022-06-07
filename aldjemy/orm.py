@@ -38,10 +38,9 @@ def _extract_model_attrs(metadata, model, sa_models):
     rel_fields = fks + list(model._meta.many_to_many)
 
     for f in model._meta.fields:
-        if not isinstance(f, (ForeignKey, OneToOneField)):
-            if f.model != model or f.column not in table.c:
-                continue  # Fields from parent model are not supported
-            attrs[f.name] = orm.column_property(table.c[f.column])
+        if f.model != model or f.column not in table.c:
+            continue  # Fields from parent model are not supported
+        attrs[f.attname] = orm.column_property(table.c[f.column])
 
     for fk in rel_fields:
         if fk.column not in table.c and not isinstance(fk, ManyToManyField):
@@ -110,10 +109,7 @@ def _extract_model_attrs(metadata, model, sa_models):
             )
             if backref and not disable_backref:
                 kwargs.update(backref=backref)
-        fkName = fk.name
-        if fk.db_column == fk.name:
-            fkName = fk.db_column + "_rs"
-        attrs[fkName] = orm.relationship(sa_models[parent_model], **kwargs)
+        attrs[fk.name] = orm.relationship(sa_models[parent_model], **kwargs)
     return attrs
 
 
