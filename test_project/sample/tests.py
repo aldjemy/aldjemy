@@ -224,7 +224,7 @@ class Assign_db_columnTests(TestCase):
                 if not isinstance(f, (ForeignKey, OneToOneField)):
                     self.assertEqual(f.attname, f.name)
 
-    def test_non_related_fields_attname_not_eq_name(self):
+    def test_related_fields_attname_not_eq_name(self):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         for model in sa_models:
