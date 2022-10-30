@@ -19,7 +19,6 @@ jobs:
           - "3.8"
           - "3.9"
           - "3.10"
-          - "3.11"
         django-version:
           - "2.2"
           - "3.0"
@@ -31,9 +30,19 @@ jobs:
           - true
           - false
         exclude:
+          - django-version: "2.2"
+            python-version: "3.10"
+          - django-version: "3.0"
+            python-version: "3.10"
+          - django-version: "3.1"
+            python-version: "3.10"
           - django-version: "4.0"
             python-version: "3.6"
           - django-version: "4.0"
+            python-version: "3.7"
+          - django-version: "4.1"
+            python-version: "3.6"
+          - django-version: "4.1"
             python-version: "3.7"
     services:
       pg:
