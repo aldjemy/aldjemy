@@ -66,7 +66,7 @@ jobs:
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2.1.6
         with:
-          poetry-version: "<1.2"
+          poetry-version: "1.1.15"
       - name: Setup cache
         uses: actions/cache@v3
         with:
