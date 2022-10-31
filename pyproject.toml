@@ -9,9 +9,7 @@ homepage = "https://github.com/aldjemy/aldjemy"
 repository = "https://github.com/aldjemy/aldjemy"
 
 [tool.poetry.dependencies]
-# `,<4.0` is because poetry 1.1.11 can't resolve dependency correctly.
-# It will be probably safe to remove it in the future.
-python = ">=3.6.1,<4.0"
+python = ">=3.6.2"
 SQLAlchemy = ">=1.4"
 Django = ">=2.2"
 
