@@ -64,7 +64,7 @@ jobs:
         run: pip install -U 'django~=${{ matrix.django-version }}.0'
       - name: Run tests
         if: ${{ !matrix.with-pg }}
-        run: poetry run ./test.sh
+        run: ./test.sh
       - name: Run tests on postgres
         if: ${{ matrix.with-pg }}
-        run: poetry run ./test.sh -p
+        run: ./test.sh -p
