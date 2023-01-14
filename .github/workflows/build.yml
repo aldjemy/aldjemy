@@ -61,10 +61,10 @@ jobs:
       - name: Install dependencies
         run: poetry install
       - name: Install Django ${{ matrix.django-version }}
-        run: pip install -U 'django~=${{ matrix.django-version }}.0'
+        run: poetry run pip install -U 'django~=${{ matrix.django-version }}.0'
       - name: Run tests
         if: ${{ !matrix.with-pg }}
-        run: ./test.sh
+        run: poetry run ./test.sh
       - name: Run tests on postgres
         if: ${{ matrix.with-pg }}
-        run: ./test.sh -p
+        run: poetry run ./test.sh -p
