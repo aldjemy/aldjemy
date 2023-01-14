@@ -33,6 +33,8 @@ jobs:
             python-version: "3.11"
           - django-version: "4.0"
             python-version: "3.7"
+          - django-version: "4.0"
+            python-version: "3.11"
           - django-version: "4.1"
             python-version: "3.7"
     services:
