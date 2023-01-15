@@ -21,7 +21,7 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2.2.0
-      - name: Install dependencies
-        run: poetry install
+      - name: Install isort
+        run: pip install isort
       - name: Isort
-        run: poetry run isort --check .
+        run: isort --check .
