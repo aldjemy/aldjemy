@@ -26,5 +26,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
-src_paths = ["aldjemy"]
-known_first_party = ["aldjemy"]
+src_paths = ["aldjemy", "test_project", "test_project_postgres"]
+known_first_party = ["aldjemy", "test_project", "test_project_postgres"]
