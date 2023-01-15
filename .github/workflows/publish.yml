@@ -7,14 +7,12 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    env:
-      PYTHON_VERSION: "3.11"
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ env.PYTHON_VERSION }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: "3.11"
       - name: Install Poetry
         uses: abatilo/actions-poetry@v2.2.0
       - name: Configure poetry
