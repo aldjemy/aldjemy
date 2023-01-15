@@ -1,9 +1,16 @@
-2.7 (Not released)
+3.0 (Not released)
 ++++++++++++++++++
+
+Incompatible changes:
+
+* Dropped support for Python < 3.7.
+* Dropped support for Django < 3.2.
 
 Maintenance:
 
  * Add support for Django 4.0
+ * Add support for Django 4.1
+ * Add support for Python 3.11
 
 2.6 (2021-10-27)
 ++++++++++++++++

@@ -9,9 +9,9 @@ homepage = "https://github.com/aldjemy/aldjemy"
 repository = "https://github.com/aldjemy/aldjemy"
 
 [tool.poetry.dependencies]
-python = ">=3.6.2"
+python = ">=3.7"
 SQLAlchemy = ">=1.4"
-Django = ">=2.2"
+Django = ">=3.2"
 
 [tool.poetry.dev-dependencies]
 psycopg2-binary = "*"
