@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import connections
 from django.test import TestCase
-from sample.models import (
+from test_project.sample.models import (
     Author,
     Book,
     BookProxy,

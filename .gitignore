@@ -10,3 +10,4 @@ ve/
 .venv*
 /.vscode/
 poetry.lock
+__pycache__/

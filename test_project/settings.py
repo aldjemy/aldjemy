@@ -7,7 +7,7 @@ SITE_ID = 1
 USE_TZ = False  # Silence a warning until Django 5.0
 
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
-DATABASE_ROUTERS = ["sample.routers.LogsRouter"]
+DATABASE_ROUTERS = ["test_project.sample.routers.LogsRouter"]
 
 ALDJEMY_DATA_TYPES = {
     "AFakeType": foreign_key,
@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "sample",
+    "test_project.sample",
     "aldjemy",
 ]
 
