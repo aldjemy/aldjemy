@@ -12,6 +12,7 @@ class TestArrayField(TransactionTestCase):
     """
     Tests that queries involving array fields can be performed.
     """
+
     databases = ["pg"]
 
     def test_tic_tac_toe(self):
