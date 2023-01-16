@@ -5,11 +5,7 @@ from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
 from aldjemy.orm import get_session
-from test_project.pg.models import (
-    DateRangeModel,
-    JsonModel,
-    TicTacToeBoard,
-)
+from test_project.pg.models import DateRangeModel, JsonModel, TicTacToeBoard
 
 
 class TestArrayField(TransactionTestCase):
