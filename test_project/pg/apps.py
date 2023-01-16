@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class SampleConfig(AppConfig):
-    name = "test_project_postgres.pg"
+    name = "test_project.pg"

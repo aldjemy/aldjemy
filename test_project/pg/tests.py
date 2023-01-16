@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
 from aldjemy.orm import get_session
-from test_project_postgres.pg.models import (
+from test_project.pg.models import (
     DateRangeModel,
     JsonModel,
     TicTacToeBoard,
@@ -16,6 +16,7 @@ class TestArrayField(TransactionTestCase):
     """
     Tests that queries involving array fields can be performed.
     """
+    databases = ["pg"]
 
     def test_tic_tac_toe(self):
         """
@@ -56,7 +57,7 @@ class TestArrayField(TransactionTestCase):
             ttt.save()
             created_objects.append(ttt)
 
-        session = get_session()
+        session = get_session("pg")
         test_object = session.get(TicTacToeBoard.sa, created_objects[0].id)
         assert test_object.id == created_objects[0].id
         assert test_object.board == boards[0]
@@ -84,7 +85,7 @@ class TestArrayField(TransactionTestCase):
             .limit(10)
         )
 
-        with get_engine().begin() as connection:
+        with get_engine("pg").begin() as connection:
             test_data = connection.execute(query)
 
         for t_data, c_object in zip(test_data, created_objects):
@@ -107,6 +108,8 @@ class TestDateRangeField(TestCase):
 
 
 class RegressionTests(TestCase):
+    databases = ["pg"]
+
     def test_transaction_is_not_rolled_back(self):
         """
         https://github.com/aldjemy/aldjemy/issues/173
@@ -118,7 +121,7 @@ class RegressionTests(TestCase):
         and the transaction state that comes with it.
         """
         board = [" "] * 9
-        with transaction.atomic():
+        with transaction.atomic("pg"):
             tic_tac_toe = TicTacToeBoard.objects.create(board=board)
             # Just initiate a connection with SQLA, because the transation is rollback
             # the data we just created with django ORM is not available
