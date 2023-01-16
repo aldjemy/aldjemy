@@ -1,11 +1,15 @@
 from django.db import transaction
 from django.test import TestCase, TransactionTestCase
-from sample.models import DateRangeModel, JsonModel, TicTacToeBoard
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
 from aldjemy.orm import get_session
+from test_project_postgres.sample.models import (
+    DateRangeModel,
+    JsonModel,
+    TicTacToeBoard,
+)
 
 
 class TestArrayField(TransactionTestCase):

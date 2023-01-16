@@ -1,7 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.db import connections
 from django.test import TestCase
-from sample.models import (
+from sqlalchemy import MetaData
+from sqlalchemy.orm import aliased
+
+from aldjemy.core import Cache, get_connection_string, get_engine
+from aldjemy.orm import construct_models, get_session
+from test_project.sample.models import (
     Author,
     Book,
     BookProxy,
@@ -15,11 +20,6 @@ from sample.models import (
     StaffAuthor,
     StaffAuthorProxy,
 )
-from sqlalchemy import MetaData
-from sqlalchemy.orm import aliased
-
-from aldjemy.core import Cache, get_connection_string, get_engine
-from aldjemy.orm import construct_models, get_session
 
 User = get_user_model()
 

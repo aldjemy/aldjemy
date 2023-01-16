@@ -26,9 +26,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "value",
-                    django.contrib.postgres.fields.jsonb.JSONField()
-                    if django.VERSION < (3, 1)
-                    else models.JSONField(),
+                    models.JSONField(),
                 ),
             ],
         ),
