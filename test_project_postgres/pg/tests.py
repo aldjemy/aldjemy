@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
 from aldjemy.orm import get_session
-from test_project_postgres.sample.models import (
+from test_project_postgres.pg.models import (
     DateRangeModel,
     JsonModel,
     TicTacToeBoard,

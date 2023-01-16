@@ -9,7 +9,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "test_project_postgres.sample",
+    "test_project_postgres.pg",
     "aldjemy",
 ]
 
