@@ -53,7 +53,7 @@ def get_engine(alias="default", **kwargs):
 
         pool = DjangoPool(alias=alias, creator=None)
         if SQLALCHEMY_USE_FUTURE is not None:
-            kwargs['future'] = SQLALCHEMY_USE_FUTURE
+            kwargs["future"] = SQLALCHEMY_USE_FUTURE
         Cache.engines[alias] = create_engine(
             get_connection_string(alias), pool=pool, **kwargs
         )
