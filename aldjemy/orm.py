@@ -9,12 +9,18 @@ from sqlalchemy.orm import registry
 from .core import get_engine
 from .table import generate_tables
 
+SQLALCHEMY_USE_FUTURE = getattr(settings, "ALDJEMY_SQLALCHEMY_USE_FUTURE", False)
+
 
 def get_session(alias="default", recreate=False, **kwargs):
     connection = connections[alias]
     if not hasattr(connection, "sa_session") or recreate:
         engine = get_engine(alias, **kwargs)
-        session = orm.sessionmaker(bind=engine)
+        kwargs = {"bind": engine}
+        if SQLALCHEMY_USE_FUTURE:
+            # The future keyword argument can only be set to True.
+            kwargs['future'] = SQLALCHEMY_USE_FUTURE
+        session = orm.sessionmaker(**kwargs)
         connection.sa_session = session()
     return connection.sa_session
 

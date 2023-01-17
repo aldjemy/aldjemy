@@ -10,7 +10,7 @@ repository = "https://github.com/aldjemy/aldjemy"
 
 [tool.poetry.dependencies]
 python = ">=3.7"
-SQLAlchemy = ">=1.4"
+SQLAlchemy = "2.0.0rc2"
 Django = ">=3.2"
 
 [tool.poetry.dev-dependencies]

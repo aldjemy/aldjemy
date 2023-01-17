@@ -15,6 +15,7 @@ DATABASE_ROUTERS = [
 ALDJEMY_DATA_TYPES = {
     "AFakeType": foreign_key,
 }
+ALDJEMY_SQLALCHEMY_USE_FUTURE = True
 
 INSTALLED_APPS = [
     "django.contrib.auth",

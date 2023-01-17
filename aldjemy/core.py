@@ -29,6 +29,7 @@ SQLALCHEMY_ENGINES = {
     "oracle": "oracle",
 }
 SQLALCHEMY_ENGINES.update(getattr(settings, "ALDJEMY_ENGINES", {}))
+SQLALCHEMY_USE_FUTURE = getattr(settings, "ALDJEMY_SQLALCHEMY_USE_FUTURE", False)
 
 
 def get_engine_string(alias):
@@ -51,6 +52,9 @@ def get_engine(alias="default", **kwargs):
             kwargs["native_datetime"] = True
 
         pool = DjangoPool(alias=alias, creator=None)
+        if SQLALCHEMY_USE_FUTURE:
+            # The future keyword argument can only be set to True.
+            kwargs['future'] = SQLALCHEMY_USE_FUTURE
         Cache.engines[alias] = create_engine(
             get_connection_string(alias), pool=pool, **kwargs
         )
