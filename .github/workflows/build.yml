@@ -57,6 +57,6 @@ jobs:
       - name: Build package
         run: python -m build
       - name: Install with Django ${{ matrix.django-version }}
-        run: pip install "$(ls dist/*.whl)[test]" 'django~=${{ matrix.django-version }}.0'
+        run: pip install "$(ls dist/*.whl)[dev]" 'django~=${{ matrix.django-version }}.0'
       - name: Run tests
         run: pytest
