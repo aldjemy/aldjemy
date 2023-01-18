@@ -1,6 +1,8 @@
+from typing import Type, Dict
 from django.apps import apps
 from django.conf import settings
-from sqlalchemy import Column, ForeignKey, Table, types
+from django.db.models import Model
+from sqlalchemy import MetaData, Column, ForeignKey, Table, types
 from sqlalchemy.dialects.postgresql import ARRAY, DATERANGE, JSONB, UUID
 
 
@@ -81,40 +83,44 @@ DATA_TYPES = {
 }
 
 
-def generate_tables(metadata):
-    # Update with user specified data types
-    COMBINED_DATA_TYPES = dict(DATA_TYPES)
-    COMBINED_DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
-
-    models = apps.get_models(include_auto_created=True)
-    for model in models:
+def generate_tables(metadata: MetaData) -> Dict[Type[Model], Table]:
+    """Generate tables for all discovered Django models."""
+    tables: Dict[Type[Model], Table] = {}
+    for model in apps.get_models(include_auto_created=True):
         name = model._meta.db_table
         qualname = (metadata.schema + "." + name) if metadata.schema else name
         if qualname in metadata.tables or model._meta.proxy:
             continue
-        columns = []
-        model_fields = [
-            (f, f.model if f.model != model else None)
-            for f in model._meta.get_fields()
-            if not f.is_relation or f.one_to_one or (f.many_to_one and f.related_model)
-        ]
-        private_fields = model._meta.private_fields
-        for field, parent_model in model_fields:
-            if field not in private_fields:
-                if parent_model:
-                    continue
+        tables[model] = __generate_table(model, metadata)
+    return tables
 
-                try:
-                    internal_type = field.get_internal_type()
-                except AttributeError:
-                    continue
 
-                if internal_type in COMBINED_DATA_TYPES and hasattr(field, "column"):
-                    typ = COMBINED_DATA_TYPES[internal_type](field)
-                    if not isinstance(typ, (list, tuple)):
-                        typ = [typ]
-                    columns.append(
-                        Column(field.column, *typ, primary_key=field.primary_key)
-                    )
+def __generate_table(model: Model, metadata: MetaData) -> Table:
+    """Generate a table for a Django model."""
+    COMBINED_DATA_TYPES = dict(DATA_TYPES)
+    COMBINED_DATA_TYPES.update(getattr(settings, "ALDJEMY_DATA_TYPES", {}))
 
-        Table(name, metadata, *columns)
+    columns = []
+    model_fields = [
+        (f, f.model if f.model != model else None)
+        for f in model._meta.get_fields()
+        if not f.is_relation or f.one_to_one or (f.many_to_one and f.related_model)
+    ]
+    for field, parent_model in model_fields:
+        if field in model._meta.private_fields:
+            continue
+        if parent_model:
+            continue
+
+        try:
+            internal_type = field.get_internal_type()
+        except AttributeError:
+            continue
+
+        if internal_type in COMBINED_DATA_TYPES and hasattr(field, "column"):
+            typ = COMBINED_DATA_TYPES[internal_type](field)
+            if not isinstance(typ, (list, tuple)):
+                typ = [typ]
+            columns.append(Column(field.column, *typ, primary_key=field.primary_key))
+
+    return Table(model._meta.db_table, metadata, *columns)
