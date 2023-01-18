@@ -3,7 +3,8 @@
 
 Features:
 
-* Add ability to set ``future`` on SQLAlchemy session and engine.
+* Add ability to set ``future`` on SQLAlchemy session and engine
+  with the ``ALDJEMY_SQLALCHEMY_USE_FUTURE`` setting.
 
 Incompatible changes:
 
