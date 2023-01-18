@@ -46,8 +46,6 @@ def get_connection_string(alias="default"):
 def get_engine(alias="default", **kwargs):
     if alias not in Cache.engines:
         engine_string = get_engine_string(alias)
-        # we have to use autocommit=True, because SQLAlchemy
-        # is not aware of Django transactions
         if engine_string == "sqlite3":
             kwargs["native_datetime"] = True
 
