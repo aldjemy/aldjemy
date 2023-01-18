@@ -1,6 +1,11 @@
 3.0 (Not released)
 ++++++++++++++++++
 
+Features:
+
+* Add ability to set ``future`` on SQLAlchemy session and engine
+  with the ``ALDJEMY_SQLALCHEMY_USE_FUTURE`` setting.
+
 Incompatible changes:
 
 * Dropped support for Python < 3.7.
