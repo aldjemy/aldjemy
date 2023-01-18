@@ -1,28 +1,31 @@
-[tool.poetry]
+[project]
 name = "aldjemy"
 version = "2.7"
 description = "SQLAlchemy for your Django models"
-authors = ["Mikhail Krivushin"]
-license = "BSD 3-Clause \"New\" or \"Revised\" License"
+authors = [{ name = "Mikhail Krivushin" }]
+license = "BSD-3-Clause"
 readme = "README.rst"
-homepage = "https://github.com/aldjemy/aldjemy"
-repository = "https://github.com/aldjemy/aldjemy"
+urls.homepage = "https://github.com/aldjemy/aldjemy"
+urls.repository = "https://github.com/aldjemy/aldjemy"
 
-[tool.poetry.dependencies]
-python = ">=3.7"
-SQLAlchemy = ">=1.4"
-Django = ">=3.2"
+requires-python = ">=3.7"
+dependencies = [
+  "SQLAlchemy>=1.4,<2",
+  "Django>=3.2",
+]
 
-[tool.poetry.dev-dependencies]
-psycopg2-binary = "*"
-black = "*"
-pytest = "*"
-pytest-django = "*"
-isort = "*"
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-django",
+    "psycopg2-binary",
+    "black",
+    "isort",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.isort]
 profile = "black"

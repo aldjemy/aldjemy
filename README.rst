@@ -95,7 +95,7 @@ Release Process
 
     .. code-block:: bash
 
-       poetry version (major|minor|patch) # choose which version to bump
+       hatch version (major|minor|patch) # choose which version to bump
 
  2. Once the pull request is merged, create a github release with the same version, on the web console or with github cli.
 

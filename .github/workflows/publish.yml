@@ -1,4 +1,4 @@
-name: Publish to pypi
+name: Publish to PyPI
 on:
   release:
     types:
@@ -13,16 +13,12 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v2.2.0
-      - name: Configure poetry
-        env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
-        run:
-          poetry config pypi-token.pypi $PYPI_TOKEN
+      - name: Install prerequisites
+        run: pip install -U pip build twine
       - name: Build package
-        run:
-          poetry build
-      - name: Publish package
-        run:
-          poetry publish
+        run: python -m build
+      - name: Publish package with twine
+        run: twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
