@@ -13,9 +13,10 @@ Incompatible changes:
 
 Maintenance:
 
- * Add support for Django 4.0
- * Add support for Django 4.1
- * Add support for Python 3.11
+* Add support for Django 4.0
+* Add support for Django 4.1
+* Add support for Python 3.11
+* Explicit non-support for SQLAlchemy 2.0
 
 2.6 (2021-10-27)
 ++++++++++++++++
@@ -36,11 +37,11 @@ Fixes:
 
 Fixes:
 
- * Address some deprecation warnings coming from sqlalchemy 1.4 (#212)
+* Address some deprecation warnings coming from sqlalchemy 1.4 (#212)
 
 Maintenance:
 
- * adopt isort (#210)
+* adopt isort (#210)
 
 2.3 (2021-09-27)
 ++++++++++++++++
