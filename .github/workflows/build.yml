@@ -44,7 +44,6 @@ jobs:
         ports:
           - 5432:5432
     env:
-      PYTHONPATH: .
       SQLALCHEMY_WARN_20: 1
     steps:
       - uses: actions/checkout@v3
