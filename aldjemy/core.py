@@ -1,3 +1,4 @@
+import typing
 import functools
 import time
 from collections import deque
@@ -6,8 +7,13 @@ from django.conf import settings
 from django.db import connections
 from sqlalchemy import create_engine, event, util
 from sqlalchemy.engine import base
+from sqlalchemy.engine.interfaces import DBAPIConnection
+from sqlalchemy.pool import _AdhocProxiedConnection
+from sqlalchemy.pool import ConnectionPoolEntry
 from sqlalchemy.pool import NullPool
 from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
+
+from sqlalchemy.engine.base import Engine
 
 from .sqlite import SqliteWrapper
 from .wrapper import Wrapper
@@ -83,22 +89,32 @@ class DjangoPool(NullPool):
         )
 
 
-def first_connect(engine, dbapi_connection, connection_record):
-    """
-    Like `sqlalchemy.engine.<locals>.first_connect`
-    Without rolling back the transaction.
-    https://github.com/sqlalchemy/sqlalchemy/blob/c2cad1f97c51c8a2a6ad5d371ece7bcd9c7ffcf9/lib/sqlalchemy/engine/create.py#L662
+def first_connect(
+    engine: Engine,
+    dbapi_connection: DBAPIConnection,
+    connection_record: ConnectionPoolEntry,
+) -> None:
+    """A custom version of first_connect from sqlalchemy.
+
+    Overridden to avoid rolling back the transaction.
+
+    https://github.com/sqlalchemy/sqlalchemy/blob/e82a5f19e1606500ad4bf6a456c2558d74df24bf/lib/sqlalchemy/engine/create.py#L726
     """
     c = base.Connection(
         engine,
-        connection=dbapi_connection,
+        connection=_AdhocProxiedConnection(dbapi_connection, connection_record),
         _has_events=False,
         # reconnecting will be a reentrant condition, so if the
         # connection goes away, Connection is then closed
         _allow_revalidate=False,
+        # dont trigger the autobegin sequence
+        # within the up front dialect checks
+        _allow_autobegin=False,
     )
     c._execution_options = util.EMPTY_DICT
 
+    # NOTE: The original is run in a try/finally block and uses the
+    #       dialect that gets passed into the engine constructor.
     engine.dialect.initialize(c)
 
 
