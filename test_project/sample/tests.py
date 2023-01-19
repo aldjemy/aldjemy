@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import connections
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
 

@@ -25,7 +25,12 @@ class _ConnectionRecord(object):
         :class:`._ConnectionFairy`
     """
 
-    def __init__(self, pool, connect=True):
+    def __init__(self, pool: Pool, connect: bool = True):
+        self.fresh = False
+        self.fairy_ref = None
+        self.starttime = 0
+        self.dbapi_connection = None
+
         self.__pool = pool
         if connect:
             self.__connect()
@@ -292,7 +297,7 @@ class _ConnectionRecord(object):
         )
         self.dbapi_connection = None
 
-    def __connect(self):
+    def __connect(self) -> None:
         pool = self.__pool
 
         # ensure any existing connection is removed, so that if
@@ -316,6 +321,6 @@ class _ConnectionRecord(object):
 
             # init of the dialect now takes place within the connect
             # event, so ensure a mutex is used on the first run
-            pool.dispatch.connect.for_modify(
-                pool.dispatch
-            )._exec_w_sync_on_first_run(self.dbapi_connection, self)
+            pool.dispatch.connect.for_modify(pool.dispatch)._exec_w_sync_on_first_run(
+                self.dbapi_connection, self
+            )

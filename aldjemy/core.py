@@ -1,4 +1,4 @@
-import typing
+from __future__ import annotations
 import functools
 import time
 from collections import deque
@@ -11,7 +11,7 @@ from sqlalchemy.engine.interfaces import DBAPIConnection
 from sqlalchemy.pool import _AdhocProxiedConnection
 from sqlalchemy.pool import ConnectionPoolEntry
 from sqlalchemy.pool import NullPool
-from sqlalchemy.pool import _ConnectionRecord as _ConnectionRecordBase
+from sqlalchemy.pool import _ConnectionRecord
 
 from sqlalchemy.engine.base import Engine
 
@@ -74,7 +74,7 @@ class DjangoPool(NullPool):
         return "DjangoPool"
 
     def _create_connection(self):
-        return _ConnectionRecord(self, self.alias)
+        return _DjangoPoolConnectionRecord(self, self.alias)
 
     def recreate(self):
         self.logger.info("Pool recreating")
@@ -118,16 +118,36 @@ def first_connect(
     engine.dialect.initialize(c)
 
 
-class _ConnectionRecord(_ConnectionRecordBase):
-    def __init__(self, pool, alias):
-        self.__pool = pool
-        self.info = {}
-        self.finalize_callback = deque()
-        self.starttime = time.time()
+class _DjangoPoolConnectionRecord(_ConnectionRecord):
+    """A custom version of _ConnectionRecord from sqlalchemy.
 
+    Django handles creating connections and transactions, so we need to
+    override things deeply in order to avoid SQLAlchemy from doing it
+    as it normally does.
+
+    https://github.com/sqlalchemy/sqlalchemy/blob/e82a5f19e1606500ad4bf6a456c2558d74df24bf/lib/sqlalchemy/pool/base.py#L635
+    """
+
+    def __init__(self, pool: DjangoPool, alias: str):
         self.alias = alias
-        self.wrap = False
-        # Replace sqlalchemy's handler with ours
+        # self.info = {}  # Just in case, I don't know why this is here.
+
+        self.fairy_ref = None
+        self.starttime = time.time()
+        self.fresh = True
+        self.finalize_callback = deque()
+
+        self.__wrap = False
+        self.__aldjemy_handlers_init(pool)
+        # init of the dialect now takes place within the connect
+        # event, so ensure a mutex is used on the first run
+        pool.dispatch.connect.for_modify(pool.dispatch)._exec_w_sync_on_first_run(
+            self.dbapi_connection, self
+        )
+        self.__wrap = True
+
+    def __aldjemy_handlers_init(self, pool: DjangoPool) -> None:
+        """Replace SQLAlchemy's handler with ours."""
         if not pool._aldjemy_handlers_init:
             # we assume it's the last one
             previous_handler_wrapper = pool.dispatch.connect.listeners.pop()
@@ -145,17 +165,15 @@ class _ConnectionRecord(_ConnectionRecordBase):
                 _once_unless_exception=True,
             )
             pool._aldjemy_handlers_init = True
-        pool.dispatch.connect(self.connection, self)
-        self.wrap = True
 
     @property
-    def connection(self):
+    def dbapi_connection(self):
         connection = connections[self.alias]
         if connection.connection is None:
             connection._cursor()
-        if connection.vendor == "sqlite":
-            return SqliteWrapper(connection.connection)
-        if self.wrap:
+        if self.__wrap:
+            if connection.vendor == "sqlite":
+                return SqliteWrapper(connection.connection)
             return Wrapper(connection.connection)
         return connection.connection
 
@@ -166,4 +184,10 @@ class _ConnectionRecord(_ConnectionRecordBase):
         pass
 
     def get_connection(self):
-        return self.connection
+        return self.dbapi_connection
+
+    def checkin(self):
+        pass
+
+    def checkout(cls, pool):
+        pass
