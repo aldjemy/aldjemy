@@ -1,6 +1,5 @@
 from typing import Callable
 from django.apps import apps
-from django.db import router
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from sqlalchemy import orm
 from sqlalchemy.orm import registry
@@ -105,25 +104,13 @@ class BaseSQLAModel:
         return get_session(alias).query(cls)
 
 
-def __make_sa_model(model, table):
+def _default_make_sa_model(model):
     """Create a custom class for the SQLAlchemy model."""
-    mixin = getattr(model, "aldjemy_mixin", None)
-    bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel,)
-
-    # because querying happens on sqlalchemy side, we can use only one
-    # type of queries for alias, so we use 'read' type
-    return type(
-        model._meta.object_name + ".sa",
-        bases,
-        {
-            "table": table,
-            "alias": router.db_for_read(model),
-            "__module__": model.__module__,
-        },
-    )
+    name = model._meta.object_name + ".__aldjemy__"
+    return type(name, (), {"__module__": model.__module__})
 
 
-def construct_models(metadata, *, __make_sa_model: Callable = __make_sa_model):
+def construct_models(metadata, *, _make_sa_model: Callable = _default_make_sa_model):
     if not metadata.tables:
         generate_tables(metadata)
     tables = metadata.tables
@@ -141,7 +128,7 @@ def construct_models(metadata, *, __make_sa_model: Callable = __make_sa_model):
             else model._meta.db_table
         )
         table = tables[table_name]
-        sa_models[model] = __make_sa_model(model, table)
+        sa_models[model] = _make_sa_model(model)
 
     mapper_registry = registry()
     for model in models:

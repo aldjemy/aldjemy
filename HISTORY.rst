@@ -10,6 +10,19 @@ Incompatible changes:
 
 * Dropped support for Python < 3.7.
 * Dropped support for Django < 3.2.
+* Removed the ``alias`` property from the generated models.
+  It was intended for internal use only.
+* Removed the ``table`` property from the generated models.
+  It is redundant with the ``__table__`` property.
+* Moved the ``get_session`` function from ``aldjemy.orm``
+  to ``aldjemy.session``.
+* Removed the ``query`` method from models generated
+  directly using ``construct_models``.
+* Changed the ``__name__`` and ``repr()`` of models generated
+  directly using ``construct_models``.
+* Moved the ``BaseSQLAModel`` class from ``aldjemy.orm``
+  to ``aldjemy.apps``, because it is an implementation detail
+  of the default app integration.
 
 Maintenance:
 
