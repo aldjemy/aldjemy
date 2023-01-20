@@ -1,3 +1,4 @@
+from typing import Callable
 from django.apps import apps
 from django.db import router
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
@@ -95,7 +96,34 @@ def _extract_model_attrs(metadata, model, sa_models):
     return attrs
 
 
-def construct_models(metadata):
+class BaseSQLAModel:
+    @classmethod
+    def query(cls, *args, **kwargs):
+        alias = getattr(cls, "alias", "default")
+        if args or kwargs:
+            return get_session(alias).query(*args, **kwargs)
+        return get_session(alias).query(cls)
+
+
+def __make_sa_model(model, table):
+    """Create a custom class for the SQLAlchemy model."""
+    mixin = getattr(model, "aldjemy_mixin", None)
+    bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel,)
+
+    # because querying happens on sqlalchemy side, we can use only one
+    # type of queries for alias, so we use 'read' type
+    return type(
+        model._meta.object_name + ".sa",
+        bases,
+        {
+            "table": table,
+            "alias": router.db_for_read(model),
+            "__module__": model.__module__,
+        },
+    )
+
+
+def construct_models(metadata, *, __make_sa_model: Callable = __make_sa_model):
     if not metadata.tables:
         generate_tables(metadata)
     tables = metadata.tables
@@ -106,31 +134,14 @@ def construct_models(metadata):
     ]
 
     sa_models = {}
-
     for model in models:
-
         table_name = (
             metadata.schema + "." + model._meta.db_table
             if metadata.schema
             else model._meta.db_table
         )
-        mixin = getattr(model, "aldjemy_mixin", None)
-        bases = (mixin, BaseSQLAModel) if mixin else (BaseSQLAModel,)
         table = tables[table_name]
-
-        # because querying happens on sqlalchemy side, we can use only one
-        # type of queries for alias, so we use 'read' type
-        sa_model = type(
-            model._meta.object_name + ".sa",
-            bases,
-            {
-                "table": table,
-                "alias": router.db_for_read(model),
-                "__module__": model.__module__,
-            },
-        )
-
-        sa_models[model] = sa_model
+        sa_models[model] = __make_sa_model(model, table)
 
     mapper_registry = registry()
     for model in models:
@@ -145,12 +156,3 @@ def construct_models(metadata):
         mapper_registry.map_imperatively(sa_model, local_table=table, properties=attrs)
 
     return sa_models
-
-
-class BaseSQLAModel:
-    @classmethod
-    def query(cls, *args, **kwargs):
-        alias = getattr(cls, "alias", "default")
-        if args or kwargs:
-            return get_session(alias).query(*args, **kwargs)
-        return get_session(alias).query(cls)
