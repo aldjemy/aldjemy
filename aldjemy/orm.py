@@ -1,4 +1,5 @@
 from typing import Callable
+
 from django.apps import apps
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from sqlalchemy import orm

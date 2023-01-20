@@ -1,11 +1,11 @@
 from django.apps import AppConfig
 from django.conf import settings
-from django.db.backends import signals
 from django.db import router
+from django.db.backends import signals
 from sqlalchemy import MetaData
 
-from .session import get_session
 from .orm import construct_models
+from .session import get_session
 
 
 def new_session(sender, connection, **kwargs):

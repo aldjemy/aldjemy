@@ -4,7 +4,6 @@ from sqlalchemy import orm
 
 from .core import get_engine
 
-
 SQLALCHEMY_USE_FUTURE = getattr(settings, "ALDJEMY_SQLALCHEMY_USE_FUTURE", None)
 
 
