@@ -1,21 +1,11 @@
 from django.apps import apps
-from django.conf import settings
 from django.db import router
-from django.db.backends import signals
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from sqlalchemy import orm
 from sqlalchemy.orm import registry
 
 from .session import get_session
 from .table import generate_tables
-
-
-def new_session(sender, connection, **kwargs):
-    if connection.alias in settings.DATABASES:
-        get_session(alias=connection.alias, recreate=True)
-
-
-signals.connection_created.connect(new_session)
 
 
 def _extract_model_attrs(metadata, model, sa_models):
