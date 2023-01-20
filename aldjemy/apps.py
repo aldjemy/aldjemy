@@ -7,6 +7,12 @@ from .session import get_session
 from .orm import construct_models
 
 
+def new_session(sender, connection, **kwargs):
+    """Create a new session for the given connection."""
+    if connection.alias in settings.DATABASES:
+        get_session(alias=connection.alias, recreate=True)
+
+
 class AldjemyConfig(AppConfig):
     name = "aldjemy"
     verbose_name = "Aldjemy"
@@ -16,11 +22,4 @@ class AldjemyConfig(AppConfig):
         for model, sa_model in construct_models(MetaData()).items():
             model.sa = sa_model
 
-
-
-def new_session(sender, connection, **kwargs):
-    if connection.alias in settings.DATABASES:
-        get_session(alias=connection.alias, recreate=True)
-
-
-signals.connection_created.connect(new_session)
+        signals.connection_created.connect(new_session)
