@@ -5,7 +5,8 @@ from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
 
 from aldjemy.core import Cache, get_connection_string, get_engine
-from aldjemy.orm import construct_models, get_session
+from aldjemy.orm import construct_models
+from aldjemy.session import get_session
 from test_project.sample.models import (
     Author,
     Book,
@@ -101,7 +102,7 @@ class CustomMetaDataTests(TestCase):
         # and the automatically generation of aldjemy.
         metadata = MetaData(schema="arbitrary")
         sa_models = construct_models(metadata)
-        self.assertEqual(sa_models[Log].table.schema, "arbitrary")
+        self.assertEqual(sa_models[Log].__table__.schema, "arbitrary")
 
     def test_custom_metadata_schema_aliased(self):
         """Make sure the aliased command works with the schema."""
@@ -119,7 +120,7 @@ class CustomMetaDataTests(TestCase):
 
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
-        self.assertEqual(sa_models[through].table.schema, "unique")
+        self.assertEqual(sa_models[through].__table__.schema, "unique")
 
     def test_many_to_many_through_self_aliased(self):
         """Make sure aliased recursive through tables work."""
@@ -137,11 +138,11 @@ class ForeignKeyTests(TestCase):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         sa_model = sa_models[RelatedToItemViaPrimaryKey]
-        table = sa_model.table
+        table = sa_model.__table__
         self.assertEqual(len(table.foreign_keys), 1)
         foreign_key, *_ = table.foreign_keys
         foreign_column = foreign_key.column
-        item_table = sa_models[Item].table
+        item_table = sa_models[Item].__table__
         self.assertIs(foreign_column.table, item_table)
         self.assertEqual(foreign_column.name, "id")
         self.assertEqual(foreign_column.type, item_table.c.id.type)
@@ -151,11 +152,11 @@ class ForeignKeyTests(TestCase):
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         sa_model = sa_models[RelatedToItemViaUniqueField]
-        table = sa_model.table
+        table = sa_model.__table__
         self.assertEqual(len(table.foreign_keys), 1)
         foreign_key, *_ = table.foreign_keys
         foreign_column = foreign_key.column
-        item_table = sa_models[Item].table
+        item_table = sa_models[Item].__table__
         self.assertIs(foreign_column.table, item_table)
         self.assertEqual(foreign_column.name, "legacy_id")
         self.assertEqual(foreign_column.type, item_table.c.legacy_id.type)
