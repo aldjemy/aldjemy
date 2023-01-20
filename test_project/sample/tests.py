@@ -5,7 +5,8 @@ from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
 
 from aldjemy.core import Cache, get_connection_string, get_engine
-from aldjemy.orm import construct_models, get_session
+from aldjemy.session import get_session
+from aldjemy.orm import construct_models
 from test_project.sample.models import (
     Author,
     Book,

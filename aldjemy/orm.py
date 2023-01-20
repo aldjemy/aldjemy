@@ -1,27 +1,13 @@
 from django.apps import apps
 from django.conf import settings
-from django.db import connections, router
+from django.db import router
 from django.db.backends import signals
 from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOneField
 from sqlalchemy import orm
 from sqlalchemy.orm import registry
 
-from .core import get_engine
+from .session import get_session
 from .table import generate_tables
-
-SQLALCHEMY_USE_FUTURE = getattr(settings, "ALDJEMY_SQLALCHEMY_USE_FUTURE", None)
-
-
-def get_session(alias="default", recreate=False, **kwargs):
-    connection = connections[alias]
-    if not hasattr(connection, "sa_session") or recreate:
-        engine = get_engine(alias, **kwargs)
-        kwargs = {"bind": engine}
-        if SQLALCHEMY_USE_FUTURE is not None:
-            kwargs["future"] = SQLALCHEMY_USE_FUTURE
-        session = orm.sessionmaker(**kwargs)
-        connection.sa_session = session()
-    return connection.sa_session
 
 
 def new_session(sender, connection, **kwargs):
