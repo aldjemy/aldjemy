@@ -33,6 +33,9 @@ profile = "black"
 src_paths = ["aldjemy", "test_project"]
 known_first_party = ["aldjemy", "test_project"]
 
+[tool.coverage.run]
+branch = true
+
 [tool.coverage.report]
 exclude_lines = [
   "pragma: no cover",

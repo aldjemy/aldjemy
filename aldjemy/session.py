@@ -13,7 +13,7 @@ def get_session(alias="default", recreate=False, **kwargs):
         engine = get_engine(alias, **kwargs)
         kwargs = {"bind": engine}
         if SQLALCHEMY_USE_FUTURE is not None:
-            kwargs["future"] = SQLALCHEMY_USE_FUTURE
+            kwargs["future"] = SQLALCHEMY_USE_FUTURE  # pragma: no cover
         session = orm.sessionmaker(**kwargs)
         connection.sa_session = session()
     return connection.sa_session
