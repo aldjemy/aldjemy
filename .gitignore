@@ -11,3 +11,6 @@ ve/
 /.vscode/
 poetry.lock
 __pycache__/
+.coverage
+coverage.xml
+htmlcov

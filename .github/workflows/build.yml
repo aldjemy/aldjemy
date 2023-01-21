@@ -10,7 +10,7 @@ on:
     - cron:  '27 5 * * SAT'
 
 jobs:
-  build:
+  pytest:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -58,4 +58,33 @@ jobs:
       - name: Install with Django ${{ matrix.django-version }}
         run: pip install "$(ls dist/*.whl)[dev]" 'django~=${{ matrix.django-version }}.0'
       - name: Run tests
-        run: pytest
+        run: pytest --cov --cov-report=
+      - name: Rename coverage file
+        run: mv .coverage .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
+      - name: Save coverage file
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: .coverage.${{ matrix.dir }}
+
+  codecov:
+    needs: pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - uses: actions/download-artifact@v2
+        with:
+          name: coverage
+      - name: Combine coverage
+        run: |
+          pip install coverage
+          coverage combine
+          coverage xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          fail_ci_if_error: true
