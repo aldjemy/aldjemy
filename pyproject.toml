@@ -16,12 +16,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest",
-    "pytest-cov",
-    "pytest-django",
-    "psycopg2-binary",
-    "black",
-    "isort",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "psycopg2-binary",
+  "black",
+  "isort",
 ]
 
 [build-system]
@@ -32,3 +32,12 @@ build-backend = "hatchling.build"
 profile = "black"
 src_paths = ["aldjemy", "test_project"]
 known_first_party = ["aldjemy", "test_project"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+]

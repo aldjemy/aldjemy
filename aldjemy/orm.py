@@ -5,7 +5,6 @@ from django.db.models.fields.related import ForeignKey, ManyToManyField, OneToOn
 from sqlalchemy import orm
 from sqlalchemy.orm import registry
 
-from .session import get_session
 from .table import generate_tables
 
 
@@ -94,15 +93,6 @@ def _extract_model_attrs(metadata, model, sa_models):
                 kwargs.update(backref=backref)
         attrs[fk.name] = orm.relationship(sa_models[parent_model], **kwargs)
     return attrs
-
-
-class BaseSQLAModel:
-    @classmethod
-    def query(cls, *args, **kwargs):
-        alias = getattr(cls, "alias", "default")
-        if args or kwargs:
-            return get_session(alias).query(*args, **kwargs)
-        return get_session(alias).query(cls)
 
 
 def _default_make_sa_model(model):
