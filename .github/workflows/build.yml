@@ -1,4 +1,4 @@
-name: Tests
+name: Build
 on:
   push:
     branches:
@@ -65,7 +65,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: coverage
-          path: .coverage.${{ matrix.dir }}
+          path: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
 
   codecov:
     needs: pytest
