@@ -5,7 +5,7 @@ Aldjemy
 .. image:: https://raw.githubusercontent.com/aldjemy/aldjemy/main/logo.png
    :alt: Aldjemy Logo
 
-|pypi_version| |pypi_license| |ci-tests|
+|pypi_version| |pypi_license| |ci-tests| |codecov|
 
 
 Aldjemy integrates SQLAlchemy into an existing Django project,
@@ -116,3 +116,7 @@ Release Process
 .. |ci-tests| image:: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml/badge.svg
    :target: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml
    :alt: Continuous Integration results
+
+.. |codecov| image:: https://codecov.io/gh/aldjemy/aldjemy/branch/main/graph/badge.svg?token=h5nWhlDUgl
+   :target: https://codecov.io/gh/aldjemy/aldjemy
+   :alt: Code Coverage
