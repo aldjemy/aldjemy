@@ -54,6 +54,10 @@ class SimpleTest(TestCase):
         a = Author.sa.query().first()
         self.assertEqual(a.user.id, u.id)
 
+    def test_noop(self):
+        """Just to see if things construct."""
+        Author.sa.query().count()
+
 
 class AliasesTest(TestCase):
     databases = "__all__"
