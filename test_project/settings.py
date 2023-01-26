@@ -38,7 +38,8 @@ DATABASES = {
         "NAME": "logs.db",
     },
     "pg": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        # "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": "aldjemy.postgresql.backend",
         "NAME": "aldjemy",
         "USER": "postgres",
         "PASSWORD": "postgres",
