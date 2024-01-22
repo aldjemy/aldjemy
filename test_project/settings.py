@@ -1,3 +1,5 @@
+import os
+
 from aldjemy.table import foreign_key
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
@@ -38,7 +40,7 @@ DATABASES = {
         "NAME": "logs.db",
     },
     "pg": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "ENGINE": os.environ.get("PG_ENGINE", "django.db.backends.postgresql_psycopg2"),
         "NAME": "aldjemy",
         "USER": "postgres",
         "PASSWORD": "postgres",

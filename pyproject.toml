@@ -10,7 +10,7 @@ urls.repository = "https://github.com/aldjemy/aldjemy"
 
 requires-python = ">=3.7"
 dependencies = [
-  "SQLAlchemy>=1.4,<2",
+  "SQLAlchemy>=1.4",
   "Django>=3.2",
 ]
 
@@ -20,6 +20,7 @@ dev = [
   "pytest-cov",
   "pytest-django",
   "psycopg2-binary",
+  "psycopg[binary]",
   "black",
   "isort",
 ]
