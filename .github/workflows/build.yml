@@ -15,6 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        pg-engine:
+            - "django.db.backends.postgresql_psycopg2"
+            - "django.db.backends.postgresql"
         python-version:
           - "3.7"
           - "3.8"
@@ -43,6 +46,7 @@ jobs:
           - 5432:5432
     env:
       SQLALCHEMY_WARN_20: 1
+      PG_ENGINE: ${{ matrix.pg-engine }}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
