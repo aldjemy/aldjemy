@@ -37,7 +37,7 @@ def array_type(field):
         raise NotImplementedError("Unsupported internal array type.")
     if internal_type == "ArrayField":
         raise NotImplementedError("Multi-dimensional array are not supported.")
-    sub_type = DATA_TYPES[internal_type](field)
+    sub_type = DATA_TYPES[internal_type](field.base_field)
     return ARRAY(sub_type)
 
 
