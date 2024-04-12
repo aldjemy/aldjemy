@@ -12,3 +12,9 @@ class JsonModel(models.Model):
 
 class DateRangeModel(models.Model):
     date_range = DateRangeField()
+
+
+class DecimalArrayModel(models.Model):
+    array = ArrayField(
+        models.DecimalField(decimal_places=3, max_digits=5), max_length=10
+    )

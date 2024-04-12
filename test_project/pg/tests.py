@@ -5,7 +5,12 @@ from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import get_engine
 from aldjemy.session import get_session
-from test_project.pg.models import DateRangeModel, JsonModel, TicTacToeBoard
+from test_project.pg.models import (
+    DateRangeModel,
+    DecimalArrayModel,
+    JsonModel,
+    TicTacToeBoard,
+)
 
 
 class TestArrayField(TransactionTestCase):
@@ -102,6 +107,11 @@ class TestJsonField(TestCase):
 class TestDateRangeField(TestCase):
     def test_model_creates(self):
         assert DateRangeModel.sa is not None
+
+
+class TestDecimalArrayField(TestCase):
+    def test_model_creates(self):
+        assert DecimalArrayModel.sa is not None
 
 
 class RegressionTests(TestCase):
