@@ -74,7 +74,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: coverage
       - name: Combine coverage
