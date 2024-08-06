@@ -10,7 +10,7 @@ urls.repository = "https://github.com/aldjemy/aldjemy"
 
 requires-python = ">=3.7"
 dependencies = [
-  "SQLAlchemy>=1.4,<2",
+  "SQLAlchemy>=1.4,<3",
   "Django>=3.2",
 ]
 
