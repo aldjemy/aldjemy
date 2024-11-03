@@ -15,16 +15,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        django-version:
+          - "4.2"
+          - "5.0"
+          - "5.1"
         python-version:
           - "3.9"
           - "3.10"
           - "3.11"
           - "3.12"
           - "3.13"
-        django-version:
-          - "4.2"
-          - "5.0"
-          - "5.1"
         exclude:
           - django-version: "4.2"
             python-version: "3.12"
