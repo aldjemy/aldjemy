@@ -15,7 +15,8 @@
 		}
 	},
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/tox:2": {}
+		"ghcr.io/devcontainers-contrib/features/tox:2": {},
+		"ghcr.io/va-h/devcontainers-features/uv:1": {}
 	},
 	"postCreateCommand": "pip install -e .[dev]"
 }
