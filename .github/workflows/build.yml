@@ -64,6 +64,7 @@ jobs:
         with:
           name: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
           path: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
+          include-hidden-files: true
 
   codecov:
     needs: pytest
