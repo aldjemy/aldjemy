@@ -8,10 +8,10 @@ readme = "README.rst"
 urls.homepage = "https://github.com/aldjemy/aldjemy"
 urls.repository = "https://github.com/aldjemy/aldjemy"
 
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 dependencies = [
   "SQLAlchemy>=1.4,<2",
-  "Django>=3.2",
+  "Django>=4.2",
 ]
 
 [project.optional-dependencies]
