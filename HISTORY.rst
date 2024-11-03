@@ -8,8 +8,8 @@ Features:
 
 Incompatible changes:
 
-* Dropped support for Python < 3.7.
-* Dropped support for Django < 3.2.
+* Dropped support for Python < 3.9.
+* Dropped support for Django < 4.2.
 * Removed the ``alias`` property from the generated models.
   It was intended for internal use only.
 * Removed the ``table`` property from the generated models.
@@ -26,9 +26,8 @@ Incompatible changes:
 
 Maintenance:
 
-* Add support for Django 4.0
-* Add support for Django 4.1
-* Add support for Python 3.11
+* Add support for Django 4.2-5.1
+* Add support for Python 3.11-3.13
 * Explicit non-support for SQLAlchemy 2.0
 
 2.6 (2021-10-27)
