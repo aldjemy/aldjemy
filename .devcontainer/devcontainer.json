@@ -9,13 +9,25 @@
 				"ms-azuretools.vscode-docker",
 				"ms-python.python",
 				"ms-python.isort",
-				"ms-python.black-formatter",
-				"bungcip.better-toml"
+				"bungcip.better-toml",
+				"charliermarsh.ruff"
 			]
 		}
 	},
 	"features": {
-		"ghcr.io/devcontainers-contrib/features/tox:2": {}
+		"ghcr.io/va-h/devcontainers-features/uv:1": {},
+		"ghcr.io/devcontainers/features/common-utils:2":{
+			"installZsh": "true",
+			"username": "vscode",
+			"userUid": "1000",
+			"userGid": "1000",
+			"upgradePackages": "true"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": "false"
+		}
 	},
-	"postCreateCommand": "pip install -e .[dev]"
+	"remoteUser": "vscode",
+	"postCreateCommand": "uv tool install --with tox-uv tox && uv sync"
 }

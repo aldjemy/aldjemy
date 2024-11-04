@@ -9,16 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install prerequisites
-        run: pip install -U pip build twine
-      - name: Build package
-        run: python -m build
-      - name: Publish package with twine
-        run: twine upload dist/*
+      - uses: astral-sh/setup-uv@v3
+      - run: uv build --wheel
+      - run: uv publish
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}

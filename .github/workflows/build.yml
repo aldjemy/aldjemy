@@ -18,23 +18,27 @@ jobs:
         pg-engine:
             - "django.db.backends.postgresql_psycopg2"
             - "django.db.backends.postgresql"
+        django-version:
+          - "4.2"
+          - "5.0"
+          - "5.1"
         python-version:
-          - "3.7"
-          - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
-        django-version:
-          - "3.2"
-          - "4.1"
-          - "4.2"
+          - "3.12"
+          - "3.13"
         exclude:
-          - django-version: "3.2"
-            python-version: "3.11"
-          - django-version: "4.1"
-            python-version: "3.7"
           - django-version: "4.2"
-            python-version: "3.7"
+            python-version: "3.12"
+          - django-version: "4.2"
+            python-version: "3.13"
+          - django-version: "5.0"
+            python-version: "3.9"
+          - django-version: "5.0"
+            python-version: "3.13"
+          - django-version: "5.1"
+            python-version: "3.9"
     services:
       pg:
         image: postgres
@@ -49,44 +53,36 @@ jobs:
       PG_ENGINE: ${{ matrix.pg-engine }}
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install prerequisites
-        run: pip install -U pip build
-      - name: Build package
-        run: python -m build
-      - name: Install with Django ${{ matrix.django-version }}
-        run: pip install "$(ls dist/*.whl)[dev]" 'django~=${{ matrix.django-version }}.0'
-      - name: Run tests
-        run: pytest --cov --cov-report=
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync
+      - run: uv run --with 'django~=${{ matrix.django-version }}.0' pytest --cov --cov-report=
       - name: Rename coverage file
         run: mv .coverage .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
       - name: Save coverage file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
           path: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
+          include-hidden-files: true
 
   codecov:
     needs: pytest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install 3.13
+      - uses: actions/download-artifact@v4
         with:
-          python-version: '3.11'
-      - uses: actions/download-artifact@v3
-        with:
-          name: coverage
+          pattern: .coverage.*
+          merge-multiple: true
       - name: Combine coverage
         run: |
-          pip install coverage
-          coverage combine
-          coverage xml
+          uv run coverage combine
+          uv run coverage xml
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
