@@ -15,7 +15,19 @@
 		}
 	},
 	"features": {
-		"ghcr.io/va-h/devcontainers-features/uv:1": {}
+		"ghcr.io/va-h/devcontainers-features/uv:1": {},
+		"ghcr.io/devcontainers/features/common-utils:2":{
+			"installZsh": "true",
+			"username": "vscode",
+			"userUid": "1000",
+			"userGid": "1000",
+			"upgradePackages": "true"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest",
+			"ppa": "false"
+		}
 	},
-	"postCreateCommand": "uv sync"
+	"remoteUser": "vscode",
+	"postCreateCommand": "uv tool install --with tox-uv tox && uv sync"
 }

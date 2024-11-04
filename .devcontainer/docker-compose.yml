@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   app:
-    image: mcr.microsoft.com/devcontainers/python:3.12
+    image: python:3.13
 
     volumes:
       - ../..:/workspaces:cached
