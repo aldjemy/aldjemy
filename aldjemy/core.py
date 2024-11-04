@@ -24,7 +24,7 @@ class Cache:
 SQLALCHEMY_ENGINES = {
     "sqlite3": "sqlite",
     "mysql": "mysql",
-    "postgresql": "postgresql",
+    "postgresql": "postgresql+psycopg",
     "postgresql_psycopg2": "postgresql+psycopg2",
     "oracle": "oracle",
 }
