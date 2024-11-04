@@ -49,18 +49,10 @@ jobs:
       SQLALCHEMY_WARN_20: 1
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-      - name: Install prerequisites
-        run: pip install -U pip build
-      - name: Build package
-        run: python -m build
-      - name: Install with Django ${{ matrix.django-version }}
-        run: pip install "$(ls dist/*.whl)[dev]" 'django~=${{ matrix.django-version }}.0'
-      - name: Run tests
-        run: pytest --cov --cov-report=
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install ${{ matrix.python-version }}
+      - run: uv sync
+      - run: uv run --with 'django~=${{ matrix.django-version }}.0' pytest --cov --cov-report=
       - name: Rename coverage file
         run: mv .coverage .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
       - name: Save coverage file
@@ -75,19 +67,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      - uses: astral-sh/setup-uv@v3
+      - run: uv python install 3.13
       - uses: actions/download-artifact@v4
         with:
           pattern: .coverage.*
           merge-multiple: true
       - name: Combine coverage
         run: |
-          pip install coverage
-          coverage combine
-          coverage xml
+          uv run coverage combine
+          uv run coverage xml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
