@@ -12,6 +12,7 @@ requires-python = ">=3.9"
 dependencies = [
   "SQLAlchemy>=1.4,<2",
   "Django>=4.2",
+  "psycopg2-binary>=2.9.10",
 ]
 
 [project.optional-dependencies]
@@ -40,4 +41,14 @@ branch = true
 exclude_lines = [
   "pragma: no cover",
   "raise NotImplementedError",
+]
+
+[dependency-groups]
+dev = [
+    "isort>=5.13.2",
+    "pytest>=8.3.3",
+    "pytest-cov>=6.0.0",
+    "pytest-django>=4.9.0",
+    "ruff>=0.7.2",
+    "tox-uv>=1.16.0",
 ]

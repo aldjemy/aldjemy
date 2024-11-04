@@ -10,6 +10,7 @@ ve/
 .venv*
 /.vscode/
 poetry.lock
+uv.lock
 __pycache__/
 .coverage
 coverage.xml
