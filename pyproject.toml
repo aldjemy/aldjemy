@@ -5,25 +5,15 @@ description = "SQLAlchemy for your Django models"
 authors = [{ name = "Mikhail Krivushin" }]
 license = "BSD-3-Clause"
 readme = "README.rst"
-urls.homepage = "https://github.com/aldjemy/aldjemy"
-urls.repository = "https://github.com/aldjemy/aldjemy"
-
 requires-python = ">=3.9"
 dependencies = [
   "SQLAlchemy>=1.4,<2",
   "Django>=4.2",
-  "psycopg2-binary>=2.9.10",
 ]
 
-[project.optional-dependencies]
-dev = [
-  "pytest",
-  "pytest-cov",
-  "pytest-django",
-  "psycopg2-binary",
-  "black",
-  "isort",
-]
+[project.urls]
+homepage = "https://github.com/aldjemy/aldjemy"
+repository = "https://github.com/aldjemy/aldjemy"
 
 [build-system]
 requires = ["hatchling"]
@@ -45,10 +35,10 @@ exclude_lines = [
 
 [dependency-groups]
 dev = [
-    "isort>=5.13.2",
-    "pytest>=8.3.3",
-    "pytest-cov>=6.0.0",
-    "pytest-django>=4.9.0",
-    "ruff>=0.7.2",
-    "tox-uv>=1.16.0",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "psycopg2-binary",
+  "isort",
+  "ruff",
 ]
