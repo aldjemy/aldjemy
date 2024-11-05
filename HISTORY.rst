@@ -1,5 +1,20 @@
-3.0 (Not released)
-++++++++++++++++++
+3.0 (2024-11-04)
+++++++++++++++++
+
+Notice:
+
+This is the final release to permit ``Model.sa.query()``.
+It is not compatible with SQLAlchemy 2.0.
+Instead, build queries with ``Model.sa`` as SQLAlchemy ORM objects,
+then execute the query manually using the django connection:
+
+.. code-block:: python
+
+    from django.db import connection
+    compiled = stmt.compile(dialect=postgresql.dialect())
+    with connection.cursor() as cursor:
+        cursor.execute(compiled.string, compiled.params)
+
 
 Features:
 
