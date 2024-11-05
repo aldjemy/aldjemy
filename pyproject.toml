@@ -1,6 +1,6 @@
 [project]
 name = "aldjemy"
-version = "2.7"
+version = "3.0"
 description = "SQLAlchemy for your Django models"
 authors = [{ name = "Mikhail Krivushin" }]
 license = "BSD-3-Clause"
