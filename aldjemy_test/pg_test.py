@@ -1,10 +1,9 @@
 import pytest
-from django.db import transaction
-from sqlalchemy import select
+from aldjemy.engine import create_engine
+from sqlalchemy import select, func
+from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import array
 
-from aldjemy.core import DjangoPool, get_engine
-from aldjemy.session import get_session
 from aldjemy_test.pg.models import (
     DateRangeModel,
     DecimalArrayModel,
@@ -35,11 +34,12 @@ class TestArrayField:
 
         contains = lambda c: TicTacToeBoard.sa.board.contains(array([c]))
 
-        query = TicTacToeBoard.sa.query(TicTacToeBoard.sa.id)
-
-        assert query.filter(contains("x")).count() == 2
-        assert query.filter(contains("o")).count() == 2
-        assert query.filter(contains(" ")).count() == 3
+        engine = create_engine("pg")
+        with Session(engine, future=True) as session:
+            stmt = select(func.count()).select_from(TicTacToeBoard.sa)
+            assert session.scalar(stmt.where(contains("x"))) == 2
+            assert session.scalar(stmt.where(contains("o"))) == 2
+            assert session.scalar(stmt.where(contains(" "))) == 3
 
     def test_sa_objects_fetching(self):
         """
@@ -58,10 +58,11 @@ class TestArrayField:
             ttt.save()
             created_objects.append(ttt)
 
-        session = get_session("pg")
-        test_object = session.get(TicTacToeBoard.sa, created_objects[0].id)
-        assert test_object.id == created_objects[0].id
-        assert test_object.board == boards[0]
+        engine = create_engine("pg")
+        with Session(engine, future=True) as session:
+            test_object = session.get(TicTacToeBoard.sa, created_objects[0].id)
+            assert test_object.id == created_objects[0].id
+            assert test_object.board == boards[0]
 
     def test_sa_sql_expression_language_fetching(self):
         """
@@ -86,7 +87,8 @@ class TestArrayField:
             .limit(10)
         )
 
-        with get_engine("pg").begin() as connection:
+        engine = create_engine("pg")
+        with engine.begin() as connection:
             test_data = connection.execute(query)
 
         for t_data, c_object in zip(test_data, created_objects):
@@ -111,36 +113,3 @@ class TestDateRangeField:
 class TestDecimalArrayField:
     def test_model_creates(self):
         assert DecimalArrayModel.sa is not None
-
-
-class TestRegression:
-    @pytest.mark.django_db(databases=["pg"])
-    def test_transaction_is_not_rolled_back(self):
-        """
-        https://github.com/aldjemy/aldjemy/issues/173
-        We are using savepoints in the hope of reproducing the conditions
-        that helped us identify a regression introduced by SQLAlchemy 1.4.
-
-        A ROLLBACK is emitted on every re-usage of a connection.
-        This is undesirable, since we assume django owns the connection
-        and the transaction state that comes with it.
-        """
-        board = [" "] * 9
-        with transaction.atomic("pg"):
-            tic_tac_toe = TicTacToeBoard.objects.create(board=board)
-            # Just initiate a connection with SQLA, because the transation is rollback
-            # the data we just created with django ORM is not available
-            # Hence sqlalchemy.exc.NoResultFound is raised
-
-            # if the exception is not raised, we assume, no ROLLBACK is emitted,
-            # Indicating we successfully disabled the ROLLBACK.
-            TicTacToeBoard.sa.query().filter(
-                TicTacToeBoard.sa.id == tic_tac_toe.id
-            ).one()
-
-
-class TestDjangoPool:
-    def test_pool_can_recreate(self):
-        """DjangoPool can be created and recreated without errors."""
-        pool = DjangoPool("test_alias", creator=None)
-        pool.recreate()

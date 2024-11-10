@@ -1,3 +1,29 @@
+4.0 (TBD)
++++++++++
+
+Breaking Changes:
+
+* MAJOR: Aldjemy's connection sharing has been removed.
+  To make queries with SQLAlchemy, you will need to create a
+  separate connection to the database with an SQLAlchemy engine.
+  Many related functions and classes have been removed.
+  * Dropped the ``Model.sa.query()`` method.
+  * Removed the internal ``aldjemy.apps.new_session`` function.
+  * Removed the ``aldjemy.session.get_session`` function.
+  * Removed the ``aldjemy.session`` module.
+  * Removed the ``aldjemy.core.get_engine_string`` function.
+  * Removed ``aldjemy.core.Cache``.
+  * Removed ``aldjemy.core.get_connection_string`` in favor of
+    ``aldjemy.core.get_connection_url``.
+  * Removed the ``ALDJEMY_SQLALCHEMY_USE_FUTURE`` setting.
+  * Removed the ``aldjemy.sqlite`` and ``aldjemy.wrapper`` modules.
+
+Features:
+
+* ``aldjemy.core.get_connection_url`` creates a URL from a Django
+  database suitable for passing SQLAlchemy's ``create_engine``
+  function, including credentials and the database name.
+
 3.3 (TBD)
 +++++++++
 
@@ -34,6 +60,7 @@ Notice:
 
 This is the final major version to permit ``Model.sa.query()``.
 It is not compatible with SQLAlchemy 2.0.
+
 Instead, build queries with ``Model.sa`` as SQLAlchemy ORM objects,
 then execute the query manually using the django connection:
 

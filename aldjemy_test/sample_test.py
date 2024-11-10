@@ -1,12 +1,11 @@
 import pytest
 from django.contrib.auth import get_user_model
-from django.db import connections
-from sqlalchemy import MetaData
-from sqlalchemy.orm import aliased
+from sqlalchemy import MetaData, select
+from sqlalchemy.orm import aliased, Session
+from sqlalchemy.sql import func
 
-from aldjemy.core import Cache, get_connection_string, get_engine
+from aldjemy.engine import create_engine
 from aldjemy.orm import construct_models
-from aldjemy.session import get_session
 from aldjemy_test.sample.models import (
     Author,
     Book,
@@ -40,57 +39,51 @@ class TestSample:
         books_field = Author._meta.get_field("books")
         assert books_field.remote_field.through.sa is not None
 
-    def test_engine_override_test(self):
-        assert get_connection_string() == "sqlite+pysqlite://"
-
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     def test_querying(self):
         Book.objects.create(title="book title")
         Book.objects.all()
-        assert Book.sa.query().count() == 1
+        with Session(create_engine(), future=True) as session:
+            count = session.scalar(select(func.count()).select_from(Book.sa))
+            assert count == 1
+            result = session.scalars(select(Book.sa)).first()
+            assert result.title == "book title"
 
-    @pytest.mark.django_db
+    @pytest.mark.django_db(transaction=True)
     def test_user_model(self):
         u = User.objects.create()
         Author.objects.create(user=u)
-        a = Author.sa.query().first()
-        assert a.user.id == u.id
+
+        engine = create_engine('default')
+        with Session(engine) as session:
+            stmt = select(Author.sa).limit(1)
+            a = session.scalar(stmt)
+            assert a.user.id == u.id
 
 
 class TestAliases:
-    def test_engines_cache(self):
-        assert get_engine("default") == Cache.engines["default"]
-        assert get_engine("logs") == Cache.engines["logs"]
-        assert get_engine() == Cache.engines["default"]
-        assert get_engine("default") != get_engine("logs")
 
-    def test_sessions(self):
-        session_default = get_session()
-        session_default2 = get_session("default")
-        assert session_default == session_default2
-        session_logs = get_session("logs")
-        assert connections["default"].sa_session == session_default
-        assert connections["logs"].sa_session == session_logs
-        assert session_default != session_logs
-
-    @pytest.mark.django_db(databases=["default", "logs"])
+    @pytest.mark.django_db(transaction=True, databases=["default", "logs"])
     def test_logs(self):
         Log.objects.create(record="1")
         Log.objects.create(record="2")
-        Log.objects.using("logs").count() == 2
-        Log.sa.query().count() == 2
-        Log.sa.query().all()[0].record == "1"
+        assert Log.objects.using("logs").count() == 2
+        with Session(create_engine("logs"), future=True) as session:
+            count = session.scalar(select(func.count()).select_from(Log.sa))
+            assert count == 2
+            all = session.scalars(select(Log.sa))
+            assert [x.record for x in all] == ["1", "2"]
 
 
 class TestAldjemyMeta:
-    @pytest.mark.django_db(databases=["logs"])
+    @pytest.mark.django_db(transaction=True, databases=["logs"])
     def test_meta(self):
         Log.objects.create(record="foo")
-
-        foo = Log.sa.query().one()
-        assert str(foo) == "foo"
-        assert foo.reversed_record == "oof"
-        assert not hasattr(foo, "this_is_not_copied")
+        with Session(create_engine("logs"), future=True) as session:
+            foo = session.scalar(select(Log.sa))
+            assert str(foo) == "foo"
+            assert foo.reversed_record == "oof"
+            assert not hasattr(foo, "this_is_not_copied")
 
 
 class TestCustomMetaData:

@@ -6,6 +6,7 @@ ROOT_URLCONF = "aldjemy_test.urls"
 SITE_ID = 1
 USE_TZ = False  # Silence a warning until Django 5.0
 
+# TODO: Test removing these settings
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
 DATABASE_ROUTERS = [
     "aldjemy_test.pg.routers.PgRouter",
