@@ -1,3 +1,11 @@
+2.6.1 (2024-11-14)
+++++++++++++++++
+
+Fixes:
+
+* Remove _use_threadlocal in DjangoPool, which has been removed from SQLAlchemy
+  pool objects since 1.4.
+
 2.6 (2021-10-27)
 ++++++++++++++++
 
