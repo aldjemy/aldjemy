@@ -79,7 +79,6 @@ class DjangoPool(NullPool):
             recycle=self._recycle,
             echo=self.echo,
             logging_name=self._orig_logging_name,
-            use_threadlocal=self._use_threadlocal,
         )
 
 

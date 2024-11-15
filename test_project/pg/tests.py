@@ -3,7 +3,7 @@ from django.test import TestCase, TransactionTestCase
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
 
-from aldjemy.core import get_engine
+from aldjemy.core import DjangoPool, get_engine
 from aldjemy.session import get_session
 from test_project.pg.models import (
     DateRangeModel,
@@ -139,3 +139,10 @@ class RegressionTests(TestCase):
             TicTacToeBoard.sa.query().filter(
                 TicTacToeBoard.sa.id == tic_tac_toe.id
             ).one()
+
+
+class DjangoPoolTest(TestCase):
+    def test_pool_can_recreate(self):
+        """DjangoPool can be created and recreated without errors."""
+        pool = DjangoPool("test_alias", creator=None)
+        pool.recreate()

@@ -1,10 +1,15 @@
-3.1 (TBD)
-+++++++++
+3.1 (2024-11-15)
+++++++++++++++++
 
 Features:
 
 * Re-add compatibility with Django 4.1, to be removed in version 4.
 * Re-add compatibility with Python 3.8, to be removed in version 4.
+
+Fixes:
+
+* Remove _use_threadlocal in DjangoPool, which has been removed from SQLAlchemy
+  pool objects since 1.4.
 
 
 3.0 (2024-11-04)
