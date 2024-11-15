@@ -58,7 +58,6 @@ Maintenance:
 * Add support for Django 4.2-5.1
 * Add support for Python 3.11-3.13
 * Explicit non-support for SQLAlchemy 2.0
->>>>>>> main
 
 2.6 (2021-10-27)
 ++++++++++++++++
