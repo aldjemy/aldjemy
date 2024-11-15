@@ -1,9 +1,18 @@
+3.1 (TBD)
++++++++++
+
+Features:
+
+* Re-add compatibility with Django 4.1, to be removed in version 4.
+* Re-add compatibility with Python 3.8, to be removed in version 4.
+
+
 3.0 (2024-11-04)
 ++++++++++++++++
 
 Notice:
 
-This is the final release to permit ``Model.sa.query()``.
+This is the final major version to permit ``Model.sa.query()``.
 It is not compatible with SQLAlchemy 2.0.
 Instead, build queries with ``Model.sa`` as SQLAlchemy ORM objects,
 then execute the query manually using the django connection:
