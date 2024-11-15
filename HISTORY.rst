@@ -1,3 +1,11 @@
+3.2 (2024-11-15)
+++++++++++++++++
+
+Fixes:
+
+* Match the 4.1 version minimum on Django in the pyproject.toml
+  to match the extended support matrix in Tox and GitHub actions.
+
 3.1 (2024-11-15)
 ++++++++++++++++
 
