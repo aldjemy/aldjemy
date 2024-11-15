@@ -1,9 +1,9 @@
 from django.db import transaction
 from django.test import TestCase, TransactionTestCase
-from sqlalchemy import select
+from sqlalchemy import select, create_mock_engine
 from sqlalchemy.dialects.postgresql import array
 
-from aldjemy.core import get_engine
+from aldjemy.core import get_engine, DjangoPool
 from aldjemy.session import get_session
 from test_project.pg.models import (
     DateRangeModel,
@@ -11,7 +11,6 @@ from test_project.pg.models import (
     JsonModel,
     TicTacToeBoard,
 )
-
 
 class TestArrayField(TransactionTestCase):
     """
@@ -139,3 +138,12 @@ class RegressionTests(TestCase):
             TicTacToeBoard.sa.query().filter(
                 TicTacToeBoard.sa.id == tic_tac_toe.id
             ).one()
+
+
+class DjangoPoolTest(TestCase):
+
+    def test_pool_can_recreate(self):
+        """ Asserts DjangoPool can be created and recreate itself without throwing an exception """
+        pool = DjangoPool("test_alias", creator=None)
+        new_pool = pool.recreate()
+
