@@ -26,7 +26,8 @@
 		"ghcr.io/devcontainers/features/git:1": {
 			"version": "latest",
 			"ppa": "false"
-		}
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
 	},
 	"remoteUser": "vscode",
 	"postCreateCommand": "uv tool install --with tox-uv tox && uv sync"
