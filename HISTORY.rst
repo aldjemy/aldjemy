@@ -1,10 +1,64 @@
-2.6.1 (2024-11-14)
+3.1 (2024-11-15)
 ++++++++++++++++
+
+Features:
+
+* Re-add compatibility with Django 4.1, to be removed in version 4.
+* Re-add compatibility with Python 3.8, to be removed in version 4.
 
 Fixes:
 
 * Remove _use_threadlocal in DjangoPool, which has been removed from SQLAlchemy
   pool objects since 1.4.
+
+
+3.0 (2024-11-04)
+++++++++++++++++
+
+Notice:
+
+This is the final major version to permit ``Model.sa.query()``.
+It is not compatible with SQLAlchemy 2.0.
+Instead, build queries with ``Model.sa`` as SQLAlchemy ORM objects,
+then execute the query manually using the django connection:
+
+.. code-block:: python
+
+    from django.db import connection
+    compiled = stmt.compile(dialect=postgresql.dialect())
+    with connection.cursor() as cursor:
+        cursor.execute(compiled.string, compiled.params)
+
+
+Features:
+
+* Add ability to set ``future`` on SQLAlchemy session and engine
+  with the ``ALDJEMY_SQLALCHEMY_USE_FUTURE`` setting.
+
+Incompatible changes:
+
+* Dropped support for Python < 3.9.
+* Dropped support for Django < 4.2.
+* Removed the ``alias`` property from the generated models.
+  It was intended for internal use only.
+* Removed the ``table`` property from the generated models.
+  It is redundant with the ``__table__`` property.
+* Moved the ``get_session`` function from ``aldjemy.orm``
+  to ``aldjemy.session``.
+* Removed the ``query`` method from models generated
+  directly using ``construct_models``.
+* Changed the ``__name__`` and ``repr()`` of models generated
+  directly using ``construct_models``.
+* Moved the ``BaseSQLAModel`` class from ``aldjemy.orm``
+  to ``aldjemy.apps``, because it is an implementation detail
+  of the default app integration.
+
+Maintenance:
+
+* Add support for Django 4.2-5.1
+* Add support for Python 3.11-3.13
+* Explicit non-support for SQLAlchemy 2.0
+>>>>>>> main
 
 2.6 (2021-10-27)
 ++++++++++++++++
@@ -25,11 +79,11 @@ Fixes:
 
 Fixes:
 
- * Address some deprecation warnings coming from sqlalchemy 1.4 (#212)
+* Address some deprecation warnings coming from sqlalchemy 1.4 (#212)
 
 Maintenance:
 
- * adopt isort (#210)
+* adopt isort (#210)
 
 2.3 (2021-09-27)
 ++++++++++++++++

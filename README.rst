@@ -5,7 +5,7 @@ Aldjemy
 .. image:: https://raw.githubusercontent.com/aldjemy/aldjemy/main/logo.png
    :alt: Aldjemy Logo
 
-|pypi_version| |pypi_license| |ci-tests|
+|pypi_version| |pypi_license| |ci-tests| |codecov| |downloads| |black|
 
 
 Aldjemy integrates SQLAlchemy into an existing Django project,
@@ -95,7 +95,7 @@ Release Process
 
     .. code-block:: bash
 
-       poetry version (major|minor|patch) # choose which version to bump
+       hatch version (major|minor|patch) # choose which version to bump
 
  2. Once the pull request is merged, create a github release with the same version, on the web console or with github cli.
 
@@ -105,14 +105,26 @@ Release Process
 
  3. Enjoy!
 
-.. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg?style=flat-square
+.. |pypi_version| image:: https://img.shields.io/pypi/v/aldjemy.svg
     :target: https://pypi.python.org/pypi/aldjemy
     :alt: Downloads
 
-.. |pypi_license| image:: https://img.shields.io/pypi/l/aldjemy.svg?style=flat-square
+.. |pypi_license| image:: https://img.shields.io/pypi/l/aldjemy.svg
     :target: https://pypi.python.org/pypi/aldjemy
     :alt: License
 
 .. |ci-tests| image:: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml/badge.svg
    :target: https://github.com/aldjemy/aldjemy/actions/workflows/build.yml
    :alt: Continuous Integration results
+
+.. |codecov| image:: https://codecov.io/gh/aldjemy/aldjemy/branch/main/graph/badge.svg?token=h5nWhlDUgl
+   :target: https://codecov.io/gh/aldjemy/aldjemy
+   :alt: Code Coverage
+
+.. |downloads| image:: https://pepy.tech/badge/aldjemy
+   :target: https://pepy.tech/project/aldjemy
+   :alt: Downloads
+
+.. |black| image:: https://img.shields.io/badge/code%20style-black-000000
+   :target: https://github.com/psf/black
+   :alt: Code style: black

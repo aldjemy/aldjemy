@@ -29,6 +29,7 @@ SQLALCHEMY_ENGINES = {
     "oracle": "oracle",
 }
 SQLALCHEMY_ENGINES.update(getattr(settings, "ALDJEMY_ENGINES", {}))
+SQLALCHEMY_USE_FUTURE = getattr(settings, "ALDJEMY_SQLALCHEMY_USE_FUTURE", None)
 
 
 def get_engine_string(alias):
@@ -45,12 +46,12 @@ def get_connection_string(alias="default"):
 def get_engine(alias="default", **kwargs):
     if alias not in Cache.engines:
         engine_string = get_engine_string(alias)
-        # we have to use autocommit=True, because SQLAlchemy
-        # is not aware of Django transactions
         if engine_string == "sqlite3":
             kwargs["native_datetime"] = True
 
         pool = DjangoPool(alias=alias, creator=None)
+        if SQLALCHEMY_USE_FUTURE is not None:
+            kwargs["future"] = SQLALCHEMY_USE_FUTURE  # pragma: no cover
         Cache.engines[alias] = create_engine(
             get_connection_string(alias), pool=pool, **kwargs
         )

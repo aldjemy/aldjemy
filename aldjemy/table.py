@@ -16,23 +16,28 @@ def foreign_key(field):
     parent_model = field.related_model
     target = parent_model._meta
     target_table = target.db_table
-    target_pk = target.pk.column
-    return types.Integer, ForeignKey("%s.%s" % (target_table, target_pk))
+
+    target_field, *composite = field.to_fields
+    if composite:
+        raise NotImplementedError("Composite Foreign keys are not supported")
+
+    if target_field is None:
+        target_field = target.pk.column
+
+    target_internal_type = target.get_field(target_field).get_internal_type()
+    target_type = DATA_TYPES[target_internal_type](field)
+
+    return target_type, ForeignKey("%s.%s" % (target_table, target_field))
 
 
 def array_type(field):
-    """
-    Allows conversion of Django ArrayField to SQLAlchemy Array.
-    Takes care of mapping the type of the array element.
-    """
+    """Convert ArrayField to SQLAlchemy."""
     internal_type = field.base_field.get_internal_type()
-
-    # currently no support for multi-dimensional arrays
-    if internal_type in DATA_TYPES and internal_type != "ArrayField":
-        sub_type = DATA_TYPES[internal_type](field)
-    else:
-        raise RuntimeError("Unsupported array element type")
-
+    if internal_type not in DATA_TYPES:
+        raise NotImplementedError("Unsupported internal array type.")
+    if internal_type == "ArrayField":
+        raise NotImplementedError("Multi-dimensional array are not supported.")
+    sub_type = DATA_TYPES[internal_type](field.base_field)
     return ARRAY(sub_type)
 
 

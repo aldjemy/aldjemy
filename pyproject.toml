@@ -1,32 +1,44 @@
-[tool.poetry]
+[project]
 name = "aldjemy"
-version = "2.6.1"
+version = "3.1"
 description = "SQLAlchemy for your Django models"
-authors = ["Mikhail Krivushin"]
-license = "BSD 3-Clause \"New\" or \"Revised\" License"
+authors = [{ name = "Mikhail Krivushin" }]
+license = "BSD-3-Clause"
 readme = "README.rst"
+requires-python = ">=3.8"
+dependencies = [
+  "SQLAlchemy>=1.4,<2",
+  "Django>=4.2",
+]
+
+[project.urls]
 homepage = "https://github.com/aldjemy/aldjemy"
 repository = "https://github.com/aldjemy/aldjemy"
 
-[tool.poetry.dependencies]
-# `,<4.0` is because poetry 1.1.11 can't resolve dependency correctly.
-# It will be probably safe to remove it in the future.
-python = ">=3.6.1,<4.0"
-SQLAlchemy = ">=1.4"
-Django = ">=2.2"
-
-[tool.poetry.dev-dependencies]
-psycopg2-binary = "*"
-black = "*"
-pytest = "*"
-pytest-django = "*"
-isort = "*"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.isort]
 profile = "black"
-src_paths = ["aldjemy"]
-known_first_party = ["aldjemy"]
+src_paths = ["aldjemy", "test_project"]
+known_first_party = ["aldjemy", "test_project"]
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "raise NotImplementedError",
+]
+
+[dependency-groups]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "psycopg2-binary",
+  "isort",
+  "ruff",
+]
