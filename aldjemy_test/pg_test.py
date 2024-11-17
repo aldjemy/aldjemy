@@ -1,5 +1,5 @@
+import pytest
 from django.db import transaction
-from django.test import TestCase, TransactionTestCase
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import array
 
@@ -13,12 +13,11 @@ from aldjemy_test.pg.models import (
 )
 
 
-class TestArrayField(TransactionTestCase):
+@pytest.mark.django_db(transaction=True, databases=["pg"])
+class TestArrayField:
     """
     Tests that queries involving array fields can be performed.
     """
-
-    databases = ["pg"]
 
     def test_tic_tac_toe(self):
         """
@@ -96,7 +95,7 @@ class TestArrayField(TransactionTestCase):
             assert t_data_board == c_object.board
 
 
-class TestJsonField(TestCase):
+class TestJsonField:
     def test_model_creates(self):
         """
         It's important that the field not cause the project to fail startup.
@@ -104,19 +103,18 @@ class TestJsonField(TestCase):
         assert JsonModel.sa is not None
 
 
-class TestDateRangeField(TestCase):
+class TestDateRangeField:
     def test_model_creates(self):
         assert DateRangeModel.sa is not None
 
 
-class TestDecimalArrayField(TestCase):
+class TestDecimalArrayField:
     def test_model_creates(self):
         assert DecimalArrayModel.sa is not None
 
 
-class RegressionTests(TestCase):
-    databases = ["pg"]
-
+class TestRegression:
+    @pytest.mark.django_db(databases=["pg"])
     def test_transaction_is_not_rolled_back(self):
         """
         https://github.com/aldjemy/aldjemy/issues/173
@@ -141,7 +139,7 @@ class RegressionTests(TestCase):
             ).one()
 
 
-class DjangoPoolTest(TestCase):
+class TestDjangoPool:
     def test_pool_can_recreate(self):
         """DjangoPool can be created and recreated without errors."""
         pool = DjangoPool("test_alias", creator=None)

@@ -1,6 +1,6 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.db import connections
-from django.test import TestCase
 from sqlalchemy import MetaData
 from sqlalchemy.orm import aliased
 
@@ -25,75 +25,75 @@ from aldjemy_test.sample.models import (
 User = get_user_model()
 
 
-class SimpleTest(TestCase):
+class TestSample:
     def test_aldjemy_initialization(self):
-        self.assertTrue(Chapter.sa)
-        self.assertTrue(Book.sa)
-        self.assertTrue(Author.sa)
-        self.assertTrue(StaffAuthor.sa)
-        self.assertTrue(StaffAuthorProxy.sa)
-        self.assertTrue(Review.sa)
-        self.assertTrue(BookProxy.sa)
-        self.assertTrue(User.sa)
+        assert Chapter.sa is not None
+        assert Book.sa is not None
+        assert Author.sa is not None
+        assert StaffAuthor.sa is not None
+        assert StaffAuthorProxy.sa is not None
+        assert Review.sa is not None
+        assert BookProxy.sa is not None
+        assert User.sa is not None
 
         # Automatic Many to Many fields get the ``sa`` property
         books_field = Author._meta.get_field("books")
-        self.assertTrue(books_field.remote_field.through.sa)
+        assert books_field.remote_field.through.sa is not None
 
     def test_engine_override_test(self):
-        self.assertEqual(get_connection_string(), "sqlite+pysqlite://")
+        assert get_connection_string() == "sqlite+pysqlite://"
 
+    @pytest.mark.django_db
     def test_querying(self):
         Book.objects.create(title="book title")
         Book.objects.all()
-        self.assertEqual(Book.sa.query().count(), 1)
+        assert Book.sa.query().count() == 1
 
+    @pytest.mark.django_db
     def test_user_model(self):
         u = User.objects.create()
         Author.objects.create(user=u)
         a = Author.sa.query().first()
-        self.assertEqual(a.user.id, u.id)
+        assert a.user.id == u.id
 
 
-class AliasesTest(TestCase):
-    databases = "__all__"
-
+class TestAliases:
     def test_engines_cache(self):
-        self.assertEqual(get_engine("default"), Cache.engines["default"])
-        self.assertEqual(get_engine("logs"), Cache.engines["logs"])
-        self.assertEqual(get_engine(), Cache.engines["default"])
-        self.assertNotEqual(get_engine("default"), get_engine("logs"))
+        assert get_engine("default") == Cache.engines["default"]
+        assert get_engine("logs") == Cache.engines["logs"]
+        assert get_engine() == Cache.engines["default"]
+        assert get_engine("default") != get_engine("logs")
 
     def test_sessions(self):
         session_default = get_session()
         session_default2 = get_session("default")
-        self.assertEqual(session_default, session_default2)
+        assert session_default == session_default2
         session_logs = get_session("logs")
-        self.assertEqual(connections["default"].sa_session, session_default)
-        self.assertEqual(connections["logs"].sa_session, session_logs)
-        self.assertNotEqual(session_default, session_logs)
+        assert connections["default"].sa_session == session_default
+        assert connections["logs"].sa_session == session_logs
+        assert session_default != session_logs
 
+    @pytest.mark.django_db(databases=["default", "logs"])
     def test_logs(self):
         Log.objects.create(record="1")
         Log.objects.create(record="2")
-        self.assertEqual(Log.objects.using("logs").count(), 2)
-        self.assertEqual(Log.sa.query().count(), 2)
-        self.assertEqual(Log.sa.query().all()[0].record, "1")
+        Log.objects.using("logs").count() == 2
+        Log.sa.query().count() == 2
+        Log.sa.query().all()[0].record == "1"
 
 
-class AldjemyMetaTests(TestCase):
-    databases = "__all__"
-
+class TestAldjemyMeta:
+    @pytest.mark.django_db(databases=["logs"])
     def test_meta(self):
         Log.objects.create(record="foo")
 
         foo = Log.sa.query().one()
-        self.assertEqual(str(foo), "foo")
-        self.assertEqual(foo.reversed_record, "oof")
-        self.assertFalse(hasattr(foo, "this_is_not_copied"))
+        assert str(foo) == "foo"
+        assert foo.reversed_record == "oof"
+        assert not hasattr(foo, "this_is_not_copied")
 
 
-class CustomMetaDataTests(TestCase):
+class TestCustomMetaData:
     def test_custom_metadata_schema(self):
         """Use a custom MetaData instance to add a schema."""
         # The use-case for this functionality is to allow using
@@ -102,7 +102,7 @@ class CustomMetaDataTests(TestCase):
         # and the automatically generation of aldjemy.
         metadata = MetaData(schema="arbitrary")
         sa_models = construct_models(metadata)
-        self.assertEqual(sa_models[Log].__table__.schema, "arbitrary")
+        assert sa_models[Log].__table__.schema == "arbitrary"
 
     def test_custom_metadata_schema_aliased(self):
         """Make sure the aliased command works with the schema."""
@@ -120,7 +120,7 @@ class CustomMetaDataTests(TestCase):
 
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
-        self.assertEqual(sa_models[through].__table__.schema, "unique")
+        assert sa_models[through].__table__.schema == "unique"
 
     def test_many_to_many_through_self_aliased(self):
         """Make sure aliased recursive through tables work."""
@@ -132,20 +132,20 @@ class CustomMetaDataTests(TestCase):
         aliased(sa_models[through])
 
 
-class ForeignKeyTests(TestCase):
+class TestForeignKey:
     def test_foreign_key_through_pk(self):
         """Make sure that foreign keys to primary keys work."""
         metadata = MetaData(schema="unique")
         sa_models = construct_models(metadata)
         sa_model = sa_models[RelatedToItemViaPrimaryKey]
         table = sa_model.__table__
-        self.assertEqual(len(table.foreign_keys), 1)
+        assert len(table.foreign_keys) == 1
         foreign_key, *_ = table.foreign_keys
         foreign_column = foreign_key.column
         item_table = sa_models[Item].__table__
-        self.assertIs(foreign_column.table, item_table)
-        self.assertEqual(foreign_column.name, "id")
-        self.assertEqual(foreign_column.type, item_table.c.id.type)
+        assert foreign_column.table is item_table
+        assert foreign_column.name == "id"
+        assert foreign_column.type == item_table.c.id.type
 
     def test_foreign_key_through_unique_field(self):
         """Make sure that foreign keys to unique but non primary columns work."""
@@ -153,10 +153,10 @@ class ForeignKeyTests(TestCase):
         sa_models = construct_models(metadata)
         sa_model = sa_models[RelatedToItemViaUniqueField]
         table = sa_model.__table__
-        self.assertEqual(len(table.foreign_keys), 1)
+        assert len(table.foreign_keys) == 1
         foreign_key, *_ = table.foreign_keys
         foreign_column = foreign_key.column
         item_table = sa_models[Item].__table__
-        self.assertIs(foreign_column.table, item_table)
-        self.assertEqual(foreign_column.name, "legacy_id")
-        self.assertEqual(foreign_column.type, item_table.c.legacy_id.type)
+        assert foreign_column.table is item_table
+        assert foreign_column.name == "legacy_id"
+        assert foreign_column.type == item_table.c.legacy_id.type
