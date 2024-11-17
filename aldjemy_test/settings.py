@@ -2,14 +2,14 @@ from aldjemy.table import foreign_key
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 SECRET_KEY = "not-a-secret"
-ROOT_URLCONF = "test_project.urls"
+ROOT_URLCONF = "aldjemy_test.urls"
 SITE_ID = 1
 USE_TZ = False  # Silence a warning until Django 5.0
 
 ALDJEMY_ENGINES = {"sqlite3": "sqlite+pysqlite"}
 DATABASE_ROUTERS = [
-    "test_project.pg.routers.PgRouter",
-    "test_project.sample.routers.LogsRouter",
+    "aldjemy_test.pg.routers.PgRouter",
+    "aldjemy_test.sample.routers.LogsRouter",
 ]
 
 ALDJEMY_DATA_TYPES = {
@@ -23,8 +23,8 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "test_project.sample",
-    "test_project.pg",
+    "aldjemy_test.sample",
+    "aldjemy_test.pg",
     "aldjemy",
 ]
 

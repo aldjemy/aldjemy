@@ -7,7 +7,7 @@ from sqlalchemy.orm import aliased
 from aldjemy.core import Cache, get_connection_string, get_engine
 from aldjemy.orm import construct_models
 from aldjemy.session import get_session
-from test_project.sample.models import (
+from aldjemy_test.sample.models import (
     Author,
     Book,
     BookProxy,

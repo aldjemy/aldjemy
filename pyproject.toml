@@ -1,15 +1,12 @@
 [project]
 name = "aldjemy"
-version = "3.2"
+version = "3.3"
 description = "SQLAlchemy for your Django models"
 authors = [{ name = "Mikhail Krivushin" }]
 license = "BSD-3-Clause"
 readme = "README.rst"
 requires-python = ">=3.8"
-dependencies = [
-  "SQLAlchemy>=1.4,<2",
-  "Django>=4.1",
-]
+dependencies = ["SQLAlchemy>=1.4,<2", "Django>=4.1"]
 
 [project.urls]
 homepage = "https://github.com/aldjemy/aldjemy"
@@ -21,17 +18,14 @@ build-backend = "hatchling.build"
 
 [tool.isort]
 profile = "black"
-src_paths = ["aldjemy", "test_project"]
-known_first_party = ["aldjemy", "test_project"]
+src_paths = ["aldjemy", "aldjemy_test"]
+known_first_party = ["aldjemy", "aldjemy_test"]
 
 [tool.coverage.run]
 branch = true
 
 [tool.coverage.report]
-exclude_lines = [
-  "pragma: no cover",
-  "raise NotImplementedError",
-]
+exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
 
 [dependency-groups]
 dev = [
