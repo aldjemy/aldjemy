@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import array
 
 from aldjemy.core import DjangoPool, get_engine
 from aldjemy.session import get_session
-from test_project.pg.models import (
+from aldjemy_test.pg.models import (
     DateRangeModel,
     DecimalArrayModel,
     JsonModel,
