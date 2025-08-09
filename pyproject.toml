@@ -23,6 +23,7 @@ known_first_party = ["aldjemy", "aldjemy_test"]
 
 [tool.coverage.run]
 branch = true
+source = ["aldjemy", "aldjemy_test"]
 
 [tool.coverage.report]
 exclude_lines = ["pragma: no cover", "raise NotImplementedError"]
