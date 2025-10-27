@@ -68,7 +68,7 @@ jobs:
       - name: Rename coverage file
         run: mv .coverage .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
       - name: Save coverage file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
           path: .coverage.py${{ matrix.python-version }}.dj${{ matrix.django-version }}
